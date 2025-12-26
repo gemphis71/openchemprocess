@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+title: OpenChemProcess
+message: "If you use this project or its data, please cite it as below."
+type: dataset
+license: CC-BY-4.0
+authors:
+  - family-names: GE
+    given-names: MIN
+repository-code: https://github.com/gemphis71/openchemprocess
