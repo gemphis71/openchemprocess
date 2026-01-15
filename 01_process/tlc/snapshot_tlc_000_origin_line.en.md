@@ -3,7 +3,7 @@ snapshot_id: "TLC-000-ORIGIN-LINE"
 status: "stable"
 technique: "Thin Layer Chromatography"
 topic: "Physical Baseline"
-dependencies: []
+dependencies: ["TLC-PRE-001"]
 priority: "Critical"
 ---
 
