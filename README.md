@@ -10,17 +10,19 @@ This project focuses on:
 - Machine-readable representations of process judgment and reasoning
 
 ## Data Formats
-- **Primary (authoritative) format: CSV**
-- Derived formats: JSON, YAML (auto-generated)
+- **Primary (authoritative) format: Markdown (.md)**
+  - Markdown files contain the complete expert reasoning, spatial logic, and heuristic rules.
+- **Derivative format: CSV / JSON**
+  - Automatically extracted from Markdown for machine consumption (v0.2+).
 
-CSV files represent the ground-truth expert rules and are the only manually curated source.
+Markdown files represent the ground-truth expert rules and are the only manually curated source.
 
 ## Languages
-- Primary language: **English**
-- Secondary language: Chinese (supporting documentation only)
+- **English**: Primary language for authoritative logic and machine-readable instructions.
+- **Chinese**: Expert insights and deep context (supporting documentation).
 
 ## Project Status
-Initialization (v0.1)
+- **01_process/tlc/**: Baseline logic for Thin Layer Chromatography, including spatial constraints and spotting layout rules.
 
 ## License
 This project is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0).
@@ -39,17 +41,15 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 - 化学工艺判断与决策逻辑的机器可读表示
 
 ## 数据格式说明
-- **主要（权威）格式：CSV**
-- 派生格式：JSON、YAML（由程序自动生成）
-
-CSV 文件是专家规则的唯一人工维护来源。
+- **主要（权威）格式：Markdown (.md)** - Markdown 文件包含完整的专家推导逻辑、空间逻辑和启发式规则。
+- **派生格式：CSV / JSON** - 从 Markdown 中自动提取，供机器读取 (v0.2+)。
 
 ## 语言说明
 - 项目主语言：**英文**
 - 中文仅作为辅助说明，不作为权威版本
 
 ## 项目状态
-初始化阶段（v0.1）
+- **01_process/tlc/**: 薄层色谱（TLC）的基础逻辑，包括空间约束和点样布局规则。
 
 ## 许可证
 本项目采用 Creative Commons Attribution 4.0 International（CC BY 4.0）许可协议。
