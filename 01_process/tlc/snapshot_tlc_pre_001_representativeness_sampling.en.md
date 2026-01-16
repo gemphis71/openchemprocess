@@ -42,7 +42,7 @@ TLC results will lead to systematic directional errors in the following scenario
 ## 4. Sampling Bias Management Principles
 
 ### 4.1 Statistical Sampling Recommendations (Scale-up Sampling)
-When phase separation is impossible but qualitative monitoring is required, increase the sampling volume to reduce random error, followed by processing in `TLC-PRE-002`:
+When phase separation is impossible but qualitative monitoring is required, increase the sampling volume to reduce random error, followed by processing in `TLC-PRE-002-SAMPLE-PREPARATION-GATE`:
 - **Laboratory Scale (≤1 L)**: Sample **1–5 mL** of the mixture.
 - **Industrial Scale (≥1000 L)**: Sample **~1 L** of the mixture.
 
@@ -53,7 +53,7 @@ When phase separation is impossible but qualitative monitoring is required, incr
 ## 5. Gate Outputs
 
 ### ✅ Passed
-- Sample possesses physical and proportional representativeness. Proceed to `TLC-PRE-002`.
+- Sample possesses physical and proportional representativeness. Proceed to `TLC-PRE-002-SAMPLE-PREPARATION-GATE`.
 
 ### ⚠️ Conditional
 - Sampling has only qualitative value. The experimental record must explicitly state: "Due to heterogeneity constraints, this TLC result is not used for quantitative conversion judgment."

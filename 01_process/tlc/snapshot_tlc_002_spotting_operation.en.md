@@ -3,7 +3,7 @@ snapshot_id: "TLC-002-SPOTTING-OPERATION"
 status: "stable"
 technique: "Thin Layer Chromatography"
 topic: "Spotting Methodology"
-dependencies: ["TLC-001-SPOTTING-LAYOUT"]
+dependencies: ["TLC-001-SPOTTING-LAYOUT", "TLC-PRE-002-SAMPLE-PREPARATION-GATE"]
 ---
 
 ## 1. Scope
@@ -23,6 +23,11 @@ This Snapshot defines the standard specifications for **TLC Spotting Operations*
 - **Standard Motion**: Light contact → Micro-pause → Rapid vertical lift. Rely on capillary action; avoid pressing or lateral friction.
 - **Qualified Spot Size**: Initial diameter ~**0.5 mm**; ideal post-development diameter **1–2 mm**.
 - **Failure Criteria**: Spots >2 mm are considered signal distortion and lack semi-quantitative value.
+
+### 3.1 Pre-processing Integration
+If chemical pre-processing is mandated by `TLC-PRE-002-SAMPLE-PREPARATION-GATE`:
+- **In-situ Processing**: Follow the recipe sequence defined in `TLC-TECH-001-QUENCH-RECIPES`. The **quench agent must be spotted first** to pre-wet the silica; the sample is then **over-spotted** on the same position before the agent fully evaporates.
+- **Ex-situ Processing**: After completion of the chemical transformation defined in `TLC-TECH-001-QUENCH-RECIPES` within a sampling vial, the resulting homogeneous solution is treated as a standard sample following the spotting protocols of this document.
 
 ## 4. Re-spotting (Multiple Loading)
 - **Limits**: Generally ≤3 times; strictly **never exceed 5 times**.

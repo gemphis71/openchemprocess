@@ -3,7 +3,9 @@ snapshot_id: "TLC-002-SPOTTING-OPERATION"
 status: "stable"
 technique: "Thin Layer Chromatography"
 topic: "Spotting Methodology"
-dependencies: ["TLC-001-SPOTTING-LAYOUT"]
+dependencies: 
+- "TLC-001-SPOTTING-LAYOUT"
+- "TLC-PRE-002-SAMPLE-PREPARATION-GATE" 
 ---
 
 ## 1. 适用范围
@@ -23,6 +25,14 @@ dependencies: ["TLC-001-SPOTTING-LAYOUT"]
 - **标准动作**：轻触板面 → 极短停留 → 垂直快速离板。依靠毛细作用转移，严禁压点或摩擦。
 - **合格点径**：初始点径约 **0.5 mm**，展开后理想点径为 **1–2 mm**。
 - **不合格判定**：点径明显 >2 mm 则视为信号失真，不具半定量意义。
+
+--- 
+## 3.1 预处理操作衔接 (Integration with TECH)
+若根据 `TLC-PRE-002-SAMPLE-PREPARATION-GATE` 判定样品需要进行化学预处理，点样动作需按以下规范调整：
+
+- **板上 (In-situ) 处理**：遵循 `TLC-TECH-001-QUENCH-RECIPES` 规定的配方顺序。操作时必须**先点淬灭试剂**润湿板面，在试剂未干透前，立即使用另一根毛细管在该点位**重叠点样**。 
+- **体外 (Ex-situ) 处理**：在采样瓶中完成 `TLC-TECH-001-QUENCH-RECIPES` 定义的化学转化后，将得到的均相溶液视为普通样品，执行本文件定义的标准点样动作。 
+---
 
 ## 4. 多次点样 (Retouch)
 - **原则**：次数 ≤3 次，上限 **5 次**。
