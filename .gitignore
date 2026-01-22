@@ -10,3 +10,6 @@ Thumbs.db
 Drafts/
 Private/
 .obsidian/
+# Google Drive temporary upload files
+.tmp.driveupload/
+**/.tmp.driveupload/
