@@ -1,16 +1,16 @@
 ---
-snapshot_id: "CHG-001-CHARGING-SEQUENCE"
-status: "draft"
-domain: "Process"
-process: "Charging"
-topic: "Charging sequence as a risk envelope (open, not a gate)"
+snapshot_id: CHG-001-CHARGING-SEQUENCE
+status: draft
+domain: Process
+process: Charging
+topic: Charging sequence as a risk envelope (open, not a gate)
 level: "001"
-note: "Open risk-structure document; patterns and thresholds may be revised with experience."
+note: Open risk-structure document; patterns and thresholds may be revised with experience.
 dependencies:
-  - "CHG-002-ADDITION-MODE-AND-RATE"
-  - "MIX-001-MIXING-ESTABLISHMENT"
-  - "TMP-001-THERMAL-AND-GAS-RISK"
-  - "MAT-001-FEED-EQUIVALENCE"
+  - CHG-002-ADDITION-MODE-AND-RATE
+  - MIX-001-MIXING-ESTABLISHMENT
+  - TMP-001-THERMAL-AND-GAS-RISK
+  - MAT-001-FEED-EQUIVALENCE
 ---
 
 # CHG-001 Charging Sequence — Risk Envelope (Not a Gate)
@@ -188,3 +188,5 @@ If unusually high reaction rate or significant heat release is observed, reasses
 - Thresholds are experience-based (v0.1) and may be revised
     
 - The goal is **early identification of scale-up sensitivity**, not final safety judgement
+
+#Audit: Classified as a P3/P4 charging sequence risk. Upon triggering, feed-rate control is no longer available, and the issue should be addressed at the process review stage rather than through downstream mitigation.

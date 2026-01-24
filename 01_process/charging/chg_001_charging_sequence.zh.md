@@ -1,23 +1,16 @@
 ---
-
-snapshot_id: "CHG-001-CHARGING-SEQUENCE"  
-status: "draft"  
-domain: "Process"  
-process: "Charging"  
-topic: "投料顺序的风险区间（开放式，非 Gate）"  
-level: "001"  
-note: "开放式风险结构文件；阈值与模式允许随经验修订。"  
+snapshot_id: CHG-001-CHARGING-SEQUENCE
+status: draft
+domain: Process
+process: Charging
+topic: 投料顺序的风险区间（开放式，非 Gate）
+level: "001"
+note: 开放式风险结构文件；阈值与模式允许随经验修订。
 dependencies:
-
-- "CHG-002-ADDITION-MODE-AND-RATE"
-    
-- "MIX-001-MIXING-ESTABLISHMENT"
-    
-- "TMP-001-THERMAL-AND-GAS-RISK"
-    
-- "MAT-001-FEED-EQUIVALENCE"
-    
-
+  - CHG-002-ADDITION-MODE-AND-RATE
+  - MIX-001-MIXING-ESTABLISHMENT
+  - TMP-001-THERMAL-AND-GAS-RISK
+  - MAT-001-FEED-EQUIVALENCE
 ---
 
 # CHG-001 投料顺序 —— 风险区间（非 Gate）
@@ -202,3 +195,5 @@ stateDiagram-v2
 - 阈值为经验性（v0.1），允许修订
     
 - 目标是**提前识别放大敏感性**，非安全结论
+
+#Audit: 属于 P3/P4 型顺序风险；一旦触发即失去加料速率这一控制杠杆，应在方案 review 阶段被重点挑战而非事后补救。
