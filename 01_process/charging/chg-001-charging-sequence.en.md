@@ -68,6 +68,28 @@ Most or all reactants are charged first; the reaction is initiated later by heat
 Heat release is very weak and temperature-insensitive; or reaction initiation is smooth; and no significant gas evolution is present.
 
 ---
+### P4 | Strong-Trigger Sequence Risk  
+*(A strong-trigger subclass of P3)*
+
+**Definition**  
+P4 is a strong-trigger subclass of P3 (accumulation → triggering), in which the triggering step advances the reaction through **substrate decomposition or formation of highly reactive intermediates**.
+
+**Structural Characteristics**
+- Addition of the trigger itself constitutes reaction initiation  
+- Reaction progression depends on substrate decomposition or transient highly reactive species  
+- Reaction rate, heat release, and gas evolution are not continuously controllable  
+- The system exhibits **violent** physical behavior (explosive, uncontrollable)
+
+**Scale-Up Risk Logic**
+- Reactive inventory exists prior to triggering  
+- Upon triggering, generation rate instantaneously exceeds heat-removal and/or venting capacity  
+- Scale-up strongly biases the system toward charging, overpressure, or explosive runaway
+
+**Sequence Constraints (Strong Warning)**
+- **Prohibited**: Accumulate reactants first, then add the trigger  
+- **Required**: The trigger must be added first and be fully dispersed  
+- **Required**: Reactants may only be added at the target reaction temperature, and the addition rate must not exceed the controllable reaction rate of the system
+---
 
 ## 3. P3 Structural Logic (Minimal State Representation)
 
