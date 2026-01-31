@@ -24,6 +24,15 @@ It is **not** a yes/no gate, but a **risk amplification indicator layer**.
 - They should not be treated as default choices  
 - When adopted, their **validity conditions and failure boundaries** must be clearly stated
 
+### 1.1 Implicit Assumption: Effective Mixing State
+
+All charging-sequence discussions in this document assume that an effective mixing state is established at the time of addition.
+
+Specifically, added materials are assumed to enter the reaction mass and participate in bulk mixing within the charging time scale, rather than being locally retained, deposited, physically decoupled, or diverted into inactive volumes (e.g., dead zones or valve cavities).
+
+If this assumption is violated, sequence-based risk analysis is no longer applicable.  
+The failure mode should instead be treated as an effective-entry or local-retention problem and addressed in CHG-002 or subsequent chapters.
+
 ---
 
 ## 2. Sequence Risk Patterns
