@@ -207,3 +207,4 @@ Mixing modifies pathway exposure rather than the dominant kinetic drivers govern
 ---
 
 #Audit: This snapshot describes a logical lock-in mode of control loss at the mixing layer. Identification relies on evaluating whether control authority can be recovered through time extension or dosing-structure adjustment, rather than on phenomenological similarity alone.
+If mixing time-scale failure has already caused irreversible expansion of reaction pathways or local reaction domains, subsequent temperature adjustment can only delay consequences and cannot restore control authority; such cases should not be classified as thermal control authority (see THR-001).
