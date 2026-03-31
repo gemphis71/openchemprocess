@@ -78,6 +78,14 @@ Vocabulary evolves gradually with the project.
 
 ---
 
+# 5 Structural Metrics (Solid-State / Isolation-Relevant)
+
+| Term | Definition |
+|-----|------------|
+| Wet Mass Ratio (WMR) | Ratio of wet cake mass to dry solid mass, reflecting mother liquor retention and solid-state packing structure. Measured at solid formation stage (crystallization/recrystallization) and used to predict downstream filtration behavior. |
+
+---
+
 # 5 Operational Constraints
 
 | Term | Definition |
