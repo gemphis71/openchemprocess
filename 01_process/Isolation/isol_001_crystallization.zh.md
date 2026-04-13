@@ -143,7 +143,7 @@ workup solution
 对于一次结晶，通常要求 product 在“不良溶剂”中的溶解度足够低，在“良溶剂”中的溶解度足够高，以形成可利用的溶解度差。
 
 经验上可参考：
-- **不良溶剂 (poor solvent)**：product 溶解度应 **< 1 g / 15 g 溶剂**  
+- **不良溶剂 (anti-solvent)**：product 溶解度应 **< 1 g / 15 g 溶剂**  
   更理想时应低于 **1 g / 30 g 溶剂**
 - **良溶剂 (good solvent, usually with heating)**：product 溶解度应 **> 3 g / 10 g 溶剂**
 

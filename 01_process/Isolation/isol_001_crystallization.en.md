@@ -185,11 +185,11 @@ Available implementation approaches include:
 
 In process development, crystallization systems can be initially screened using empirical solubility windows.
 
-For primary crystallization, it is generally required that the product has sufficiently low solubility in a “poor solvent” and sufficiently high solubility in a “good solvent,” to establish a usable solubility difference.
+For primary crystallization, it is generally required that the product has sufficiently low solubility in a “anti-solvent” and sufficiently high solubility in a “good solvent,” to establish a usable solubility difference.
 
 Empirical reference:
 
-- **poor solvent**: product solubility **< 1 g / 15 g solvent**, preferably **< 1 g / 30 g solvent**
+- **anti-solvent**: product solubility **< 1 g / 15 g solvent**, preferably **< 1 g / 30 g solvent**
     
 - **good solvent (usually with heating)**: product solubility **> 3 g / 10 g solvent**
     
