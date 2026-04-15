@@ -10,6 +10,7 @@ OpenChemProcess is an open, evolving project to structure process chemistry expe
 - ISOL-001 – Filtration: when control is already lost
 - WRKUP-001 – Quench: controlling the end vs managing the outcome 
 - THR-001 – Thermal: why cooling does not restore control
+Then follow dependencies to explore related snapshots.
 
 ## What is this
 
@@ -51,21 +52,6 @@ Each file is a **snapshot**, representing:
     
 - its dependencies on upstream decisions
     
-
----
-
-## Start here
-
-If you are new, start with:
-
-1. CHG-001 – Charging Sequence
-    
-2. MIX-001 – Mixing Time-Scale Failure
-    
-3. ISOL-003 – Filtration Control Authority
-    
-
-Then follow dependencies to explore related snapshots.
 
 ---
 
@@ -119,6 +105,16 @@ This project is licensed under the Creative Commons Attribution 4.0 Internationa
 ---
 # OpenChemProcess-Chinese
 
+**大多数放大失败并非源于化学本身，而是源于早期阶段的决策问题。**
+
+OpenChemProcess 是一个开放、持续演进的项目，旨在将化学工艺经验结构化表达为可用于机器辅助审查的形式，从而更早识别放大风险，避免常见工艺陷阱。
+
+👉 初次阅读？建议从以下 3 个示例开始：  
+- ISOL-001 – 过滤：当控制权已经丧失时  
+- WRKUP-001 – 淬灭：是在控制终点，还是在管理结果  
+- THR-001 – 热过程：为什么冷却无法恢复控制权
+随后可以根据 dependency 继续扩展阅读。
+
 ## 这是什么
 
 OpenChemProcess 是一个开放框架，旨在将**化学工艺知识与专家决策规则**结构化表达为同时适用于人类与机器的形式。
@@ -159,19 +155,6 @@ OpenChemProcess 是一个开放框架，旨在将**化学工艺知识与专家�
     
 - 以及它对上游决策的依赖关系
     
-
----
-
-## 建议阅读路径
-
-如果是第一次接触，建议从以下内容开始：
-
-• ISOL-001 – 过滤：控制权丧失后的阶段  
-• WRKUP-001 – 淬灭：控制终点，还是管理结果  
-• THR-001 – 热过程：冷却无法恢复控制权
-    
-
-随后可以根据 dependency 继续扩展阅读。
 
 ---
 
