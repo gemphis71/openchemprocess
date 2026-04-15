@@ -2,6 +2,16 @@
 
 # OpenChemProcess
 
+**Most scale-up failures are not chemistry problems — they are early-stage decision problems.**
+
+OpenChemProcess is an open, evolving project to structure process chemistry experience into a form usable for machine-assisted review, helping identify scale-up risks earlier and avoid common pitfalls.
+
+👉 **New here? Start with 3 examples:**  
+- ISOL-001 – Filtration Control Authority
+- WRKUP-001 – Quench Control 
+- THR-001 – Thermal Control  Authority
+
+- 
 ## What is this
 
 OpenChemProcess is an open framework for structuring **chemical process knowledge and expert decision-making rules** in a form usable by both humans and machines.
