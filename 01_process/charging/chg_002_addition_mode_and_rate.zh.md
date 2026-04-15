@@ -4,6 +4,8 @@ domain: "Process"
 process: "Charging"
 topic: "加料方式与加料曲线的风险区间（开放式，非 Gate）"
 level: "001"
+language: zh  
+canonical_id: CHG-002-ADDITION-MODE-AND-RATE
 note: "开放式风险结构文件；关注投料方式与速率是否仍构成有效控制杠杆。阈值与模式允许随经验修订。"
 dependencies:
   - "CHG-001-CHARGING-SEQUENCE"

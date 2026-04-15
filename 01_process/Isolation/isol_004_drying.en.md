@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "Drying: Termination of Control Authority and State Lock-in"
 level: "001"
+language: en  
+canonical_id: ISOL-004-DRYING
 dependencies:
   - "ISOL-003-FILTRATION"
 note:

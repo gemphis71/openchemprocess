@@ -1,6 +1,8 @@
 ---
 snapshot_id: TLC-META-001-EARLY-DIAGNOSTIC-VALUE-AND-LIMITS
 status: stable
+language: en  
+canonical_id: TLC-META-001-EARLY-DIAGNOSTIC-VALUE-AND-LIMITS
 technique: Thin Layer Chromatography
 topic: Why TLC excels in early-stage diagnostics but should not be trusted for late-stage confirmation
 dependencies:

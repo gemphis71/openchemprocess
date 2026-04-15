@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "过滤：在无组成控制能力前提下的固液分离"
 level: "001"
+language: zh  
+canonical_id: ISOL-003-FILTRATION
 dependencies:
   - "ISOL-001-CRYSTALLIZATION"
   - "ISOL-002-RECRYSTALLIZATION"

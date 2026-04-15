@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-003-ELUENT-SELECTION"
 status: "stable"
+language: zh  
+canonical_id: TLC-003-ELUENT-SELECTION
 technique: "Thin Layer Chromatography"
 topic: "Eluent Selection Logic"
 dependencies:

@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-002-INTERPRETATION-PATHWAYS"
 status: "stable"
+language: zh  
+canonical_id: TLC-DIAG-002-INTERPRETATION-PATHWAYS
 technique: "Thin Layer Chromatography"
 topic: "Permitted interpretation pathways after interpretability gate"
 dependencies:

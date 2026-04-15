@@ -4,6 +4,8 @@ domain: "Process"
 process: "Thermal"
 topic: "Thermal control as a risk structure governing reaction pathway and stage accessibility"
 level: "001"
+language: en  
+canonical_id: THR-001-THERMAL-CONTROL-AUTHORITY
 note:  This document aims to identify, under scale-up conditions, whether temperature
   escalates from a rate-modulating parameter to a primary source of control authority.
   It does not address heat-transfer engineering or temperature-control hardware.

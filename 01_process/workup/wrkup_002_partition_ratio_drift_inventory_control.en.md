@@ -5,6 +5,8 @@ domain: "Process"
 process: "Workup"
 topic: "Partition-ratio drift: phase-environment drift / chemical speciation drift / industrial workflow risk tags (Soft Gate)"
 level: "001"
+language: en  
+canonical_id: WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL
 dependencies:
   - "WRKUP-001-WORKUP-CONTROL-AUTHORITY"
   - "MIX-001-MIXING-TIME-SCALE-FAILURE"

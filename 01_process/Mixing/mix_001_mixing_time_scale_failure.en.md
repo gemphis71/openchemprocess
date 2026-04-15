@@ -1,17 +1,19 @@
 ---
-snapshot_id: "MIX-001-MIXING-TIME-SCALE-FAILURE"
-status: "draft"
-domain: "Process"
-process: "Mixing"
-topic: "Mixing Time-Scale Failure and Logical Lock-in of Control Authority"
+snapshot_id: MIX-001-MIXING-TIME-SCALE-FAILURE
+status: draft
+domain: Process
+process: Mixing
+topic: Mixing Time-Scale Failure and Logical Lock-in of Control Authority
 level: "001"
-note: "An open-structure risk analysis snapshot. This file examines whether the mixing time scale can continue to support underlying control assumptions when charging sequence and dosing logic are formally satisfied. The irreversibility discussed herein refers to logical control loss (logical lock-in), rather than equipment limits or thermal constraints."
+language: en
+canonical_id: MIX-001-MIXING-TIME-SCALE-FAILURE
+note: An open-structure risk analysis snapshot. This file examines whether the mixing time scale can continue to support underlying control assumptions when charging sequence and dosing logic are formally satisfied. The irreversibility discussed herein refers to logical control loss (logical lock-in), rather than equipment limits or thermal constraints.
 dependencies:
-  - "CHG-001-CHARGING-SEQUENCE"
-  - "CHG-002-ADDITION-MODE-AND-RATE"
-  - "TMP-001-THERMAL-AND-GAS-RISK"
-  - "PHS-001-PHASE-BEHAVIOR"
-  - "CRY-001-CRYSTALLIZATION-BEHAVIOR"
+  - CHG-001-CHARGING-SEQUENCE
+  - CHG-002-ADDITION-MODE-AND-RATE
+  - TMP-001-THERMAL-AND-GAS-RISK
+  - PHS-001-PHASE-BEHAVIOR
+  - CRY-001-CRYSTALLIZATION-BEHAVIOR
 ---
 
 # MIX-001 | Mixing Time-Scale Failure (Non-Gate)

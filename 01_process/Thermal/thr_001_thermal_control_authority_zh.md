@@ -4,6 +4,8 @@ domain: "Process"
 process: "Thermal"
 topic: "温度作为反应路径与阶段控制权的风险结构"
 level: "001"
+language: zh  
+canonical_id: THR-001-THERMAL-CONTROL-AUTHORITY
 note:  本文件用于识别在放大条件下， 温度是否从“速率调制参数”升级为“控制权来源”。不讨论设备传热能力或控温工程，仅讨论温度在反应逻辑层面对路径与阶段可达性的决定作用。
 dependencies:
   - "CHG-001-CHARGING-SEQUENCE"

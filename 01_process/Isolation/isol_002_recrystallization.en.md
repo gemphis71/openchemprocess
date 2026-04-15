@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"  
 topic: "Recrystallization: Selective Re-partitioning and Solid-State Reconstruction (Selective Re-partitioning under Constrained Solubility Space)"  
 level: "002"  
+language: en  
+canonical_id: ISOL-002-RECRYSTALLIZATION
 dependencies:  
 - "ISOL-001-CRYSTALLIZATION"  
 - "WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL"  

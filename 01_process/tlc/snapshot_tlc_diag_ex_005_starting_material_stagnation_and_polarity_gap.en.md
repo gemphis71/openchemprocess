@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-EX-005-STARTING-MATERIAL-STAGNATION-AND-POLARITY-GAP"
 status: "stable"
+language: en  
+canonical_id: TLC-DIAG-EX-005-STARTING-MATERIAL-STAGNATION-AND-POLARITY-GAP
 technique: "Thin Layer Chromatography"
 topic: "Interpretability revoked due to absence of starting material migration"
 dependencies:

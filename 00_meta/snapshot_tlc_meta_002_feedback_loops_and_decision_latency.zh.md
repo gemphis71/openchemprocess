@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-META-002-DECISION-LATENCY-AND-FEEDBACK-STRATEGY"
 status: "stable"
+language: zh  
+canonical_id: TLC-META-002-DECISION-LATENCY-AND-FEEDBACK-STRATEGY
 technique: "Thin Layer Chromatography"
 topic: "Decision latency and the multi-level feedback strategy in complex engineering systems"
 dependencies:

@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-001-SPOTTING-LAYOUT"
 status: "stable"
+language: zh  
+canonical_id: TLC-001-SPOTTING-LAYOUT
 technique: "Thin Layer Chromatography"
 topic: "Spotting Layout"
 dependencies: ["TLC-000-ORIGIN-LINE"]

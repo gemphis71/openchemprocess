@@ -5,6 +5,8 @@ domain: "Process"
 process: "Workup"
 topic: "萃取分配比漂移：相环境漂移 / 物种漂移 / 工业路径风险标签（Soft Gate）"
 level: "001"
+language: zh  
+canonical_id: WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL
 dependencies:
   - "WRKUP-001-WORKUP-CONTROL-AUTHORITY"
   - "MIX-001-MIXING-TIME-SCALE-FAILURE"

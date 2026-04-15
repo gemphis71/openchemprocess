@@ -5,6 +5,8 @@ domain: Process
 process: Charging
 topic: Charging sequence as a risk envelope (open, not a gate)
 level: "001"
+language: en  
+canonical_id: CHG-001-CHARGING-SEQUENCE
 note: Open risk-structure document; patterns and thresholds may be revised with experience.
 dependencies:
   - CHG-002-ADDITION-MODE-AND-RATE

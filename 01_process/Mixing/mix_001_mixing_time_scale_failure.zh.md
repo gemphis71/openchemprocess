@@ -1,17 +1,19 @@
 ---
-snapshot_id: "MIX-001-MIXING-TIME-SCALE-FAILURE"
-status: "draft"
-domain: "Process"
-process: "Mixing"
-topic: "混合时间尺度失效与控制权逻辑锁死"
+snapshot_id: MIX-001-MIXING-TIME-SCALE-FAILURE
+status: draft
+domain: Process
+process: Mixing
+topic: 混合时间尺度失效与控制权逻辑锁死
 level: "001"
-note: "开放式风险结构文件；用于分析在投料顺序与滴加方式均已成立的前提下，混合时间尺度是否仍能支撑反应控制假设。本文件关注的不可逆性为逻辑层面的 control loss（logical lock-in），而非设备能力或热极限。"
+language: zh
+canonical_id: MIX-001-MIXING-TIME-SCALE-FAILURE
+note: 开放式风险结构文件；用于分析在投料顺序与滴加方式均已成立的前提下，混合时间尺度是否仍能支撑反应控制假设。本文件关注的不可逆性为逻辑层面的 control loss（logical lock-in），而非设备能力或热极限。
 dependencies:
-  - "CHG-001-CHARGING-SEQUENCE"
-  - "CHG-002-ADDITION-MODE-AND-RATE"
-  - "TMP-001-THERMAL-AND-GAS-RISK"
-  - "PHS-001-PHASE-BEHAVIOR"
-  - "CRY-001-CRYSTALLIZATION-BEHAVIOR"
+  - CHG-001-CHARGING-SEQUENCE
+  - CHG-002-ADDITION-MODE-AND-RATE
+  - TMP-001-THERMAL-AND-GAS-RISK
+  - PHS-001-PHASE-BEHAVIOR
+  - CRY-001-CRYSTALLIZATION-BEHAVIOR
 ---
 
 # MIX-001｜混合时间尺度失效（非 Gate）

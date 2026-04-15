@@ -1,55 +1,217 @@
+[English](#openchemprocess) | [Chinese](#openchemprocess-chinese)
+
 # OpenChemProcess
 
-**OpenChemProcess** is an open project for structuring chemical process knowledge
-and expert decision-making rules in a form that is usable by both humans and machines.
+## What is this
 
-## Scope
-This project focuses on:
-- Chemical process unit operations (e.g. TLC, HPLC, quenching, extraction)
-- Expert decision rules derived from real laboratory and industrial practice
-- Machine-readable representations of process judgment and reasoning
+OpenChemProcess is an open framework for structuring **chemical process knowledge and expert decision-making rules** in a form usable by both humans and machines.
 
-## Data Formats
-- **Primary (authoritative) format: Markdown (.md)**
-  - Markdown files contain the complete expert reasoning, spatial logic, and heuristic rules.
-- **Derivative format: CSV / JSON**
-  - Automatically extracted from Markdown for machine consumption (v0.2+).
+It focuses on:
 
-Markdown files represent the ground-truth expert rules and are the only manually curated source.
-
-## Languages
-- **English**: Primary language for authoritative logic and machine-readable instructions.
-- **Chinese**: Expert insights and deep context (supporting documentation).
-
-## Project Status
-- **01_process/tlc/**: Baseline logic for Thin Layer Chromatography, including spatial constraints and spotting layout rules.
-
-## License
-This project is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0).
+- Control authority and irreversible decision points
+    
+- Expert reasoning derived from real laboratory and industrial practice
+    
+- Machine-readable representations of process judgment
+    
 
 ---
 
-# OpenChemProcess（中文说明）
+## Why this matters
 
-**OpenChemProcess** 是一个开放项目，旨在将化学工艺知识与专家判断经验
-系统化整理为**人类可理解、机器可读取**的结构化形式。
+Most process failures are not caused by missing knowledge, but by **loss of control authority at earlier stages**.
 
-## 项目范围
-本项目主要关注：
-- 化学工艺中的单元操作（如 TLC、HPLC、淬灭、萃取等）
-- 来源于真实实验室与工业实践的专家判断规则
-- 化学工艺判断与决策逻辑的机器可读表示
+This project makes these hidden structures explicit and analyzable.
 
-## 数据格式说明
-- **主要（权威）格式：Markdown (.md)** - Markdown 文件包含完整的专家推导逻辑、空间逻辑和启发式规则。
-- **派生格式：CSV / JSON** - 从 Markdown 中自动提取，供机器读取 (v0.2+)。
+---
+
+## How to read
+
+This repository has three layers:
+
+- `00_meta` → definitions, vocabulary, structural rules
+    
+- `01_process` → core process snapshots and decision logic
+    
+- `02_observation` → experimental observations and visual evidence
+    
+
+Each file is a **snapshot**, representing:
+
+- a specific process condition or failure mode
+    
+- its dependencies on upstream decisions
+    
+
+---
+
+## Start here
+
+If you are new, start with:
+
+1. CHG-001 – Charging Sequence
+    
+2. MIX-001 – Mixing Time-Scale Failure
+    
+3. ISOL-003 – Filtration Control Authority
+    
+
+Then follow dependencies to explore related snapshots.
+
+---
+
+## Data Structure
+
+- **Primary format: Markdown (.md)**  
+    → authoritative source containing expert reasoning and logic
+    
+- **Derivative formats: CSV / JSON (planned)**  
+    → extracted for machine use
+    
+
+Markdown files are the only manually curated source of truth.
+
+---
+
+## Navigation
+
+By process:
+
+- Isolation
+    
+- Mixing
+    
+- Thermal
+    
+- Charging
+    
+- Workup
+    
+
+---
+
+## Language
+
+Each snapshot has two versions:
+
+- English (`.en.md`) – authoritative logic
+    
+- Chinese (`.zh.md`) – supporting expert context
+    
+
+Both share the same `canonical_id`.
+
+---
+
+## License
+
+This project is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+---
+# OpenChemProcess-Chinese
+
+## 这是什么
+
+OpenChemProcess 是一个开放框架，旨在将**化学工艺知识与专家决策规则**结构化表达为同时适用于人类与机器的形式。
+
+本项目重点关注：
+
+- 控制权（Control Authority）与不可逆决策节点
+    
+- 来源于真实实验室与工业实践的专家判断逻辑
+    
+- 化学工艺判断与推理的机器可读表达
+    
+
+---
+
+## 为什么重要
+
+大多数工艺失败并非源于知识缺失，而是由于**早期阶段控制权的丧失**。
+
+本项目的目标是将这些隐性的结构显性化，并使其可分析、可复用。
+
+---
+
+## 如何阅读
+
+本仓库分为三层结构：
+
+- `00_meta` → 定义、术语与结构规则
+    
+- `01_process` → 核心工艺快照与决策逻辑
+    
+- `02_observation` → 实验观测与证据
+    
+
+每一个文件都是一个 **snapshot（快照）**，表示：
+
+- 一个具体的工艺状态或失败模式
+    
+- 以及它对上游决策的依赖关系
+    
+
+---
+
+## 建议阅读路径
+
+如果是第一次接触，建议从以下内容开始：
+
+1. CHG-001 – 加料顺序
+    
+2. MIX-001 – 混合时间尺度失效
+    
+3. ISOL-003 – 过滤中的控制权问题
+    
+
+随后可以根据 dependency 继续扩展阅读。
+
+---
+
+## 数据结构
+
+- **主要格式：Markdown (.md)**  
+    → 权威数据源，包含完整的专家判断与逻辑
+    
+- **派生格式：CSV / JSON（规划中）**  
+    → 从 Markdown 自动提取，用于机器处理
+    
+
+Markdown 文件是唯一人工维护的真实来源。
+
+---
+
+## 导航方式
+
+按工艺模块浏览：
+
+- 分离（Isolation）
+    
+- 混合（Mixing）
+    
+- 热过程（Thermal）
+    
+- 加料（Charging）
+    
+- 后处理（Workup）
+    
+
+---
 
 ## 语言说明
-- 项目主语言：**英文**
-- 中文仅作为辅助说明，不作为权威版本
 
-## 项目状态
-- **01_process/tlc/**: 薄层色谱（TLC）的基础逻辑，包括空间约束和点样布局规则。
+每个 snapshot 提供两种版本：
 
-## 许可证
-本项目采用 Creative Commons Attribution 4.0 International（CC BY 4.0）许可协议。
+- 英文（`.en.md`）— 权威逻辑版本
+    
+- 中文（`.zh.md`）— 中文仅作为辅助说明，不作为权威版本
+- 
+    
+
+两者共享同一 `canonical_id`。
+
+---
+
+## 许可
+
+本项目采用 CC BY 4.0 许可协议。

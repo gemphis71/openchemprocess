@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-000-ORIGIN-LINE"
 status: "stable"
+language: en  
+canonical_id: TLC-000-ORIGIN-LINE
 technique: "Thin Layer Chromatography"
 topic: "Physical Baseline"
 dependencies: ["TLC-PRE-001-REPRESENTATIVENESS-SAMPLING"]

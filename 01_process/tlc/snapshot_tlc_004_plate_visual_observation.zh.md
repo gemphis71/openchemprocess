@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-004-PLATE-VISUAL-OBSERVATION"
 status: "stable"
+language: zh  
+canonical_id: TLC-004-PLATE-VISUAL-OBSERVATION
 technique: "Thin Layer Chromatography"
 topic: "Plate Visual Observation"
 dependencies:

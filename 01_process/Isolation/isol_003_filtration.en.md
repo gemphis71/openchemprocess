@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "Filtration: Solid–liquid separation without composition control authority"
 level: "001"
+language: en  
+canonical_id: ISOL-003-FILTRATION
 dependencies:
   - "ISOL-001-CRYSTALLIZATION"
   - "ISOL-002-RECRYSTALLIZATION"

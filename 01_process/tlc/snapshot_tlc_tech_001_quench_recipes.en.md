@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-TECH-001-QUENCH-RECIPES"
 status: "stable"
+language: en  
+canonical_id: TLC-TECH-001-QUENCH-RECIPES
 layer: "TECH"
 technique: "Thin Layer Chromatography"
 topic: "Standardized Quench Recipes for TLC"

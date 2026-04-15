@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-PRE-002-SAMPLE-PREPARATION-GATE"
 status: "stable"
+language: zh  
+canonical_id: TLC-PRE-002-SAMPLE-PREPARATION-GATE
 technique: "Thin Layer Chromatography"
 topic: "Entry Gate: Sample Preparation & Quench"
 dependencies:

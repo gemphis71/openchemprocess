@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "干燥：控制权终结与状态锁定"
 level: "001"
+language: zh  
+canonical_id: ISOL-004-DRYING
 dependencies:
   - "ISOL-003-FILTRATION"
 note:

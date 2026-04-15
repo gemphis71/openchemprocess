@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "一次结晶：从 solution-phase control 到 solid-state commitment"
 level: "001"
+language: zh  
+canonical_id: ISOL-001-CRYSTALLIZATION
 dependencies:
   - "WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL"
   - "WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL"

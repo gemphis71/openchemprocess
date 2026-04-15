@@ -5,6 +5,8 @@ domain: "Process"
 process: "Isolation"
 topic: "重结晶：选择性分配与固态重构（Selective Re-partitioning under Constrained Solubility Space）"
 level: "002"
+language: zh  
+canonical_id: ISOL-002-RECRYSTALLIZATION
 dependencies:
   - "ISOL-001-CRYSTALLIZATION"
   - "WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL"

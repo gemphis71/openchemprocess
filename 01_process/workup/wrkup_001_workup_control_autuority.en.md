@@ -4,6 +4,8 @@ domain: "Process"
 process: "Workup"
 topic: "Control Authority and Engineering Criteria for Quench Reactions in the Workup Stage"
 level: "001"
+language: en  
+canonical_id: WRKUP-001-WORKUP-CONTROL-AUTHORITY
 dependencies:
   - "CHG-001-CHARGING-SEQUENCE"
   - "CHG-002-ADDITION-MODE-AND-RATE"

@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-PRE-000-APPLICABILITY-STABILITY"
 status: "stable"
+language: zh  
+canonical_id: TLC-PRE-000-APPLICABILITY-STABILITY
 technique: "Thin Layer Chromatography"
 topic: "Entry Gate: Stability and Applicability"
 dependencies: []

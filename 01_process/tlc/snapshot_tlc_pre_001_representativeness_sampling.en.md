@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-PRE-001-REPRESENTATIVENESS-SAMPLING"
 status: "stable"
+language: en  
+canonical_id: TLC-PRE-001-REPRESENTATIVENESS-SAMPLING
 technique: "Thin Layer Chromatography"
 topic: "Entry Gate: Representativeness & Sampling"
 dependencies: ["TLC-PRE-000-APPLICABILITY-STABILITY"]

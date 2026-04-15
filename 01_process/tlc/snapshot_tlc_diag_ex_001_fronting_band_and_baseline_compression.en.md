@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-EX-001-FRONTING-BAND-AND-BASELINE-COMPRESSION"
 status: "stable"
+language: en  
+canonical_id: TLC-DIAG-EX-001-FRONTING-BAND-AND-BASELINE-COMPRESSION
 technique: "Thin Layer Chromatography"
 topic: "Non-interpretable plate due to axis compression (fronting + baseline crowding)"
 dependencies:

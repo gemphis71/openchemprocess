@@ -4,6 +4,8 @@ domain: "Process"
 process: "Charging"  
 topic: "Risk envelope of addition mode and dosing profile (open, non-gate)"  
 level: "001"  
+language: en  
+canonical_id: CHG-002-ADDITION-MODE-AND-RATE
 note: "Open risk-structure document; focuses on whether addition mode and rate still constitute an effective control lever. Thresholds and patterns are experience-based and subject to revision."  
 dependencies:
 

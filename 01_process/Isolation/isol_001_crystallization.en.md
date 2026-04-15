@@ -6,6 +6,8 @@ domain: "Process"
 process: "Isolation"
 topic: "Crystallization: Transition from Solution-Phase Control to Solid-State Commitment"
 level: "001"
+language: en  
+canonical_id: ISOL-001-CRYSTALLIZATION
 dependencies:
   - "WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL"
   - "WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL"

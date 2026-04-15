@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-002-SPOTTING-OPERATION"
 status: "stable"
+language: en  
+canonical_id: TLC-002-SPOTTING-OPERATION
 technique: "Thin Layer Chromatography"
 topic: "Spotting Methodology"
 dependencies: ["TLC-001-SPOTTING-LAYOUT", "TLC-PRE-002-SAMPLE-PREPARATION-GATE"]

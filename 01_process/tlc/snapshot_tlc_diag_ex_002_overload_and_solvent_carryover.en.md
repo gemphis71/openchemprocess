@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-EX-002-OVERLOAD-AND-SOLVENT-CARRYOVER"
 status: "stable"
+language: en  
+canonical_id: TLC-DIAG-EX-002-OVERLOAD-AND-SOLVENT-CARRYOVER
 technique: "Thin Layer Chromatography"
 topic: "Non-interpretable plate due to spotting overload / high-boiling solvent carryover"
 dependencies:

@@ -4,6 +4,8 @@ domain: "Process"
 process: "Workup"
 topic: "后处理阶段的控制权、淬灭反应及放大不重现性的工程判据"
 level: "001"
+language: zh  
+canonical_id: WRKUP-001-WORKUP-CONTROL-AUTHORITY
 dependencies:
   - "CHG-001-CHARGING-SEQUENCE"
   - "CHG-002-ADDITION-MODE-AND-RATE"

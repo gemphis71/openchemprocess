@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-001-INTERPRETABILITY-GATE"
 status: "stable"
+language: en  
+canonical_id: TLC-DIAG-001-INTERPRETABILITY-GATE
 technique: "Thin Layer Chromatography"
 topic: "Interpretability gate for TLC plate diagnostics"
 dependencies:

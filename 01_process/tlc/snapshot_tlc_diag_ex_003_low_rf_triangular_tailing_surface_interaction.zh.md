@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-EX-003-LOW-RF-TRIANGULAR-TAILING-SURFACE-INTERACTION"
 status: "stable"
+language: zh  
+canonical_id: TLC-DIAG-EX-003-LOW-RF-TRIANGULAR-TAILING-SURFACE-INTERACTION
 technique: "Thin Layer Chromatography"
 topic: "Interpretability downgraded due to surface interaction–induced low Rf triangular tailing"
 dependencies:

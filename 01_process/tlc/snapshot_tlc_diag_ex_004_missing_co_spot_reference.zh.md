@@ -1,6 +1,8 @@
 ---
 snapshot_id: "TLC-DIAG-EX-004-LOGIC-GAP-MISSING-SPIKE-AND-FRONTING-OVERFLOW"
 status: "stable"
+language: zh  
+canonical_id: TLC-DIAG-EX-004-LOGIC-GAP-MISSING-SPIKE-AND-FRONTING-OVERFLOW
 technique: "Thin Layer Chromatography"
 topic: "Failure of logical inference due to missing co-spot reference (spike)"
 dependencies:

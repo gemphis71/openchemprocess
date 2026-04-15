@@ -5,6 +5,8 @@ domain: Process
 process: Charging
 topic: 投料顺序的风险区间（开放式，非 Gate）
 level: "001"
+language: zh  
+canonical_id: CHG-001-CHARGING-SEQUENCE
 note: 开放式风险结构文件；阈值与模式允许随经验修订。
 dependencies:
   - CHG-002-ADDITION-MODE-AND-RATE

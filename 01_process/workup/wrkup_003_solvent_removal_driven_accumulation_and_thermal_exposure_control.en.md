@@ -5,6 +5,8 @@ domain: "Process"
 process: "Workup"
 topic: "Solvent Removal–Driven Accumulation and Thermal Exposure Control (Hard Gate + Route Priority)"
 level: "001"
+language: en  
+canonical_id: WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL
 dependencies:
   - "WRKUP-001-WORKUP-CONTROL-AUTHORITY"
   - "WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL"
