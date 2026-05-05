@@ -385,3 +385,70 @@ Oil-out 应作为独立风险模块，其准确描述为：
 | `Oil_out_flag` | 是否出现 product-rich liquid-like phase | 一旦出现需单独追因 |
 
 #Audit: 一次结晶的真正价值，不是“先把产物拿出来”，而是在 liquid control 尚未完全消失之前，利用最后的设计窗口，把 bulk impurity 尽量压回母液，并把 product 带入一个可继续处理的 solid inventory。
+
+## 10. Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "ISOL-001-CRYSTALLIZATION"
+process_stage: "isolation_crystallization"
+
+transition_model: "solution_phase_control_to_solid_state_commitment"
+
+control_window: >
+  Primary crystallization is the last major window in which solution-phase variables can still be used to recover product, reject bulk impurities, and define the first solid inventory before later operations mainly handle consequences.
+
+core_judgment: >
+  The main machine-review task is to detect whether the crystallization design has addressed solubility gap, residual solubilizing modifiers, supersaturation generation, nucleation robustness, solid-form risk, and filtration compatibility before the system crosses into solid-state commitment.
+
+risk_signals:
+  - "crude_solubility_ratio > 2"
+  - "residual_modifier_content > 5%"
+  - "rapid supersaturation buildup"
+  - "local supersaturation near antisolvent, acid, or base addition point"
+  - "delayed or failed nucleation after seeding"
+  - "yield shift > 5% across batches"
+  - "wet_cake_retention_ratio > 1.5"
+  - "wet_cake_retention_ratio > 2.0"
+  - "oil_out_flag observed"
+  - "salt_stoichiometry_deviation > 3%"
+  - "mixed solid form or mixed salt form suspected"
+
+expert_judgment:
+  - "If crude solubility is significantly higher than pure-product solubility, crystallization failure is likely driven by residual solubilizing modifiers rather than by the intrinsic solvent system."
+  - "If supersaturation is generated faster than it can be consumed through controlled nucleation and growth, the process is at risk of crash crystallization, amorphous precipitation, oil-out, or mixed solid-form precipitation."
+  - "If nucleation depends on small-scale behavior and seeding is not robust, crystallization may fail to scale even when small-scale recovery appears acceptable."
+  - "If wet cake retention is high, first-pass impurity rejection may be negated by mother liquor carryover."
+  - "If solid-form consistency drifts across batches, yield and purity variation should be treated as a solid-state control issue rather than only as a solvent or recovery issue."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "solid_state_commitment"
+  - "usable_solubility_gap"
+  - "residual_modifier_effect"
+  - "supersaturation_control_window"
+  - "local_supersaturation"
+  - "nucleation_scale_sensitivity"
+  - "solid_form_drift"
+  - "mother_liquor_retention"
+  - "downstream_filtration_compatibility"
+
+quantitative_triggers:
+  crude_solubility_ratio: ">2"
+  residual_modifier_content: ">5%"
+  wet_cake_retention_ratio_warning: ">1.5"
+  wet_cake_retention_ratio_high_risk: ">2.0"
+  yield_shift_solid_form_check: ">5%"
+  salt_stoichiometry_deviation: ">3%"
+
+uncertainty: "medium"
+
+exceptions:
+  - "Amorphous or imperfect solids may be acceptable if they are stable, filterable, transferable, and intended only as an intermediate isolation form."
+  - "High impurity content does not automatically invalidate crystallization if impurities are designed to remain in the mother liquor and wet cake retention is low."
+  - "Oil-out and mixed solid forms require case-specific investigation and should not be treated as ordinary crystallization variation."
+  - "Thresholds are empirical screening triggers, not universal pass/fail specifications."
+
+machine_use: >
+  Use this annotation to review whether a proposed primary crystallization design has addressed solubility gap, residual modifiers, supersaturation generation rate, nucleation robustness, solid-form risk, and filtration interface before the system crosses from solution-phase control into solid-state commitment.
