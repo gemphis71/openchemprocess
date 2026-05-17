@@ -49,3 +49,53 @@ The following actions are intended only to **restore observability** and do not 
 
 - **Correlation with Front**: The flatness of the high $R_f$ band is highly consistent with the direction of the solvent front.
 - **Projection Distortion**: Due to the compromise in eluent polarity, high-$R_f$ components "collide" due to excessive elution strength, while low-$R_f$ components "stagnate" due to insufficient elution strength. This results in a significant reduction in the Information Capacity of the entire projection axis.
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-001-FRONTING-BAND-AND-BASELINE-COMPRESSION
+annotation_scope: diagnostic_example_candidate
+source_language: en
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  This diagnostic example reuses the interpretability gate and interpretability
+  revoked logic, but the dominant new content is example-specific morphology
+  involving fronting band, low-Rf crowding, baseline tailing, and projection-axis
+  compression. It should remain candidate-only until multiple TLC diagnostic
+  examples show that these morphology patterns form reusable review categories.
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_revoked
+  - data_object_boundary
+  - permitted_interpretation_pathway
+
+candidate_example_terms_watchlist:
+  - fronting_band
+  - baseline_compression
+  - axis_compression
+  - projection_axis_compression
+  - crowded_ends_empty_middle
+  - low_rf_tailing
+
+directly_supported_review_signals:
+  - high-Rf signal appears as horizontal band rather than converged spot
+  - low-Rf critical sample signal is accompanied by tailing
+  - effective projection interval contains little distinguishable information
+  - current plate interpretability is revoked
+  - single-component, conversion-rate, spot-count, and purity inference are blocked
+
+machine_review_boundary: >
+  Use this candidate only as a supporting example for revoked interpretability
+  caused by projection-axis compression. Do not treat corrective actions as SOP
+  recommendations. Do not promote fronting-band or axis-compression morphology
+  terms into taxonomy until reuse across later examples is confirmed.
+```

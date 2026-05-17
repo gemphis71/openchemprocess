@@ -123,3 +123,71 @@ Its purpose is to clarify the **methodological basis** of the intercept logic in
 
 > **In the correct time, using the tool that matches the decision tempo,  
 > is the prerequisite for obtaining interpretive authority.**
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-META-001-EARLY-DIAGNOSTIC-VALUE-AND-LIMITS
+annotation_scope: meta_level
+process_stage: tlc_methodological_boundary
+source_language: en
+machine_review_role: diagnostic_authority_boundary
+
+transition_model: early_discovery_projection_to_late_stage_confirmation_boundary
+
+core_judgment: >
+  TLC has high diagnostic value in early and mid-stage reaction exploration because
+  it provides rapid, low-cost, multi-channel visual projection of incompletely
+  known systems. Its authority must be downgraded or terminated in late-stage
+  confirmation because visualization is nonlinear near low concentration, trace
+  impurity resolution is poor, and disappearance of a starting-material spot does
+  not prove chemical completion.
+
+risk_signals:
+  - TLC is treated as a precision measurement tool
+  - TLC is used as primary late-stage confirmation evidence
+  - disappearance of starting material spot is treated as complete conversion
+  - trace impurity judgment is based primarily on TLC
+  - staining behavior near detection limit is treated as linear concentration evidence
+  - TLC is used for regulatory or final-state confirmation after problem scale becomes trace-level
+  - early diagnostic signal is overextended into late-stage confirmation authority
+  - multi-channel visualization divergence is ignored during identity assessment
+
+reasoning_anchors:
+  - diagnostic_value_boundary
+  - early_stage_diagnostic_authority
+  - late_stage_interpretability_downgrade
+  - total_sample_projection
+  - discovery_first_logic
+  - pseudo_completion_risk
+  - resolution_scale_mismatch
+  - decision_latency_match
+
+tlc_specific_review_triggers:
+  early_mid_reaction_window: "approximately 10%-80% conversion supports stronger TLC trend perception"
+  late_stage_boundary: "above approximately 80% conversion, starting-material signal may approach detection limit"
+  trace_impurity_scale: "trace impurities below approximately 5% are outside strong TLC confirmation authority"
+  tool_role_split: "TLC for early diagnosis and trend perception; HPLC/LC-MS for confirmatory quantification once components are defined"
+
+expert_judgment_patterns:
+  - Use TLC as an early discovery and trend-perception tool, not as a precision measurement tool.
+  - Treat total-sample projection as valuable for unknown-system discovery and anomaly warning.
+  - Downgrade TLC authority when the problem shifts to late-stage completion, trace impurity control, or regulatory confirmation.
+  - Treat disappearance of a starting-material spot as possible pseudo-completion rather than proof of complete conversion.
+  - Use precision analytical tools for confirmatory quantification after key components have been defined.
+
+uncertainty_and_exceptions:
+  - TLC may still provide qualitative warning signals in late-stage work but should not be primary confirmation evidence.
+  - Multi-channel visualization can strengthen early identity assessment but does not replace structural confirmation.
+  - Conversion and impurity boundaries are TLC-specific methodological triggers, not universal analytical thresholds.
+
+machine_use: >
+  Use this meta annotation to decide whether TLC is being used within its proper
+  diagnostic authority. Preserve TLC authority for early discovery, trend
+  perception, and anomaly warning; downgrade or terminate TLC authority for
+  late-stage confirmation, trace impurity quantification, precise conversion,
+  or regulatory evidence.
+```

@@ -62,3 +62,56 @@ priority: "Critical"
 - 样品与 TLC 环境存在不可调和的冲突。应切换至 HPLC、GC 或 NMR 等分析手段。
 
 > **核心箴言**：决定是否做 TLC，不是看“能不能点上去”，而是看“板上发生的是否还是原来的化学”。
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-PRE-000-APPLICABILITY-STABILITY
+annotation_scope: chapter_level
+process_stage: tlc_pre_observation_validity
+source_language: zh
+machine_review_role: evidence_admissibility_gate
+
+transition_model: sample_state_to_tlc_environment_projection
+
+core_judgment: >
+  只有当样品在 TLC 暴露时间窗口和 TLC 物理化学环境中保持化学稳定时，
+  TLC 才能作为有效的诊断投影。如果样品在取样、点板、板面接触、水氧暴露、
+  或由低温快速升至室温的过程中发生转化，则板上信号不再可靠代表原始化学状态。
+
+risk_signals:
+  - 样品可能在 TLC 暴露时间窗口内发生转化
+  - 样品半衰期短于取样至展开的操作时间尺度
+  - 样品对硅胶表面微酸性敏感
+  - 样品对 TLC 操作过程中的微量水分或氧气敏感
+  - 低温样品点板后快速升温
+  - 热不稳定中间体可能在 TLC 制备过程中发生转化
+  - 反应在 TLC 板上继续发生
+  - 板上信号可能不代表原始化学状态
+
+reasoning_anchors:
+  - observation_validity_gate
+  - sample_state_projection
+
+tlc_specific_review_triggers:
+  exposure_window: "从取样、点板到进入展开缸约 30-60 秒"
+  surface_environment: "硅胶表面、微酸性硅羟基、微量水分、氧气"
+  thermal_jump: "低温反应样品点板后快速回升至室温"
+  fast_evolving_system: "化学转化半衰期显著短于 TLC 操作窗口"
+
+expert_judgment_patterns:
+  - 只有先确认样品能在 TLC 环境中生存，TLC 才可作为诊断证据。
+  - 若样品在取样、点板、板面接触或升温过程中发生转化，应先判定为证据有效性问题，而不是反应组成问题。
+  - 应区分“能否使用 TLC”与“TLC 结果说明什么化学含义”。
+  - 如果样品状态可能已在板上改变，不应把可见斑点模式直接作为反应证据。
+
+uncertainty_and_exceptions:
+  - 条件性样品处理只有在保留明确化学投影状态时，才可能恢复 TLC 证据资格。
+  - 慢反应体系只是在给定 TLC 操作窗口内可视为准静态。
+  - TLC 特异性时间与环境触发条件不得扩展为全局分析规则。
+
+machine_use: >
+  本 annotation 用于在使用 TLC 判断反应进度、转化率、杂质模式或中间体状态之前，
+  先判断该 TLC 结果是否具备证据资格。若样品在 TLC 时间窗口或 TLC 环境中的稳定性未被建立，
+  应降级或拒绝后续基于 TLC 的化学解释。

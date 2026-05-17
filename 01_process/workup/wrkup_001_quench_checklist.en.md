@@ -107,3 +107,75 @@ note: This file introduces no new process knowledge. It is a rejection checklist
 > **any downstream processing from proceeding  
 > when the quench has not been designed and validated  
 > as a completable chemical reaction.**
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: WRKUP-001-QUENCH-CHECKLIST
+annotation_scope: derived_decision_gate
+derived_from: WRKUP-001-WORKUP-CONTROL-AUTHORITY
+process_stage: workup_quench_decision_gate
+source_language: en
+machine_review_role: rejection_checklist_gate
+
+transition_model: nominal_reaction_end_to_quench_completion_authority
+
+core_judgment: >
+  A process must not proceed beyond workup or quench if quench has not been
+  designed and validated as a completable chemical reaction. Apparent addition
+  of a quench reagent, final pH, or completion of an operational step is not
+  sufficient evidence of chemical termination when reactive species, reactive
+  windows, or physical-accessibility failures remain possible.
+
+risk_signals:
+  - reactive species remain at nominal reaction end
+  - quench is not explicitly designed as a completable chemical reaction
+  - quench completion is defined by reagent addition rather than chemical deactivation
+  - quench completion is defined by operational completion rather than stable final state
+  - reactive window exists between quench start and complete deactivation
+  - scale-up elongates the reactive quench window
+  - final pH is used as sole evidence of quench success
+  - final analytical result is used without excluding early reactive window
+  - quench reagent may be physically inaccessible under scale-up conditions
+  - physical accessibility relies on rapid dumping or ideal mixing assumptions
+
+reasoning_anchors:
+  - workup_as_termination_control
+  - reaction_end_state_not_final_state
+  - quench_reaction_completion
+  - chemically_incomplete_quench
+  - critical_quench_window
+  - physically_inaccessible_quench
+  - apparent_addition_not_participation
+  - rejection_checklist_gate
+
+rejection_conditions:
+  chemically_incomplete_quench:
+    - "reactive species remain and required quench time, temperature, or chemical conditions are not validated"
+    - "quench completion is not based on chemical deactivation or chemically stable final state"
+  critical_time_window_loss:
+    - "reactive window exists and is elongated under scale-up conditions"
+    - "final pH or final analytical result is used without ensuring no reactive window from t = 0"
+  physically_inaccessible_quench:
+    - "freezing, phase isolation, or failed entry into reaction phase is possible and physical accessibility is not validated"
+
+expert_judgment_patterns:
+  - Treat the checklist as a rejection gate, not as optimization or remediation guidance.
+  - Reject downstream progression when chemical quench completion has not been validated.
+  - Treat final pH, reagent addition, or operational completion as insufficient termination evidence when reactive species may remain.
+  - Treat scale-up elongation of a reactive quench window as loss of termination-control authority.
+  - Treat physical inaccessibility of quench reagent as a quench-authority failure.
+
+uncertainty_and_exceptions:
+  - This checklist introduces no new process knowledge beyond WRKUP-001.
+  - PASS means allowed to proceed beyond the quench gate; it does not imply downstream process success.
+  - REJECT means return to quench/workup design review; it does not prescribe corrective operation.
+
+machine_use: >
+  Use this derived checklist to reject process progression beyond the quench or
+  workup stage when quench completion, critical reactive-window control, or
+  physical accessibility of the quench reagent is not established. Do not provide
+  optimization, remediation, or operating instructions.
+```

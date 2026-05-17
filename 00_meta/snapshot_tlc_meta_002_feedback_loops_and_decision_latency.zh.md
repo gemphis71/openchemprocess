@@ -96,3 +96,63 @@ TLC 在此仅被视为一种**高频、低延迟的瞬态诊断分支**，用于
 
 ---
 
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-META-002-DECISION-LATENCY-AND-FEEDBACK-STRATEGY
+annotation_scope: meta_level
+process_stage: tlc_feedback_architecture
+source_language: zh
+machine_review_role: decision_latency_feedback_review
+
+transition_model: reaction_state_frequency_to_multi_level_feedback_architecture
+
+core_judgment: >
+  当反应体系变化速度快于精密分析的采样—反馈周期时，TLC 作为高频、低延迟诊断分支具有价值。
+  它的作用不是替代 HPLC 或 LC-MS，而是在动态或不可逆工艺状态迁移期间，
+  保持态势感知并争取决策安全余量。
+
+risk_signals:
+  - 精密分析反馈周期慢于反应状态迁移周期
+  - 动态阶段仅依赖低频高精度分析
+  - 瞬态异常因决策延迟被错过
+  - 尽管存在时间混叠风险，仍将高分辨正式分析视为足够
+  - 工艺状态尚未稳定前移除 TLC 高频反馈支路
+  - 非结构化视觉异常因不属于预设分析峰而被忽略
+  - TLC 被错误当作确认性精密分析的替代品
+  - 高频态势感知被误认为放行或合规证据
+
+reasoning_anchors:
+  - decision_latency_match
+  - high_frequency_low_latency_feedback
+  - multi_level_feedback_strategy
+  - temporal_aliasing_risk
+  - situational_awareness_branch
+  - precision_confirmation_branch
+  - fuzzy_anomaly_detection
+  - decision_safety_margin
+
+tlc_specific_review_triggers:
+  feedback_cycle_mismatch: "分析采样—结果周期长于反应状态迁移周期"
+  high_frequency_low_gain_branch: "TLC 支路提供快速态势感知但分辨率较低"
+  low_frequency_high_gain_branch: "精密分析支路提供较慢但定量的确认"
+  transient_anomaly_context: "未知副反应、基质突变、点形异常、原点异常加深或前沿变形"
+  stable_production_boundary: "TLC 反馈角色主要用于开发、放大和不稳定动态阶段，不替代放行标准"
+
+expert_judgment_patterns:
+  - 当决策延迟成为约束时，将 TLC 视为高频诊断反馈支路。
+  - 使用精密分析完成确认、定量和合规校准，而不是作为动态阶段唯一反馈回路。
+  - 当正式分析返回时相关工艺状态已经不可逆改变，应识别时间混叠风险。
+  - 将模糊视觉异常作为系统失配早期预警，而不是最终定量证据。
+  - 保持 TLC 态势感知与精密分析确认之间的互补关系。
+
+uncertainty_and_exceptions:
+  - TLC 不改变合规放行标准，也不替代经验证的分析方法。
+  - 当工艺稳定且决策窗口长于分析反馈周期时，TLC 反馈价值下降。
+  - 视觉异常检测属于早期预警功能，在需要精确决策时仍需后续确认。
+
+machine_use: >
+  本 meta annotation 用于评估监测策略是否匹配反应体系的决策延迟。
+  只能将 TLC 作为高频态势感知的 review concept，而不是正式精密分析或合规证据的替代品。
+```

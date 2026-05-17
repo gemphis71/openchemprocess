@@ -124,3 +124,67 @@ META 层并不主张用 TLC 替代 HPLC，而是强调二者的阶段性分工�
 
 > **在正确的时间，使用与决策节奏相匹配的工具，  
 > 是获得解释权的前提条件。**
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-META-001-EARLY-DIAGNOSTIC-VALUE-AND-LIMITS
+annotation_scope: meta_level
+process_stage: tlc_methodological_boundary
+source_language: zh
+machine_review_role: diagnostic_authority_boundary
+
+transition_model: early_discovery_projection_to_late_stage_confirmation_boundary
+
+core_judgment: >
+  TLC 在反应早期和中期探索中具有很高诊断价值，因为它能以低成本、低延迟、
+  多通道视觉投影方式快速呈现尚不明确体系的变化。但在后期确认阶段，
+  由于低浓度区显色非线性、微量杂质分辨能力不足，以及原料点消失并不证明化学完成，
+  TLC 的解释权必须被降级或终止。
+
+risk_signals:
+  - TLC 被当作精密测量工具
+  - TLC 被用作后期确认的主要证据
+  - 原料点消失被当作完全转化
+  - 微量杂质判断主要依赖 TLC
+  - 接近检测限的显色行为被当作线性浓度证据
+  - 问题尺度进入微量阶段后仍用 TLC 做终态或合规确认
+  - 早期诊断信号被过度延伸为后期确认解释权
+  - 身份判断中忽略多通道显色行为分歧
+
+reasoning_anchors:
+  - diagnostic_value_boundary
+  - early_stage_diagnostic_authority
+  - late_stage_interpretability_downgrade
+  - total_sample_projection
+  - discovery_first_logic
+  - pseudo_completion_risk
+  - resolution_scale_mismatch
+  - decision_latency_match
+
+tlc_specific_review_triggers:
+  early_mid_reaction_window: "约 10%-80% 转化阶段更适合 TLC 趋势感知"
+  late_stage_boundary: "超过约 80% 转化后，原料信号可能接近显色检测限"
+  trace_impurity_scale: "低于约 5% 的微量杂质超出 TLC 强确认能力"
+  tool_role_split: "TLC 用于早期诊断和趋势感知；组分明确后由 HPLC/LC-MS 执行确认定量"
+
+expert_judgment_patterns:
+  - 将 TLC 用作早期发现与趋势感知工具，而非精密测量工具。
+  - 将全样投影视为未知体系发现与异常预警的优势。
+  - 当问题转向后期完成、微量杂质控制或合规确认时，应降低 TLC 解释权。
+  - 将原料点消失视为可能的伪完成，而不是完全转化证明。
+  - 在关键组分明确后，使用精密分析工具完成确认定量。
+
+uncertainty_and_exceptions:
+  - TLC 在后期仍可能提供定性预警，但不应作为主要确认依据。
+  - 多通道显色可增强早期身份判断，但不能替代结构确证。
+  - 转化率与杂质边界是 TLC 特异性方法学触发条件，不是通用分析阈值。
+
+machine_use: >
+  本 meta annotation 用于判断 TLC 是否被用于其合适的诊断权限范围内。
+  应保留 TLC 在早期发现、趋势感知和异常预警中的解释权；
+  对后期确认、微量杂质定量、精确转化率或合规证据，应降级或终止 TLC 解释权。
+```

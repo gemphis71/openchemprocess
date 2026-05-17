@@ -74,3 +74,63 @@ TLC quenching is performed not only to "stop the reaction" but also to **proacti
 ---
 
 > **TECH Motto**: The goal of quenching is not to "finish the reaction," but to transform the system into a form that TLC can interpret.
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-TECH-001-QUENCH-RECIPES
+annotation_scope: technical_recipe_candidate
+source_language: en
+candidate_parent: TLC-PRE-002-SAMPLE-PREPARATION-GATE
+candidate_secondary_parent: TLC-002-SPOTTING-OPERATION
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: recipe_terms_not_promoted
+
+candidate_decision: >
+  This TECH module provides reusable TLC sample-preparation recipes after
+  TLC-PRE-002 has already determined that quenching or derivatization is required.
+  It supports TLC evidence admissibility by transforming reactive or poorly
+  projectable samples into interpretable TLC inputs, but it does not prove
+  reaction completion, workup quench completion, or process termination. Because
+  the source is recipe/toolbox-oriented and contains reagent-specific procedures,
+  it should remain candidate-only and should not be indexed as a Machine Reviewer
+  rule source.
+
+reused_reasoning_anchors:
+  - sample_preparation_gate
+  - quench_requirement_check
+  - sample_state_projection
+  - migration_distortion_control
+  - observation_validity_gate
+
+candidate_example_terms_watchlist:
+  - tlc_quench_recipe
+  - derivatization_for_tlc_projection
+  - electrophile_capture
+  - alcohol_based_quench
+  - amine_based_quench
+  - weak_acid_protonation
+  - hydride_quench_boundary
+  - in_situ_quench_boundary
+  - ex_situ_quench_boundary
+  - recipe_not_completion_evidence
+
+directly_supported_review_signals:
+  - TLC quench recipe is invoked only after PRE gate determines quench is required
+  - TLC quench may transform reactive species into more interpretable TLC derivatives
+  - reagent choice can intentionally shift Rf by changing polarity
+  - high-concentration in-situ quench may physically damage the plate or invalidate migration
+  - recipe execution does not prove chemical completion of the original process
+  - recipe module supports sample preparation but does not define process termination authority
+
+machine_review_boundary: >
+  Use this candidate only as a technical support reference for TLC sample
+  preparation. Do not convert MeOH, EtOH, ammonia, amines, AcOH, AcOH/MeOH, or
+  hydride-quench examples into Machine Reviewer SOP recommendations. Do not treat
+  TLC quench recipe selection as evidence that the reaction, workup quench, or
+  process termination is complete. Do not add recipe-specific terms to taxonomy
+  unless later review shows cross-snapshot value beyond recipe execution.

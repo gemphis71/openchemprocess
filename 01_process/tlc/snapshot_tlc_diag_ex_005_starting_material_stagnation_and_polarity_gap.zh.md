@@ -76,3 +76,60 @@ related:
 
 - **起点锚定失败**：原料未离开起点，导致反应监测的物理参照在最底层即缺失。
 - **信息不可恢复性**：由于起点投影未生成，该次展开无法通过任何视觉后处理或经验补救获得判读价值。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-005-STARTING-MATERIAL-STAGNATION-AND-POLARITY-GAP
+annotation_scope: diagnostic_example_candidate
+source_language: zh
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-000-ORIGIN-LINE
+candidate_tertiary_parent: TLC-003-ELUENT-SELECTION
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  本诊断例子复用了 starting material projection failure 导致 interpretability revoked 的逻辑。
+  原料参照未形成可定义迁移投影，使反应监测解释在讨论投影轴压缩或样品 lane 判读之前即被阻断。
+  新增内容主要是具体的原料滞留与 polarity gap 形貌，
+  因此本批应保持 candidate-only。
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_revoked
+  - origin_line_validity
+  - rf_coordinate_validity
+  - projection_axis_validity
+  - projection_axis_compression
+  - reference_layout_validity
+
+candidate_example_terms_watchlist:
+  - starting_material_projection_failure
+  - starting_material_stagnation
+  - missing_starting_projection
+  - origin_anchoring_failure
+  - polarity_gap
+  - sample_signal_non_remediability
+  - preemptive_interpretability_failure
+
+directly_supported_review_signals:
+  - 原料参照停留在起点附近
+  - 原料未形成可定义迁移中心
+  - 原料参照 Rf 约等于 0
+  - 样品 lane 信号不能补偿原料投影缺失
+  - 不能推断反应发生、未发生或已完成
+  - 在讨论投影轴压缩前，解释权已经被撤销
+  - 当前板数据在反应监测逻辑上不可复用
+
+machine_review_boundary: >
+  本 candidate 作为起点投影缺失导致解释权撤销的 supporting example。
+  不应把样品 lane 的迁移信号解释为对原料参照失败的补偿。
+  不应把恢复原料迁移或拆分观察轴写成 SOP 建议。
+  在后续例子证明 starting-material stagnation 或 polarity-gap 术语具备跨例子复用价值前，
+  不应将其提升进 taxonomy。
+```

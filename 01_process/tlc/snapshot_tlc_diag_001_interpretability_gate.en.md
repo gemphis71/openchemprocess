@@ -116,3 +116,80 @@ This Gate is used to determine whether a **developed and visualized TLC plate** 
 ## Boundary Statement
 
 This Gate only adjudicates whether interpretability is established; it does not provide any reaction mechanism, conversion rate, or structural judgment. All choice of interpretation pathways and chemical inferences belong to the scope of **DIAG-002**.
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-001-INTERPRETABILITY-GATE
+annotation_scope: chapter_level
+process_stage: tlc_diagnostic_interpretability
+source_language: en
+machine_review_role: interpretability_authority_gate
+
+transition_model: developed_plate_visual_object_to_interpretation_authority
+
+core_judgment: >
+  Interpretability must be established before chemical interpretation is allowed.
+  A developed and visualized TLC plate is first a visual data object whose physical,
+  chromatographic, and anchoring validity must be adjudicated as PASS, DOWNGRADED,
+  REVOKED, or VOID before it can be used for reaction interpretation.
+
+risk_signals:
+  - visual contrast is too low to extract clear spot contours
+  - background noise obscures the effective plate area
+  - starting material reference does not form repeatable migration
+  - starting material remains near the origin without a usable projection
+  - critical spots fall into low-Rf or high-Rf information compression zones
+  - no distinguishable structure exists in the effective projection interval
+  - banding, streaking, or global shifting indicates chromatographic failure
+  - co-spot reference is missing in reaction monitoring
+  - sample signal cannot be anchored or calibrated
+  - low-Rf tailing limits morphology-based interpretation
+  - co-spot anchoring deviation limits interpretability
+
+reasoning_anchors:
+  - interpretability_gate
+  - data_object_boundary
+  - interpretability_revoked
+  - interpretability_downgraded
+  - logical_void_status
+
+tlc_specific_review_triggers:
+  visualization_revoked: "extremely low spot/background contrast or excessive plate-background noise"
+  background_noise_area: ">30% effective plate area covered by background noise"
+  origin_projection_failure: "starting material reference remains near Rf approximately 0"
+  projection_axis_compression: "critical spots fall below Rf 0.2 or above Rf 0.8 without distinguishable structure in Rf 0.2-0.7"
+  morphology_failure: "banding, streaking, or global shifting from physical/chromatographic failure"
+  co_spot_missing: "reaction monitoring without co-spot reference when sample signal cannot be anchored"
+  low_rf_tailing: "directionally consistent triangular or flame-like tailing below Rf 0.2"
+  tail_extension_threshold: "tail extension along migration direction exceeds 0.2 Rf units"
+  co_spot_delta_rf_intervals:
+    pass: "|Delta Rf| < 0.05"
+    caution: "0.05 <= |Delta Rf| < 0.1"
+    downgraded: "0.1 <= |Delta Rf| < 0.2"
+    revoked: "|Delta Rf| >= 0.2"
+
+interpretability_status_semantics:
+  PASS: "visual and protocol evidence supports normal entry into interpretation pathway"
+  DOWNGRADED: "signal distortion exists; only restricted qualitative interpretation remains"
+  REVOKED: "physical or chromatographic failure invalidates interpretation"
+  VOID: "logical reference or anchoring failure nullifies the data object for reaction interpretation"
+
+expert_judgment_patterns:
+  - Treat the developed plate as a visual data object before treating it as chemical evidence.
+  - Adjudicate interpretability before assigning reaction conversion, impurity, or mechanism meaning.
+  - Treat re-staining, re-development, or changed visualization as a new data input requiring re-evaluation.
+  - Do not use physical/chromatographic failure morphology as chemical reaction evidence.
+  - Distinguish restricted qualitative observation rights from full chemical interpretability.
+
+uncertainty_and_exceptions:
+  - CAUTION is a sub-state of DOWNGRADED and should not be treated as an independent final status.
+  - TLC-specific Rf and background-noise thresholds are interpretability triggers, not global analytical rules.
+  - This gate does not select interpretation pathways or infer chemical mechanism; those belong to downstream diagnostic logic.
+
+machine_use: >
+  Use this annotation to decide whether a developed TLC plate has enough visual,
+  chromatographic, and anchoring validity to enter chemical interpretation. If
+  interpretability is revoked, downgraded, or void, restrict or reject downstream
+  reaction conclusions rather than interpreting spot patterns as reaction evidence.

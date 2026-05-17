@@ -115,3 +115,75 @@ TLC 不用于输出精确的反应速率常数。其合理用途是定性或半�
 ## 6. 边界声明
 
 本文件定义了 TLC 在解释权成立后的合法输出空间。所有判读均为经验性与条件性结论。若需精确定量或结构确证，必须切换至 HPLC、LC-MS 或 NMR 等精密工具。
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+annotation_scope: chapter_level
+process_stage: tlc_diagnostic_interpretation_pathways
+source_language: zh
+machine_review_role: permitted_interpretation_gate
+
+transition_model: interpretability_established_to_permitted_tlc_inference_space
+
+core_judgment: >
+  只有在 TLC-DIAG-001 已经建立解释权之后，才允许进入 TLC 判读路径。
+  解释权成立后，TLC 可支持有限的经验性判读，包括存在/消失、身份一致性、
+  相对迁移顺序、点形比较和定性过程趋势；但不得用于输出精确转化率、
+  动力学参数、显色强度与含量的直接等同关系，或确定性结构判断。
+
+risk_signals:
+  - REVOKED 或 VOID 状态的 TLC 板进入判读层
+  - DOWNGRADED 状态的 TLC 板被用于无限制化学解释
+  - 仅凭单一显色或观察方式判断组分单一
+  - 多种视觉化方式响应不一致时忽略共点风险
+  - 显色强弱被当作摩尔含量或纯度
+  - 相对迁移顺序被当作化合物本征强弱
+  - 跨不同 Rf 区域比较斑点面积并推断含量
+  - 原料点消失被当作完全化学转化
+  - TLC 被用于输出精确转化率百分比或动力学参数
+  - TLC 信号被用于推断具体官能团细节或完整结构
+
+reasoning_anchors:
+  - interpretability_gate
+  - permitted_interpretation_pathway
+  - presence_absence_inference
+  - identity_consistency_check
+  - qualitative_trend_monitoring
+  - prohibited_quantitative_conversion
+  - intensity_content_non_equivalence
+  - co_elution_uncertainty
+
+tlc_specific_review_triggers:
+  mandatory_precondition: "只有通过 TLC-DIAG-001 的板才可进入 TLC-DIAG-002"
+  revoked_or_void_block: "REVOKED 或 VOID 状态禁止进入判读层"
+  downgraded_limited_use: "DOWNGRADED 状态仅允许明确标注的受限判读路径"
+  multi_visualization_check: "UV、碘熏和至少一种通用或特异性显色剂可支持存在性或身份一致性判断"
+  co_elution_warning: "同一 Rf 位置在不同视觉化方式下响应分歧，提示可能存在重合点"
+  local_area_content_condition: "面积-含量关系仅在 Rf 相同或高度接近时可作为粗略局部相对估计"
+  trend_reliability_window: "TLC 趋势判读在反应早中期相对更可靠，后期可靠性下降"
+
+expert_judgment_patterns:
+  - 在选择 TLC 判读路径之前，必须先确认解释权状态。
+  - TLC 主要用于存在性、身份一致性和定性或半定量过程趋势监测。
+  - 同一 Rf 位置在不同视觉化方式下响应不同，应作为共点不确定性处理。
+  - 不应把 UV 响应、碘色深浅或化学显色深浅直接等同于摩尔含量或纯度。
+  - 不应把原料点消失直接当作完全化学转化。
+  - 不应使用 TLC 输出精确转化率、动力学常数或确定性结构判断。
+
+uncertainty_and_exceptions:
+  - 存在性判断仍依赖锚定有效性和共点不确定性边界。
+  - 多重视觉化行为一致可增强身份一致性置信度，但不是确定性结构证明。
+  - 过程趋势判读属于经验判断，反应后期可靠性降低。
+  - TLC 特异性经验边界不得泛化为通用分析规则。
+
+machine_use: >
+  本 annotation 用于在 TLC-DIAG-001 已建立解释权后，选择允许的 TLC 判读路径，
+  并阻断精确转化率、动力学定量、显色强弱等同含量、确定性结构判断等禁止性推断。
+  若板面状态为 REVOKED 或 VOID，不得进入本判读层；若为 DOWNGRADED，
+  只能保留受限判读路径。
+```

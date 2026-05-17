@@ -62,3 +62,60 @@ TLC 有效性的前提是：**点到板上的样品比例 = 反应体系总比�
 - 取样过程存在严重偏差或无法分相监测。TLC 结果将导致系统性误判，建议更换分析手段。
 
 > **核心箴言**：TLC 的风险不在“点板”，而在“这一滴是否代表了反应”。
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-PRE-001-REPRESENTATIVENESS-SAMPLING
+annotation_scope: chapter_level
+process_stage: tlc_pre_sampling_representativeness
+source_language: zh
+machine_review_role: evidence_admissibility_gate
+
+transition_model: reaction_system_to_spotted_micro_sample_projection
+
+core_judgment: >
+  点到板上的微量样品必须代表反应体系的物理相态和组成比例。
+  在非均相体系中，TLC 可能只反映液相浓度或被取样偏差放大的局部组分，
+  而不代表总转化率或整体体系组成。
+
+risk_signals:
+  - 非均相反应体系被作为单一混合样点板
+  - 固液或液液相未被分别取样
+  - 高速搅拌下混合吸取被当作代表性样品
+  - 原料边溶解边反应
+  - 产物在反应过程中析出
+  - 产物或中间体分配至另一相
+  - 目标组分吸附在催化剂或无机载体上
+  - 液相 TLC 信号被当作总转化证据
+  - 取样偏差可能造成组成比例方向性误判
+
+reasoning_anchors:
+  - representativeness_check
+  - liquid_phase_only_projection
+  - sample_state_projection
+
+tlc_specific_review_triggers:
+  heterogeneous_system: "固液或液液非均相体系"
+  mixed_sampling_risk: "高速搅拌混合吸取被用作组成代理"
+  solubility_equilibrium_constraint: "原料边溶解边反应"
+  product_precipitation: "产物达到饱和并在反应中析出"
+  surface_adsorption: "组分吸附于催化剂或无机载体"
+  qualitative_only_record: "非均相限制下 TLC 结果不应用于定量转化率判断"
+
+expert_judgment_patterns:
+  - 在解释反应进度之前，先把 TLC 取样视为证据代表性问题。
+  - 对非均相体系，除非已建立物理和比例代表性，否则 TLC 只应视为相特异性证据。
+  - 存在溶解、析出、吸附或分配时，不应把液相浓度变化当作总转化。
+  - 应区分定性监测价值与定量转化判断。
+
+uncertainty_and_exceptions:
+  - 若未取样相被证明为化学无关相，混合取样或单相取样可具有可接受解释性。
+  - 取样偏差不必然否定所有定性监测价值，但可能否定总转化或组成比例推断。
+  - 放大取样体积建议为 TLC 特异性取样提示，不应泛化为通用取样规则。
+
+machine_use: >
+  本 annotation 用于在使用 TLC 判断转化、原料消失、产物生成或杂质比例之前，
+  先检查点板样品是否代表反应体系整体。若样品不能代表体系的物理和组成状态，
+  TLC 解释应限制为相特异性或定性证据。

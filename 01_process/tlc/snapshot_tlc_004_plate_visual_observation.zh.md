@@ -49,3 +49,67 @@ TLC 板在展开完成后并不天然具备判读价值。只有在经过 **有�
 
 ## 8. 边界声明
 本文件仅负责视觉化观察对象的生成。所有关于“为什么如此”的判断均属于 **DIAGNOSTIC 层**。
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-004-PLATE-VISUAL-OBSERVATION
+annotation_scope: chapter_level
+process_stage: tlc_visual_data_object_generation
+source_language: zh
+machine_review_role: visual_observation_object_gate
+
+transition_model: developed_plate_to_visual_data_object
+
+core_judgment: >
+  展开完成的 TLC 板并不自动具备判读价值。它必须先通过溶剂前沿标定、
+  干燥、UV 观察、碘熏显色、可选二次显色和及时留档，被转化为有效视觉数据对象。
+  之后才可进入诊断解释权审查。
+
+risk_signals:
+  - 展开完成的板在视觉对象有效性成立前被直接解释
+  - 溶剂前沿未标记或物理投影标记缺失
+  - 图像留档超出信息稳定窗口
+  - 碘熏信号在留档前褪色
+  - 显色剂覆盖背景并遮蔽迁移形貌
+  - UV 或显色下均无清晰结构
+  - 同一迁移结构在不同视觉化方式下发生位置偏移
+  - 二次显色被当作直接结构确认
+  - 视觉对比度不足以区分点、拖尾和背景
+  - 物理标记丢失导致投影轴失效
+
+reasoning_anchors:
+  - data_object_boundary
+  - visual_data_object_generation
+  - visualization_validity
+  - information_revealing_order
+  - solvent_front_marker_integrity
+  - temporal_visual_validity
+  - pre_diagnostic_visual_failure
+
+tlc_specific_review_triggers:
+  visualization_sequence: "标记溶剂前沿并干燥，然后进行 UV 254/365、碘熏和二次化学显色"
+  information_stability_window: "显色后通常在 0-5 分钟内完成图像记录"
+  marker_integrity: "溶剂前沿必须清晰标记，才能建立 Rf 投影"
+  spatial_consistency_check: "同一迁移结构在不同视觉化方式下应保持空间一致"
+  pre_diagnostic_failure: "无可见结构、背景全面覆盖或投影标记丢失会阻断诊断解释"
+
+expert_judgment_patterns:
+  - 将视觉化视为生成视觉数据对象，而不是直接化学解释。
+  - 保持不可逆的信息释放顺序，避免视觉证据丢失或污染。
+  - 将溶剂前沿或物理标记缺失视为投影轴失效。
+  - 将显色和酸碱添加剂视为视觉语境证据，而不是直接结构确认。
+  - 将原因解释保留在诊断层，而不是视觉观察层。
+
+uncertainty_and_exceptions:
+  - 多模式视觉化可增强视觉证据，但不直接证明化学身份。
+  - 易褪色或不稳定显色信号需要在有时间边界的留档后才能解释。
+  - 视觉观察有效性不替代 DIAG-001 的解释权裁定。
+
+machine_use: >
+  本 annotation 用于判断展开完成的 TLC 板是否已经被转化为有效视觉数据对象。
+  若视觉化、标记完整性、时效留档或对比度有效性失败，应阻断或降级后续 TLC 判读，
+  而不是直接推断反应含义。
+```

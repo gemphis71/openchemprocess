@@ -55,3 +55,61 @@ dependencies:
 
 - **参照缺失性**：板面不存在用于校准 $R_f$ 位移或确认点身份的共点结构；
 - **信息不可逆性**：由于协同定位数据在实验设计阶段未被采集，该次展开在逻辑上不可重建，属于**非法实验输入**。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-004-LOGIC-GAP-MISSING-SPIKE-AND-FRONTING-OVERFLOW
+annotation_scope: diagnostic_example_candidate
+source_language: zh
+candidate_parent: TLC-001-SPOTTING-LAYOUT
+candidate_secondary_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_tertiary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+future_subsnapshot_watch: true
+
+candidate_decision: >
+  本诊断例子强烈复用了已建立的 reference-layout 与 logical void 语义。
+  缺失 co-spot 参照、样品信号缺乏锚定、原料对照冲顶共同构成测量设计层失败，
+  从逻辑上阻断化学判读。虽然本例结构价值较高，未来可能具备 sub-snapshot entry 资格，
+  但本批仍保持 candidate-only，避免把单个例子过早转化为新的索引化 taxonomy 对象。
+
+reused_reasoning_anchors:
+  - reference_layout_validity
+  - co_spot_anchoring
+  - matrix_shift_compensation
+  - identity_consistency_check
+  - logical_void_status
+  - interpretability_gate
+  - projection_axis_compression
+  - prohibited_quantitative_conversion
+
+candidate_example_terms_watchlist:
+  - missing_co_spot_reference
+  - anchoring_failure
+  - logic_gap
+  - measurement_design_layer_failure
+  - information_vacuum
+  - range_overflow
+  - non_reconstructible_plate_data
+
+directly_supported_review_signals:
+  - co-spot 参照缺失
+  - 样品 lane 为空白或缺乏可解释信号
+  - 原料参照超出有效判读区间
+  - 样品 lane 空白不能解释为反应完成
+  - 缺少 co-spot 时无法识别或校正 Rf 位移
+  - 当前板状态为逻辑 VOID
+  - 原始数据不能通过经验猜测或增强显色修复
+
+machine_review_boundary: >
+  本 candidate 作为 missing reference anchoring 导致 logical void status 的高价值 supporting example。
+  不应把重构布局或重标投影轴等动作转化为 SOP 建议。
+  本轮不加入 JSONL，但应保留 future sub-snapshot watch，
+  因为它直接强化 co-spot anchoring、reference-layout validity 和禁止推断反应完成的边界。
+```
