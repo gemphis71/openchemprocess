@@ -96,3 +96,15 @@ a:hover {
 .concept-label {
   font-weight: 600;
 }
+
+.review-pattern {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  background: #f2f2f2;
+  border: 1px solid #d8d8d8;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
