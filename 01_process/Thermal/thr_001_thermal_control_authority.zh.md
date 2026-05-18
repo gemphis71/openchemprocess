@@ -377,3 +377,60 @@ thermal 与 charging 构成**可替代控制权层**，
 
 > 路径或阶段主导权是否**只能**通过温度选择来决定，  
 > 且无法由 CHG / MIX 等价恢复。
+
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "THR-001-THERMAL-CONTROL-AUTHORITY"
+process_stage: "thermal_control_authority"
+transition_model: "temperature_as_rate_parameter_to_primary_control_authority"
+
+control_window: >
+  THR-001 applies only after charging sequence, addition logic, and mixing logic are structurally sound. Within this limited class of systems, temperature becomes the primary source of control authority because it determines competing pathway dominance or stage accessibility.
+
+core_judgment: >
+  Temperature should be treated as primary control authority only when reaction pathway or stage dominance is determined by temperature selection and cannot be equivalently recovered by CHG or MIX interventions. Thermal anomalies caused by prior charging inventory accumulation or mixing time-scale failure should be reviewed as CHG or MIX manifestations, not as THR-001 positive cases.
+
+risk_signals:
+  - "temperature change alters product composition or selectivity"
+  - "temperature change alters dominance between competing reaction pathways"
+  - "extending time does not recover selectivity or pathway dominance"
+  - "adjusting addition rate does not recover selectivity or pathway dominance"
+  - "reaction stagnates or intermediate accumulates within a specific temperature window"
+  - "heating enables stage transition or reaction recovery"
+  - "temperature defines stage boundary rather than merely modulating rate"
+  - "cooling suppresses the desired catalytic or selective pathway"
+  - "constant high temperature promotes both desired formation and product degradation"
+  - "thermal and charging controls are substitutable in a boundary case"
+
+expert_judgment:
+  - "If CHG and MIX controls are structurally valid and temperature alone determines pathway or stage accessibility, THR-001 is the primary review-domain snapshot."
+  - "If a thermal anomaly only appears after charging inventory has accumulated, the primary attribution should remain CHG rather than THR."
+  - "If thermal runaway is triggered by mixing time-scale failure, the thermal signal is a manifestation rather than thermal control authority."
+  - "If charging and thermal controls can substitute for each other, the case should be treated as a boundary case rather than a core THR-001 archetype."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "thermal_control_authority"
+  - "temperature_as_primary_authority"
+  - "competing_pathway_authority"
+  - "stage_gating_authority"
+  - "substitutable_control_authority"
+
+uncertainty: "medium"
+
+exceptions:
+  - "Temperature-dependent rate change alone is not sufficient to establish THR-001."
+  - "Thermal instability caused by prior inventory accumulation should remain attributed to the charging layer unless pathway or stage authority is temperature-primary."
+  - "Thermal consequences of MIX-001 logical lock-in should not be reclassified as THR-001."
+  - "Boundary cases with substitutable CHG and THR controls should remain explicitly marked as shared-authority cases."
+
+machine_use: >
+  Use this annotation to review whether temperature is the primary source of reaction-pathway or stage-accessibility control. Keep the output in attribution and evidence-sufficiency language. Do not provide temperature programs, heating/cooling instructions, operating windows, or thermal troubleshooting recommendations.
+```

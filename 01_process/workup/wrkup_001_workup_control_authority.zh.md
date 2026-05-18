@@ -285,3 +285,62 @@ WRKUP-001 的目标，是为机器提供以下能力：
 核心判据：
 
 **淬灭是否被设计并验证为一个可完成的化学反应。**
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "WRKUP-001-WORKUP-CONTROL-AUTHORITY"
+process_stage: "workup_quench_control_authority"
+transition_model: "nominal_reaction_stop_to_chemical_final_state_by_quench_completion"
+
+control_window: >
+  WRKUP-001 applies when the primary reaction has nominally stopped but the reaction end state is not yet a chemically stable final state. In such systems, workup becomes a reaction-termination control layer because the true end of reaction is determined by quench completion rather than by primary reaction cessation.
+
+core_judgment: >
+  Workup should be treated as a source of control authority only when reactive species remain after nominal reaction stop and a quench reaction is required to reach the chemically stable final state. The machine-review task is to detect chemically incomplete quench, critical quench-window loss, or physically inaccessible quench before downstream workup is mistaken for reaction termination.
+
+risk_signals:
+  - "primary reaction has nominally stopped but reactive species remain"
+  - "reaction end state is not chemically stable final state"
+  - "stable final state requires a quench reaction"
+  - "quench agent added is treated as termination criterion"
+  - "quench reaction has non-negligible kinetic time scale"
+  - "quench pathway is not unique or involves competing reactions"
+  - "quench depends on temperature, pH, or phase conditions"
+  - "early quench-stage conditions differ from late quench-stage conditions"
+  - "reactive window exists from t = 0 until complete deactivation"
+  - "final pH is used as sole quench criterion"
+  - "quench reagent is physically inaccessible due to freezing, phase separation, or interfacial isolation"
+  - "apparent quench-agent addition does not imply actual participation"
+
+expert_judgment:
+  - "If reactive species remain after nominal primary reaction stop, the reaction should not be considered ended until quench completion is evidenced."
+  - "If quench is a chemical reaction with time, temperature, pH, phase, or pathway dependence, it should be reviewed as a designed and validated reaction rather than an instantaneous workup operation."
+  - "If a reactive window exists during quench and is elongated on scale-up, the case should be reviewed as loss of control in the critical quench window."
+  - "If the quench reagent is physically isolated from the reaction phase, apparent addition should be treated as insufficient evidence of quench completion."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "workup_as_termination_control"
+  - "reaction_end_state_not_final_state"
+  - "quench_reaction_completion"
+  - "chemically_incomplete_quench"
+  - "critical_quench_window"
+  - "physically_inaccessible_quench"
+  - "apparent_addition_not_participation"
+
+uncertainty: "medium"
+
+exceptions:
+  - "Most workup steps remain result-processing operations unless reactive species remain and a quench reaction is required to reach chemical stability."
+  - "Physical removal, phase separation, filtration, or final pH alone may be insufficient if chemical deactivation has not been demonstrated."
+  - "Blocking-language cases should be interpreted as design-review blocks, not as operational instructions."
+
+machine_use: >
+  Use this annotation to review whether workup constitutes a reaction-termination control layer and whether quench completion has been evidenced. Keep output in review language. Do not provide quench recipes, addition modes, pH targets, residence times, or downstream operating instructions.
+```

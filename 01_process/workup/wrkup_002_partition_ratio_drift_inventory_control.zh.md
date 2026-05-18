@@ -318,3 +318,171 @@ kd = 有机相中目标物总量 / 水相中目标物总量
 ## #audit
 
 1→2 Δkd 用作早期软阻断信号；以 kd_ref vs kd_in_situ 优先识别物种漂移；对乳化与 rag layer 执行界面库存审计；对回收溶剂与二氯甲烷等路径级风险输出 risk tag 并触发 path-rethink。
+
+## 7. Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "WRKUP-002-PARTITION-RATIO-DRIFT-INVENTORY-CONTROL"
+process_stage: "workup_phase_redistribution_inventory_control"
+
+transition_model: "two_phase_inventory_redistribution_to_partition_ratio_drift_soft_gate"
+
+control_window: >
+  Extraction and washing are treated as inventory redistribution rather than simple impurity removal. The relevant inventories are product inventory, waste inventory, and carryover inventory. Control authority is exercised by detecting whether the partition environment remains equivalent across washes and by blocking wash-count iteration when Kd drift indicates non-equivalent phase environment or species state.
+
+core_judgment: >
+  The central machine-review task is to detect whether a workup sequence assumes repeated washes are equivalent when Kd has drifted across Wash/Extract #1 and #2. When Delta Kd(1->2) exceeds the review threshold, the process should enter structured causality attribution rather than continuing wash-count optimization.
+
+review_gates:
+  kd_drift_soft_gate:
+    - "Delta Kd(1->2) > 15% without explained cause"
+    - "continued wash-count iteration despite unexplained Kd drift"
+  species_first_gate:
+    - "acid/base target with possible free/ionic speciation"
+    - "complexed or ion-paired form possible"
+    - "Kd_ref vs Kd_in_situ differs by >15% in the directional species-first check"
+    - "reactive wash identified"
+  phase_environment_gate:
+    - "ionic strength changes between Wash#1 and Wash#2"
+    - "Wash#1 becomes brine-like through in-situ loading"
+    - "mutual miscibility or co-solvent loading changes phase composition"
+    - "hidden water in organic phase changes polarity or salt-carrying behavior"
+    - "temperature window changes between washes"
+  interfacial_inventory_gate:
+    - "emulsion observed"
+    - "rag layer observed"
+    - "phase disengagement time increases nonlinearly across washes"
+    - "interfacial target inventory not quantified"
+  path_level_risk_gate:
+    - "industrial-unfriendly solvent or workflow risk tag present"
+    - "recycled or looped solvent used without same-source Kd verification"
+    - "DCM or similar path-level solvent risk used without replacement or constraint justification"
+
+risk_signals:
+  - "Delta Kd(1->2) > 15%"
+  - "Kd drift unexplained"
+  - "wash-count iteration continues after Kd drift"
+  - "target loss across wash sequence"
+  - "emulsion or phase separation failure"
+  - "rework amplification after washing"
+  - "Wash#1 brine-like environment formed by salts, metal salts, ionic byproducts, or neutralization"
+  - "Wash#2 low-ionic-strength desalting wash after high-ionic-strength Wash#1"
+  - "unvalidated Kd equivalence across high-ionic-strength and low-ionic-strength windows"
+  - "mutual miscibility between organic solvent and water"
+  - "co-solvent or water loading across washes"
+  - "recycled solvent accumulates water or co-solvent"
+  - "fresh-solvent Kd used for recycled-solvent workup"
+  - "hidden water in organic phase"
+  - "temperature window shift without Kd(T)"
+  - "missing chemical stability evidence for hot or cold workup window"
+  - "rag layer observed"
+  - "visible rag layer without inventory audit"
+  - "emulsion observed without interfacial inventory audit"
+  - "phase disengagement time increases from minutes to hours"
+  - "free/ionic speciation mixture possible"
+  - "pH on target treated as species-unification evidence"
+  - "complexed or ion-paired species unresolved by TLC/HPLC"
+  - "Kd_ref and Kd_in_situ differ by >15%"
+  - "reactive wash treated as partition-only"
+  - "missing reaction completion evidence in reactive wash"
+  - "concentration window shifts during washing"
+  - "low-concentration Kd extrapolated to high-concentration workup"
+  - "industrial-unfriendly workflow risk tag present"
+  - "DCM path-level risk requires path-rethink"
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "inventory_redistribution"
+  - "partition_ratio_drift"
+  - "kd_consistency_check"
+  - "phase_environment_drift"
+  - "chemical_speciation_drift"
+  - "species_first_diagnostic_order"
+  - "wash_count_iteration"
+  - "interfacial_inventory_loss_channel"
+  - "rag_layer_third_phase"
+  - "emulsion_inventory_audit"
+  - "recycled_solvent_loading_drift"
+  - "temperature_partition_window"
+  - "concentration_dependent_partitioning"
+  - "reaction_partition_coupling"
+  - "industrial_workflow_risk_tag"
+  - "carryover_inventory"
+
+taxonomy_role:
+  reused_formal_anchors:
+    - "control_authority_decay"
+    - "misallocated_control_authority"
+  candidate_anchors:
+    - "inventory_redistribution"
+    - "partition_ratio_drift"
+    - "kd_consistency_check"
+    - "phase_environment_drift"
+    - "chemical_speciation_drift"
+    - "species_first_diagnostic_order"
+    - "wash_count_iteration"
+    - "interfacial_inventory_loss_channel"
+    - "rag_layer_third_phase"
+    - "emulsion_inventory_audit"
+    - "recycled_solvent_loading_drift"
+    - "temperature_partition_window"
+    - "concentration_dependent_partitioning"
+    - "reaction_partition_coupling"
+    - "industrial_workflow_risk_tag"
+    - "carryover_inventory"
+
+expert_judgment:
+  - "Repeated washing should not be assumed to repeat the same partition environment."
+  - "Delta Kd(1->2) is an early discriminator for non-equivalent phase environment or species state, not a deterministic rejection rule."
+  - "Once unexplained Kd drift appears, review should stop wash-count iteration and require causality attribution."
+  - "Species drift should be checked before deep phase-environment diagnostics when acid/base speciation, complexation, ion pairing, or reactive washing is plausible."
+  - "Rag layer and emulsion should be reviewed as inventory channels, not merely as operational inconvenience."
+  - "Recycled solvent and industrial-unfriendly solvent choices should be tagged as path-level risks when they affect phase environment, carryover inventory, waste, transfer, or scale sustainability."
+
+uncertainty_and_exceptions:
+  - "The 15% Delta Kd threshold is an initial engineering criterion and may be adjusted based on product value, process risk, analytical variability, and company standards."
+  - "Kd drift does not by itself identify cause; it only triggers species-first and phase-environment attribution."
+  - "High-ionic-strength window switching may be intentional and valid; the risk is unvalidated Kd equivalence across windows."
+  - "Temperature can be a valid partition-window variable if Kd(T) and stability evidence are available."
+  - "DCM or other industrial-unfriendly solvents may be justified in specific cases, but require explicit replacement assessment or constraint justification."
+  - "Interfacial layer mitigation is case-specific; the minimum requirement is inventory audit before replication or scale-up."
+
+quantitative_or_flag_triggers:
+  kd_drift_soft_block: "Delta Kd(1->2) > 15% without explained cause"
+  species_first_directional_check: "(Kd_ref - Kd_in_situ) / Kd_ref > 15%"
+  recycled_solvent_kd_shift: "recycled-solvent Kd differs from fresh-solvent Kd by >15%"
+  phase_disengagement_shadow_signal: "systematic amplification across washes, e.g. minutes to hours or nonlinear growth"
+  rag_layer_audit_required: "visible rag layer"
+  emulsion_audit_required: "emulsion observed"
+  kd_temperature_window_required: "temperature window shift"
+  highest_concentration_kd_required: "concentration-dependent Kd suspected"
+  reactive_wash_completion_required: "reactive wash identified"
+
+required_review_fields:
+  - "Kd_1"
+  - "Kd_2"
+  - "Delta_Kd_1_to_2"
+  - "phase_mass_basis"
+  - "organic_phase_concentration"
+  - "aqueous_phase_concentration"
+  - "wash_index"
+  - "ionic_strength_or_salt_loading_source"
+  - "co_solvent_content"
+  - "organic_water_content"
+  - "temperature_window"
+  - "phase_disengagement_time"
+  - "rag_layer_or_emulsion_flag"
+  - "interfacial_target_inventory_if_present"
+  - "Kd_ref"
+  - "Kd_in_situ"
+  - "species_drift_assessment"
+  - "reactive_wash_completion_evidence_if_any"
+  - "recycled_solvent_source_if_any"
+  - "industrial_workflow_risk_tag_if_any"
+
+machine_use: >
+  Review whether an extraction or washing sequence treats repeated washes as Kd-equivalent despite Delta Kd(1->2) drift; trigger species-first attribution before phase-environment diagnostics; audit emulsion or rag layer as interfacial inventory-loss channels; and separate industrial workflow risk tags from mechanistic Kd drift explanations.
+```

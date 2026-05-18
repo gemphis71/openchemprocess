@@ -294,7 +294,8 @@ note:
 - 跳过当前固体分离节点
 - 切换至替代分离路径
 ---
-### ## 7. #Audit: 本章核心影子指标（Shadow Indicators）
+
+## 7. #Audit: 本章核心影子指标（Shadow Indicators）
 
 ---
 
@@ -328,3 +329,141 @@ note:
 #Audit: 如果问题第一次在过滤阶段被清晰看见，问题通常不产生于过滤阶段。  
 #Audit: 过滤能调节的是损失的表现形式，而不是损失的来源。  
 #Audit: 湿重比不是过滤技巧指标，而是控制权消失后的结构投影。
+
+## 8. Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "ISOL-003-FILTRATION"
+process_stage: "isolation_filtration"
+
+transition_model: "solid_state_commitment_to_consequence_stage_separation"
+
+control_window: >
+  Filtration occurs after solid-state commitment. Product/impurity distribution, polymorph, PSD, morphology, cake-forming tendency, and liquid-retention tendency are already inherited from upstream solid formation. Filtration has little to no composition control authority and mainly manages loss realization, mother-liquor carryover, washing effectiveness, and downstream drying burden.
+
+core_judgment: >
+  The central machine-review task is to detect whether a filtration problem is being misattributed to filtration operation when it is more likely a manifestation of upstream solid-structure failure. Filtration optimization without upstream restructuring should be treated as compensation rather than restored control authority.
+
+review_gates:
+  problem_attribution_gate:
+    - "low permeability"
+    - "high mother liquor retention"
+    - "moderate clogging"
+    - "unstable wet cake"
+    - "nonlinear flux decline"
+  upstream_control_gate:
+    - "if crystallization or recrystallization path remains adjustable, return upstream before optimizing filtration"
+    - "review supersaturation path, aging/crystal growth, solvent system, salt form, polymorph, and solid formation pathway"
+  path_level_failure_gate:
+    - "WMR >= 2"
+    - "lab filtration already difficult"
+    - "washing cannot sustain impurity removal"
+    - "drying burden dominates downstream"
+  redesign_gate:
+    - "WMR >= 3"
+    - "scale operability cannot be established"
+    - "filtration relies only on strong compensatory measures"
+
+risk_signals:
+  - "WMR >= 2"
+  - "WMR >= 3"
+  - "wet cake ratio >= 2"
+  - "lab filtration already difficult"
+  - "low permeability"
+  - "nonlinear flux decline"
+  - "nonlinear increase of separation time with cake thickness"
+  - "high mother liquor retention"
+  - "mother liquor retention not quantified"
+  - "moderate clogging"
+  - "unstable wet cake"
+  - "high fines fraction"
+  - "dense or compressible cake"
+  - "wash cannot penetrate cake"
+  - "washing cannot sustain impurity removal"
+  - "washing displacement efficiency not demonstrated"
+  - "breakthrough due to non-uniform cake"
+  - "high-boiling solvent retention"
+  - "preferential evaporation of low-boiling solvent without solvent exchange"
+  - "drying burden dominates downstream"
+  - "thin-layer lab filtration difficulty ignored"
+  - "filtration relies only on strong compensatory measures"
+  - "scale operability cannot be established"
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "solid_state_commitment"
+  - "misallocated_control_authority"
+  - "mother_liquor_retention"
+  - "downstream_filtration_compatibility"
+  - "downstream_interface"
+  - "consequence_stage_separation"
+  - "loss_amplification_interface"
+  - "structure_inheritance"
+  - "upstream_failure_exposure"
+  - "lab_scale_masking"
+  - "scalability_failure"
+  - "wet_mass_ratio"
+  - "washing_displacement_efficiency"
+  - "compensatory_filtration"
+
+taxonomy_role:
+  reused_formal_anchors:
+    - "control_authority_decay"
+    - "solid_state_commitment"
+    - "misallocated_control_authority"
+    - "mother_liquor_retention"
+  reused_candidate_terms:
+    - "downstream_filtration_compatibility"
+    - "downstream_interface"
+  candidate_anchors:
+    - "consequence_stage_separation"
+    - "loss_amplification_interface"
+    - "structure_inheritance"
+    - "upstream_failure_exposure"
+    - "lab_scale_masking"
+    - "scalability_failure"
+    - "wet_mass_ratio"
+    - "washing_displacement_efficiency"
+    - "compensatory_filtration"
+
+expert_judgment:
+  - "Poor filtration performance should first be reviewed as a possible upstream solid-structure problem, not as a filtration operation error."
+  - "Filtration does not recreate purity, yield, PSD, morphology, polymorph, or product/impurity partitioning; it only realizes the already formed solid-liquid state."
+  - "WMR is not merely a filtration metric; it is a projection of upstream solid structure after control authority has largely disappeared."
+  - "Lab-scale completion is not evidence of scale operability because thin cake, short path, small inventory, and unquantified retention can mask filtration risk."
+  - "Changing equipment or separation path may be valid outcome management, but it should not be mislabeled as recovery of composition control authority."
+  - "When WMR is high, washing fails, or drying burden dominates, the review should consider upstream restructuring or path redesign rather than continued filtration optimization."
+
+uncertainty_and_exceptions:
+  - "Filtration equipment changes may be acceptable when they reduce loss realization or change the separation path, but they should not be interpreted as root-cause repair unless upstream solid formation changes."
+  - "WMR thresholds are review triggers, not universal deterministic rejection rules; interpretation depends on product value, impurity risk, drying constraints, equipment path, and scale."
+  - "Washing failure should not be inferred from wet cake mass alone unless supported by residual liquid composition, impurity carryover, or displacement-efficiency evidence."
+  - "High mother-liquor retention may be tolerable only when impurity carryover, solvent inventory, and downstream drying burden remain acceptable under scale-relevant conditions."
+
+quantitative_triggers:
+  wmr_low_risk: "<1.2"
+  wmr_watch: "1.2-1.5"
+  wmr_high_risk: ">=2"
+  wmr_non_scalable_trigger: ">=3"
+  wet_cake_ratio_high_burden: ">=2"
+  nonlinear_cake_thickness_signal: "nonlinear increase of separation time with cake thickness"
+  washing_displacement_check: "washing liquid composition vs residual liquid composition"
+
+required_review_fields:
+  - "WMR"
+  - "mother_liquor_retention_fraction"
+  - "filtration_time_or_flux_profile"
+  - "cake_thickness_or_scale_basis"
+  - "washing_displacement_efficiency"
+  - "drying_burden_assessment"
+  - "upstream_solid_structure_assessment"
+  - "scale_operability_assessment"
+  - "compensatory_measures_if_any"
+  - "upstream_restructuring_option_if_any"
+
+machine_use: >
+  Review whether a filtration difficulty should be attributed to inherited solid structure rather than filtration operation, whether WMR and mother-liquor retention have been quantified early enough, whether lab-scale masking has been addressed, and whether the process has crossed from manageable loss realization into path-level failure requiring upstream restructuring or separation-path redesign.
+
+```

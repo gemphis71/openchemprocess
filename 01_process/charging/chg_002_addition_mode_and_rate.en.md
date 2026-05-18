@@ -209,3 +209,80 @@ driving the system across irreversible thresholds.
     
 
 #Audit: This is a loss-of-charging-control risk class. Once the failure boundary is crossed, neither addition mode nor dosing rate remains an effective adjustment lever; such risks must be challenged during process design and scale-up review, not mitigated post hoc.
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "CHG-002-ADDITION-MODE-AND-RATE"
+annotation_status: "draft"
+process_stage: "charging"
+transition_model: "nominal_dosing_to_effective_dosing_control"
+
+control_window: >
+  Addition mode and dosing profile remain effective control levers only while
+  nominal dosing corresponds to actual material entry into the reaction mass
+  within the intended time scale. Once phase-entry barriers, dosing inertia,
+  detection lag, or rate mismatch decouple nominal dosing from effective dosing,
+  charging control authority begins to decay.
+
+core_judgment: >
+  The main machine-review task is to detect whether charging mode and nominal
+  dosing rate still constitute effective control authority under scale-up. Phase
+  isolation, delayed entry, agglomeration, phase transition, line holdup,
+  control delay, or unreacted inventory accumulation can convert apparently
+  controlled dosing into hidden inventory before the operator can recover
+  control authority.
+
+risk_signals:
+  - "nominal dosing profile differs from effective material entry profile"
+  - "material forms floating or foaming layer before entering reaction mass"
+  - "poor wettability, density difference, or gas entrainment delays effective entry"
+  - "phase transition or phase separation occurs near the dosing point"
+  - "solidification, precipitation, oiling-out, or stable emulsion occurs during dosing"
+  - "agglomeration or crust formation creates isolated solid micro-environments"
+  - "dosing entry point is located in low-momentum or low-exchange region"
+  - "reaction shows induction period or auto-accelerating behavior during dosing"
+  - "process signals lag behind true reaction progress"
+  - "line holdup, control delay, or discrete dosing events continue material entry after stop command"
+  - "unreacted inventory accumulates despite nominally controlled dosing"
+
+expert_judgment:
+  - "Nominal dosing should not be treated as effective dosing unless material entry into the reaction mass is physically and temporally supported."
+  - "Phase-entry barriers can make the apparent dosing profile irrelevant by delaying or concentrating actual exposure to the reaction mass."
+  - "Rate-matching failure is positive when material entry and reaction or heat-release consumption are mismatched enough to accumulate unreacted inventory."
+  - "Dosing hardware or a nominal addition command does not prove that charging control authority is still available."
+  - "CHG-002 should be considered before assigning the same observation to downstream mixing or thermal-control failure."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "scalability_failure"
+  - "lab_scale_masking"
+  - "equipment_transfer_boundary"
+  - "nominal_vs_effective_dosing"
+  - "phase_entry_failure"
+  - "rate_matching_failure"
+  - "hidden_unreacted_inventory"
+  - "pre_dosing_state"
+  - "dosing_inertia"
+
+uncertainty: "medium"
+
+exceptions:
+  - "Certain addition modes may survive if the material remains inert outside the reaction mass and delayed collective entry does not trigger heat release or side-reaction amplification."
+  - "Phase changes may be acceptable if highly reversible and if reversal is faster than the system sensitivity window."
+  - "Rate-matching risk presupposes that the reaction system is already reactive; non-initiated reactions or intrinsic lack of activity are outside this risk class."
+  - "Risk patterns are experience-based and should remain review triggers rather than deterministic rejection rules."
+
+machine_use: >
+  Use this annotation to review whether nominal dosing remains equivalent to
+  effective dosing under scale-up conditions. Distinguish phase-entry failure
+  from rate-matching failure before assigning the case to mixing or thermal
+  control. Keep output in review language only and do not provide slower-addition,
+  pre-dilution, pre-wetting, slurry-formation, addition-point, or equipment
+  recommendations.
+```

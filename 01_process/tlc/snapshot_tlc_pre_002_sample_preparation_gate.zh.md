@@ -92,3 +92,70 @@ priority: "High"
 - 样品持续转化或体系因素导致不可控的失真。禁止使用 TLC。
 
 > **Gate 箴言**：TLC 的前提不是“点得好”，而是“点上去的那一刻，化学与迁移行为都已经被控制住”。
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-PRE-002-SAMPLE-PREPARATION-GATE
+annotation_scope: chapter_level
+process_stage: tlc_pre_sample_preparation
+source_language: zh
+machine_review_role: evidence_admissibility_gate
+
+transition_model: admissible_sample_to_controlled_spotting_input
+
+core_judgment: >
+  TLC 样品预处理是证据准入 gate。只有在适用性与取样代表性已经成立后，
+  样品还必须在取样、点板、展开的时间窗口内保持化学状态和迁移行为受控。
+  如果持续反应、高浓度、不完全淬灭、溶剂基质或体系组分导致化学状态或迁移行为失真，
+  该 TLC 结果不能被视为真实诊断投影。
+
+risk_signals:
+  - 样品在 TLC 制备时间窗口内发生不可忽略的化学变化
+  - 未淬灭的快速反应样品被直接点板
+  - 高活性中间体在取样或点板过程中仍保持活性
+  - 样品对痕量水分、质子或室温跃迁高度敏感
+  - 未淬灭 TLC 结果反映点板后的随机转化
+  - 反应浓度超过 TLC 工作浓度窗口
+  - 高浓度导致混悬、过载或点径不可控
+  - 板上淬灭超出其浓度适用边界
+  - 高沸点或强极性溶剂扭曲迁移行为
+  - 游离水、强酸或强碱导致 Rf 或点形失真
+  - 预处理本身引入沉淀或新反应
+
+reasoning_anchors:
+  - observation_validity_gate
+  - sample_state_projection
+  - sample_preparation_gate
+  - quench_requirement_check
+  - dilution_requirement_check
+  - matrix_compatibility_check
+  - migration_distortion_control
+
+tlc_specific_review_triggers:
+  preparation_time_window: "取样到点板再到展开通常为 30-60 秒"
+  mandatory_quench_context: "快速反应、高活性中间体，或对水分、质子、温度跃迁高度敏感"
+  working_concentration_window: "0.1-0.5 M 作为 TLC 工作浓度窗口"
+  high_concentration_trigger: "反应浓度 >= 0.5 M，或出现点径失控、混悬、过载"
+  in_situ_quench_constraint: "板上淬灭仅适用于低等效浓度且淬灭放热和不完全淬灭不占主导的场景"
+  matrix_distortion_context: "DMSO、DMF、NMP、游离水、强酸或强碱可能导致 Rf、扩散或拖尾失真"
+
+expert_judgment_patterns:
+  - 将样品预处理视为 TLC 证据准入前提，而不是后续判读步骤。
+  - 将淬灭、稀释和体系调整视为对化学状态保真和迁移状态有效性的控制。
+  - 不应把未淬灭快速反应样品的 TLC 当作原始反应状态。
+  - 不应把高浓度或基质失真的点样结果作为半定量 TLC 证据。
+  - 应区分是否需要/允许/禁止预处理的 review 与具体淬灭或点样配方。
+
+uncertainty_and_exceptions:
+  - 当样品在 TLC 时间窗口内化学惰性且基质不扭曲迁移时，可直接点板。
+  - 条件性预处理只有在生成均相且化学状态明确的样品输入时，才恢复 TLC 证据资格。
+  - TLC 特异性浓度与时间窗口不得泛化为全局分析规则。
+
+machine_use: >
+  本 annotation 用于在 TLC-PRE-000 和 TLC-PRE-001 通过后，判断样品在点板前是否必须
+  淬灭、稀释或调整基质。若化学状态保真或迁移有效性未被控制，应降级或拒绝后续 TLC 判读，
+  而不是把板面结果当作可靠证据。
+```

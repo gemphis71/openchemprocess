@@ -48,3 +48,53 @@ dependencies:
 ## 5. 物理失效证据（Physical Evidence）
 
 - **局部迁移畸变**：点样区域的溶剂残留显著改变了初始迁移环境，使本应受硅胶吸附控制的迁移行为被整体拖拽，导致板面失去层析判读意义。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-002-OVERLOAD-AND-SOLVENT-CARRYOVER
+annotation_scope: diagnostic_example_candidate
+source_language: zh
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  本诊断例子复用了 interpretability revoked 逻辑，描述全程条带化、
+  边界湮灭、点样过载和高沸点强极性溶剂残留导致的系统性物理失效。
+  新增形貌词和原因词仍属具体例子层，不应在本批进入 taxonomy 或 JSONL。
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_revoked
+  - data_object_boundary
+  - permitted_interpretation_pathway
+
+candidate_example_terms_watchlist:
+  - spotting_confounder
+  - spotting_overload
+  - solvent_carryover
+  - high_boiling_polar_solvent_carryover
+  - full_path_streaking
+  - boundary_annihilation
+  - local_migratory_distortion
+
+directly_supported_review_signals:
+  - 多个 lane 呈现连续纵向条带化
+  - 收敛点形结构丧失
+  - 信号边界模糊且相互重叠
+  - 基线区域出现异常湿润或形变
+  - 极性、纯度、组分数和分辨率推断被阻断
+  - 当前板解释权被撤销
+
+machine_review_boundary: >
+  本 candidate 仅作为系统性物理失效形貌导致解释权撤销的 supporting example。
+  不应把稀释、干燥、溶剂置换或替代分析工具写成 machine-use SOP 建议。
+  在后续例子证明 overload 或 solvent-carryover 术语具备跨例子复用价值前，
+  不应将其提升进 taxonomy。
+```

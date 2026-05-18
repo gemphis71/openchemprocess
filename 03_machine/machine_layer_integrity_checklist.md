@@ -22,6 +22,10 @@ schema 已经规定 JSONL 机器导出文件必须一行一个完整 JSON object
 |code fence 闭合|原始 snapshot 末尾 Machine Annotation 区块如果使用 fenced code block，必须首尾闭合；不得吞掉后续正文|
 |candidate term 来源|新增 candidate term 必须能追溯到具体 source snapshot 和 change log 记录；不能只因模型测试输出而进入 taxonomy|
 |risk signal exactness|JSONL 中 risk signal 尽量复用 taxonomy delta 或 source annotation 原句；同义改写要避免，例如不要把 `residual solvent curve reaches plateau` 改成 `solvent plateau problem`|
+|QA 输出污染边界|robustness test 输出中的 inferred / partially supported signals、nearest canonical replacements、conceptual alignments、review-domain matches 不得反向写入 JSONL risk_signals 或 reasoning_anchors；除非 source snapshot 明确支持且 change log 记录，否则不能进入 taxonomy delta|
+|review-domain 与 risk-positive 分离|测试结果和 reviewer 输出必须区分“属于哪个 snapshot 的审核范围”与“风险是否正向成立”；false-positive case 可以有 review-domain match，但 `Risk-positive conclusion` 应独立为 no / uncertain|
+|section placement discipline|matched risk signals、inferred / partially supported signals、reasoning anchors、canonical correction / nearest allowed terms 必须分区；reasoning anchor 不能作为 risk signal，nearest canonical replacement 不能作为 positive anchor|
+|reviewer-output audit handling|当输入是另一个 reviewer 的回答而非 process scenario 时，只做术语合规、evidence sufficiency 和 no-action leakage 审核；不得在没有底层过程证据时列出 positive risk signals 或 positive reasoning anchors|
 |threshold 语义|soft review、hard block、watch zone、candidate trigger 不得混写；特别是 CF、WMR、ΔKd 不应全部变成 deterministic rejection|
 |registry 状态同步|`annotation_status`、`jsonl_status`、`taxonomy_status`、`last_change_type`、`last_updated` 必须与实际修改一致|
 |change log 同步|新增 annotation、taxonomy term、schema_version 变化、JSONL 结构变化都必须有一条简短 change log|

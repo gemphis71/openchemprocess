@@ -55,3 +55,64 @@ The following measures are intended only to **reacquire interpretability qualifi
 
 - **Lack of Reference**: There is no co-spot structure on the plate surface for calibrating $R_f$ shifts or confirming spot identity;
 - **Irreversibility of Information**: Since synergistic positioning data was not collected during the experimental design phase, the development is logically non-reconstructible and constitutes an **illegal experimental input**.
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-004-LOGIC-GAP-MISSING-SPIKE-AND-FRONTING-OVERFLOW
+annotation_scope: diagnostic_example_candidate
+source_language: en
+candidate_parent: TLC-001-SPOTTING-LAYOUT
+candidate_secondary_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_tertiary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+future_subsnapshot_watch: true
+
+candidate_decision: >
+  This diagnostic example strongly reuses established reference-layout and logical
+  void semantics. Missing co-spot reference, missing sample anchoring, and starting
+  material overflow together create a measurement-design failure that blocks
+  chemical interpretation. Although this example has high structural value and may
+  later qualify as a sub-snapshot entry, it should remain candidate-only in this
+  batch to avoid turning a single example into a new indexed taxonomy object.
+
+reused_reasoning_anchors:
+  - reference_layout_validity
+  - co_spot_anchoring
+  - matrix_shift_compensation
+  - identity_consistency_check
+  - logical_void_status
+  - interpretability_gate
+  - projection_axis_compression
+  - prohibited_quantitative_conversion
+
+candidate_example_terms_watchlist:
+  - missing_co_spot_reference
+  - anchoring_failure
+  - logic_gap
+  - measurement_design_layer_failure
+  - information_vacuum
+  - range_overflow
+  - non_reconstructible_plate_data
+
+directly_supported_review_signals:
+  - co-spot reference is missing
+  - sample lane is blank or lacks interpretable signal
+  - starting material reference exceeds effective interpretation range
+  - blank sample lane cannot be interpreted as reaction completion
+  - Rf shift cannot be identified or corrected without co-spot
+  - current plate status is logically VOID
+  - original data cannot be repaired by empirical guessing or enhanced visualization
+
+machine_review_boundary: >
+  Use this candidate as a high-value supporting example for logical void status
+  caused by missing reference anchoring. Do not convert reconstruction actions
+  into SOP recommendations. Do not add this example to JSONL yet, but keep it on
+  a future sub-snapshot watchlist because it directly reinforces co-spot anchoring,
+  reference-layout validity, and prohibited reaction-completion inference.
+```

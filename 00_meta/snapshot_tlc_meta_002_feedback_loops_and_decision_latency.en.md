@@ -64,3 +64,69 @@ The widespread existence of TLC in regulated manufacturing environments is not a
 ## 6. Boundary Statement
 
 This document does not intervene in management systems and does not change compliance release standards. Its sole purpose is to elaborate on the technical legitimacy and physical basis of TLC as a "rapid diagnostic branch" in complex engineering systems.
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-META-002-DECISION-LATENCY-AND-FEEDBACK-STRATEGY
+annotation_scope: meta_level
+process_stage: tlc_feedback_architecture
+source_language: en
+machine_review_role: decision_latency_feedback_review
+
+transition_model: reaction_state_frequency_to_multi_level_feedback_architecture
+
+core_judgment: >
+  TLC functions as a high-frequency, low-latency diagnostic branch when the
+  reaction system changes faster than the sampling-to-result cycle of precision
+  analysis. Its value is not replacement of HPLC or LC-MS, but preservation of
+  situational awareness and decision safety margin during dynamic or irreversible
+  process transitions.
+
+risk_signals:
+  - precision analysis feedback cycle is slower than reaction state transition
+  - system relies only on low-frequency high-precision analysis during dynamic stage
+  - transient abnormal states may be missed due to decision latency
+  - high-resolution formal analysis is treated as sufficient despite temporal aliasing risk
+  - TLC high-frequency branch is removed before process state is stable
+  - unstructured visual anomalies are ignored because they are not predefined analytical peaks
+  - TLC is incorrectly treated as a replacement for confirmatory precision analysis
+  - high-frequency situational awareness is confused with release or compliance evidence
+
+reasoning_anchors:
+  - decision_latency_match
+  - high_frequency_low_latency_feedback
+  - multi_level_feedback_strategy
+  - temporal_aliasing_risk
+  - situational_awareness_branch
+  - precision_confirmation_branch
+  - fuzzy_anomaly_detection
+  - decision_safety_margin
+
+tlc_specific_review_triggers:
+  feedback_cycle_mismatch: "analytical sampling-to-result cycle longer than reaction state transition cycle"
+  high_frequency_low_gain_branch: "TLC branch provides fast situational awareness with lower resolution"
+  low_frequency_high_gain_branch: "precision analysis branch provides slower but quantitative confirmation"
+  transient_anomaly_context: "unknown side reactions, matrix mutation, abnormal spot shape, origin darkening, or front deformation"
+  stable_production_boundary: "TLC feedback role is mainly for development, scale-up, and unstable dynamic stages, not a replacement for release standards"
+
+expert_judgment_patterns:
+  - Treat TLC as a high-frequency diagnostic feedback branch when decision latency matters.
+  - Use precision analysis for confirmation, quantification, and compliance calibration, not as the only dynamic-stage feedback loop.
+  - Treat temporal aliasing as a risk when formal analysis returns after the relevant process state has changed irreversibly.
+  - Treat fuzzy visual anomalies as early warnings for system mismatch, not as final quantitative evidence.
+  - Preserve complementarity between TLC situational awareness and precision analytical confirmation.
+
+uncertainty_and_exceptions:
+  - TLC does not change compliance release standards or replace validated analytical methods.
+  - TLC feedback value decreases when the process is stable and the decision window is longer than the analytical feedback cycle.
+  - Visual anomaly detection is an early-warning function and requires later confirmation when decisions demand precision.
+
+machine_use: >
+  Use this meta annotation to evaluate whether a monitoring strategy matches the
+  decision latency of the reaction system. Recommend TLC only as a review concept
+  for high-frequency situational awareness, not as a replacement for formal
+  precision analysis or compliance evidence.
+```

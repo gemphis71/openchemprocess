@@ -104,3 +104,71 @@ note: This file introduces no new process knowledge. It is a rejection checklist
 > 本清单的唯一功能，是防止在  
 > **淬灭尚未被完整设计为可完成的化学反应时，  
 > 进入任何后续工艺步骤。**
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: WRKUP-001-QUENCH-CHECKLIST
+annotation_scope: derived_decision_gate
+derived_from: WRKUP-001-WORKUP-CONTROL-AUTHORITY
+process_stage: workup_quench_decision_gate
+source_language: zh
+machine_review_role: rejection_checklist_gate
+
+transition_model: nominal_reaction_end_to_quench_completion_authority
+
+core_judgment: >
+  如果淬灭尚未被设计并验证为可完成的化学反应，工艺不得越过 workup / quench 阶段进入后续步骤。
+  在活性物种、反应性窗口或物理不可达风险仍可能存在时，淬灭试剂已加入、最终 pH 达标、
+  或操作步骤完成，都不足以证明化学终止已经成立。
+
+risk_signals:
+  - 名义反应结束时仍有活性物种
+  - 淬灭未被明确设计为可完成的化学反应
+  - 以淬灭试剂加入作为淬灭完成判据
+  - 以操作步骤完成作为稳定终态形成判据
+  - 淬灭开始至完全失活之间存在反应性窗口
+  - 放大条件拉长反应性淬灭窗口
+  - 最终 pH 被用作唯一淬灭成功证据
+  - 最终分析结果合格但未排除早期反应性窗口
+  - 淬灭试剂在放大条件下可能物理不可达
+  - 物理可达性依赖快速倒入或理想混合假设
+
+reasoning_anchors:
+  - workup_as_termination_control
+  - reaction_end_state_not_final_state
+  - quench_reaction_completion
+  - chemically_incomplete_quench
+  - critical_quench_window
+  - physically_inaccessible_quench
+  - apparent_addition_not_participation
+  - rejection_checklist_gate
+
+rejection_conditions:
+  chemically_incomplete_quench:
+    - "活性物种仍存在，且淬灭所需时间、温度或化学条件未被验证"
+    - "淬灭完成不是基于化学失活或稳定终态形成"
+  critical_time_window_loss:
+    - "存在反应性窗口，且在放大条件下被拉长"
+    - "仅以最终 pH 或最终分析结果判断成功，未保证 t = 0 起无反应性窗口"
+  physically_inaccessible_quench:
+    - "存在冻结、相隔离或无法进入反应相风险，且物理可达性未验证"
+
+expert_judgment_patterns:
+  - 将本清单视为 rejection gate，而不是优化或补救指南。
+  - 当化学淬灭完成未被验证时，拒绝进入后续步骤。
+  - 当活性物种可能残留时，最终 pH、试剂加入或操作完成不足以证明终止。
+  - 将放大导致反应性淬灭窗口拉长视为 termination-control authority 丧失。
+  - 将淬灭试剂物理不可达视为淬灭控制权失败。
+
+uncertainty_and_exceptions:
+  - 本清单不引入 WRKUP-001 之外的新工艺知识。
+  - PASS 只表示允许越过 quench gate，不表示后续工艺必然成功。
+  - REJECT 表示回到 quench/workup 设计审查，不提供具体操作补救方案。
+
+machine_use: >
+  本 derived checklist 用于在淬灭完成、关键反应性窗口控制或淬灭试剂物理可达性未成立时，
+  拒绝工艺越过 quench / workup 阶段。不得输出优化、补救或操作性建议。
+```

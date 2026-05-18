@@ -92,3 +92,75 @@ Pre-processing (e.g., evaporation, displacement, or neutralization) is mandatory
 - Continuous transformation or system-induced uncontrollable distortion. TLC use is prohibited.
 
 > **Gate Motto**: The prerequisite for TLC is not "spotting well," but "ensuring that both chemistry and migration behavior are controlled the moment the sample hits the plate."
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-PRE-002-SAMPLE-PREPARATION-GATE
+annotation_scope: chapter_level
+process_stage: tlc_pre_sample_preparation
+source_language: en
+machine_review_role: evidence_admissibility_gate
+
+transition_model: admissible_sample_to_controlled_spotting_input
+
+core_judgment: >
+  TLC sample preparation is an evidence-admissibility gate. After applicability
+  and representativeness have been established, the sample must be chemically and
+  physically controlled within the sampling-to-spotting-to-development timeframe.
+  If ongoing reaction, high concentration, incomplete quench, solvent matrix, or
+  system components distort the chemical state or migration behavior, the TLC
+  result cannot be treated as a faithful diagnostic projection.
+
+risk_signals:
+  - sample undergoes non-negligible chemical change during TLC preparation window
+  - unquenched fast reaction is spotted directly
+  - highly reactive intermediate remains active during sampling or spotting
+  - sample is highly sensitive to trace moisture, protons, or room-temperature transition
+  - unquenched TLC result reflects stochastic transformation after spotting
+  - reaction concentration exceeds TLC working concentration window
+  - high concentration causes suspension, overload, or uncontrolled spot diameter
+  - in-situ quench is used beyond its concentration applicability boundary
+  - high-boiling or highly polar solvent distorts migration behavior
+  - free water, strong acid, or strong base distorts Rf or spot morphology
+  - pre-processing introduces precipitation or new reaction
+
+reasoning_anchors:
+  - observation_validity_gate
+  - sample_state_projection
+  - sample_preparation_gate
+  - quench_requirement_check
+  - dilution_requirement_check
+  - matrix_compatibility_check
+  - migration_distortion_control
+
+tlc_specific_review_triggers:
+  preparation_time_window: "sampling to spotting to development typically takes 30-60 seconds"
+  mandatory_quench_context: "fast reactions, highly reactive intermediates, or strong sensitivity to moisture, protons, or thermal transition"
+  working_concentration_window: "0.1-0.5 M as TLC working concentration window"
+  high_concentration_trigger: "reaction concentration >= 0.5 M or uncontrolled spot diameter / suspension / overload"
+  in_situ_quench_constraint: "on-plate quench permitted only within low equivalent concentration where quench heat and incomplete quench do not dominate"
+  matrix_distortion_context: "DMSO, DMF, NMP, free water, strong acid, or strong base may distort Rf, diffusion, or tailing"
+
+expert_judgment_patterns:
+  - Treat sample preparation as a precondition for TLC evidence admissibility, not as a downstream interpretation step.
+  - Treat quench, dilution, and matrix adjustment as controls over chemical-state preservation and migration-state validity.
+  - Do not interpret unquenched fast-reaction TLC as the original reaction state.
+  - Do not use a high-concentration or matrix-distorted spot as semi-quantitative TLC evidence.
+  - Separate requirement / permission / prohibition review from specific quench or spotting recipes.
+
+uncertainty_and_exceptions:
+  - Direct spotting may be admissible when the sample is chemically inert within the TLC time window and matrix effects do not distort migration.
+  - Conditional pre-processing restores TLC admissibility only if it yields a homogeneous and chemically defined sample input.
+  - TLC-specific concentration and time windows should not be generalized as global analytical rules.
+
+machine_use: >
+  Use this annotation after TLC-PRE-000 and TLC-PRE-001 have passed. Decide whether
+  the sampled material must be quenched, diluted, or matrix-adjusted before
+  spotting. If chemical state preservation or migration validity is not controlled,
+  downgrade or reject downstream TLC interpretation rather than treating the plate
+  as reliable evidence.
+```

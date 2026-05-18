@@ -215,3 +215,76 @@ dependencies:
 
 #Audit: 属于混合控制权逻辑锁死型风险；其识别依赖于对失败后“控制权是否仍可通过时间或滴加结构恢复”的判读过程，而非单一现象判断。
 若混合时间尺度失效已导致路径或局部反应不可逆展开，后续温度调整仅能延迟后果，不能恢复控制权；此类情形不应归类为 thermal control authority（参见 THR-001）。
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "MIX-001-MIXING-TIME-SCALE-FAILURE"
+annotation_status: "draft"
+process_stage: "mixing"
+transition_model: "nominal_charging_control_to_local_history_lock_in"
+
+control_window: >
+  Mixing remains a valid support layer only while spatial homogenization occurs
+  before local reaction or physical-transformation histories become decisive. If
+  local history forms before homogenization, later global control variables can
+  no longer restore the original pathway.
+
+core_judgment: >
+  The main machine-review task is to determine whether mixing is a primary
+  control precondition or merely a manifestation of another driver. MIX-001 is
+  positive only when the mixing time scale is slower than the characteristic
+  reaction or physical-transformation time scale, causing pre-homogenization
+  history lock-in that cannot be recovered by time extension, dosing-structure
+  adjustment, or downstream thermal correction.
+
+risk_signals:
+  - "local reaction history forms before spatial homogenization"
+  - "local phase history forms before spatial homogenization"
+  - "side reaction onset precedes completion of mixing"
+  - "extending reaction time fails to recover intended pathway"
+  - "extending reaction time amplifies side reactions"
+  - "reducing dosing rate fails to restore intended pathway"
+  - "modifying dosing structure fails to recover control authority"
+  - "interfacial reaction occurs before effective homogenization"
+  - "local concentration history becomes non-recoverable"
+  - "phenomenological mixing issue remains after CHG-002 dosing-rate explanation is eliminated"
+
+expert_judgment:
+  - "MIX-001 should be positive only when mixing is a necessary control precondition, not merely a visually plausible contributor."
+  - "If time extension or dosing-structure adjustment can restore the intended pathway, primary attribution should not remain at MIX-001."
+  - "If phase-transition, crystallization, or charging structure explains the failure, mixing should be treated as a secondary manifestation."
+  - "Thermal runaway triggered by mixing time-scale failure is a thermal manifestation, not thermal control authority."
+  - "Phenomenological similarity to mixing issues is insufficient without evidence of pre-homogenization history lock-in."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "scalability_failure"
+  - "lab_scale_masking"
+  - "structure_inheritance"
+  - "mixing_time_scale_failure"
+  - "logical_lock_in"
+  - "pre_homogenization_history_lock_in"
+  - "secondary_mixing_manifestation"
+
+uncertainty: "medium"
+
+exceptions:
+  - "If slowing or restructuring addition restores the intended pathway, the primary driver should remain CHG-002 rather than MIX-001."
+  - "If phase-transition or crystallization kinetics dominate and mixing only changes exposure, the primary driver should remain phase or crystallization rather than MIX-001."
+  - "Thermal runaway triggered by mixing time-scale failure is a thermal manifestation, not thermal control authority."
+  - "MIX-001 requires evidence of non-recoverable local history, not merely a heterogeneous or poorly mixed appearance."
+
+machine_use: >
+  Use this annotation to review whether mixing failure is the primary control
+  failure or only a manifestation of a dominant non-mixing driver. Classify
+  MIX-001 as positive only when local reaction or phase history forms before
+  homogenization and cannot be recovered by time extension or dosing-structure
+  adjustment. Keep output in review language only and do not provide agitation,
+  hardware, dosing, or temperature recommendations.
+```

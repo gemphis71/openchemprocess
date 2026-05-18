@@ -519,3 +519,110 @@ CF 是多个风险模式的公共依赖指标（非挥发物富集、热暴露�
     
 - Audit: 是否附带过氧化物检测试纸照片或分析报告？
 ---
+
+## 7. Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "WRKUP-003-SOLVENT-REMOVAL-DRIVEN-ACCUMULATION-AND-THERMAL-EXPOSURE-CONTROL"
+process_stage: "workup_concentration_solvent_exchange"
+
+transition_model: "liquid_phase_workup_to_forced_composition_path_under_solvent_removal"
+
+control_window: >
+  Concentration and solvent exchange still occur in the liquid-phase domain, but solvent removal forces the system along an increasingly constrained composition path. Control authority is mainly exercised by avoiding concentration, reducing CF, selecting the extraction or reaction solvent appropriately, and introducing early solvent exchange before late-stage high-concentration risk windows form.
+
+core_judgment: >
+  The central machine-review task is to detect whether a proposed workup treats concentration as neutral solvent evaporation instead of an irreversible accumulation trajectory that may amplify nonvolatile inventory, thermal exposure, phase-behavior drift, and equipment or transfer-boundary constraints.
+
+review_gates:
+  hard_gate:
+    - "CF > 10 without explicit audit override"
+    - "acid/base sensitive system + CF > 5 + heating to complete dryness"
+    - "known thermal or concentration instability ignored"
+    - "final volume below minimum stirrable volume while dryness is planned"
+    - "solid residue expected without transfer plan"
+    - "no explosion hazard assessment before concentration"
+  soft_gate:
+    - "NV exists and CF > 3 but NV accumulation risk is not declared"
+    - "CEP missing for a mixed-solvent system"
+    - "VRT volatility order missing"
+    - "TE degradation study missing for heated concentration"
+    - "thermal study does not cover scale-up temperature, time, or concentration conditions"
+    - "OC missing for scale-up concentration"
+
+route_priority:
+  - "Route 1: product disengagement before concentration"
+  - "Route 2: concentration reduction, preferably CF <= 5"
+  - "Route 3: concentration plus early solvent exchange, avoiding complete dryness when possible"
+
+risk_signals:
+  - "CF > 3 with nonvolatile inventory present and undeclared"
+  - "CF > 5 in acid/base sensitive system with heating to complete dryness"
+  - "CF > 10 without explicit override"
+  - "nonvolatile salts, acids, bases, high-boiling residues, or modifiers remain during concentration"
+  - "mixed-solvent system without VRT volatility order"
+  - "mixed-solvent system without CEP composition-drift assessment"
+  - "lower-boiling solvent removal may cross instability zone"
+  - "oiling out during concentration"
+  - "salt-out during concentration"
+  - "unexpected crystallization during concentration"
+  - "phase inversion during concentration"
+  - "heated concentration without scale-relevant degradation study"
+  - "thermal study does not cover higher temperature, longer duration, and higher concentration expected on scale-up"
+  - "planned complete dryness"
+  - "final volume below minimum stirrable volume"
+  - "solid residue without transfer plan"
+  - "wet-product solvent target not defined"
+  - "explosion hazard assessment missing before concentration"
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "forced_composition_path"
+  - "nonvolatile_accumulation"
+  - "composition_evolution_path"
+  - "volatile_removal_trajectory"
+  - "thermal_exposure_accumulation"
+  - "early_solvent_exchange"
+  - "equipment_transfer_boundary"
+  - "upstream_solvent_selection_coupling"
+  - "route_priority_review"
+
+expert_judgment:
+  - "Solvent removal should be reviewed as a forced composition trajectory, not as a neutral housekeeping operation."
+  - "If nonvolatile inventory remains during concentration, its effective local level may scale approximately with CF and may create precipitation, acid/base shift, viscosity increase, or secondary reaction risk."
+  - "If lower-boiling components leave first, solvent ratio drift may rewrite phase behavior even when the initial mixture appears acceptable."
+  - "If thermal exposure data do not cover scale-up Tmax, duration, and concentration, small-scale stability evidence should not be treated as sufficient."
+  - "If complete dryness is planned, review must distinguish laboratory convenience from scale-up feasibility, especially minimum stirrable volume, discharge path, and solid transfer."
+  - "If concentration risk is high, the preferred review direction is upstream redesign, product disengagement, or CF reduction before accepting concentration plus solvent exchange."
+
+uncertainty_and_exceptions:
+  - "CF thresholds are initial engineering guidelines and may be tuned by product properties, company standards, and acceptable risk tolerance."
+  - "Missing fields trigger review rather than automatic process rejection unless a defined hard-gate condition is met."
+  - "Early precipitation during solvent exchange may be beneficial if intentionally designed, experimentally understood, and compatible with downstream handling."
+  - "CF > 10 may be overridden only with explicit audit trace and a justified risk-control basis."
+  - "The annotation should not infer degradation, oiling out, or phase inversion unless supported by observed data, known instability, or missing required review fields."
+
+quantitative_triggers:
+  cf_nv_soft_review: "NV exists and CF > 3 with undeclared accumulation risk"
+  cf_acid_base_dryness_hard_block: "acid/base sensitive system + CF > 5 + heating to complete dryness"
+  cf_hard_block: "CF > 10 unless explicit audit override"
+  preferred_cf_target: "CF <= 5"
+  thermal_study_required_when: "heated concentration"
+  explosion_assessment_required_when: "before concentration"
+
+required_review_fields:
+  - "CF"
+  - "VRT"
+  - "NV"
+  - "CEP"
+  - "TE"
+  - "OC"
+  - "explosion_hazard_assessment"
+  - "selected_route"
+  - "override_trace_if_any"
+
+machine_use: >
+  Review whether a proposed concentration or solvent-exchange design has avoided unnecessary concentration, justified CF, declared nonvolatile inventory, mapped volatile-removal and composition-evolution trajectories, covered scale-relevant thermal exposure, and checked equipment or transfer-boundary constraints before accepting the workup route.

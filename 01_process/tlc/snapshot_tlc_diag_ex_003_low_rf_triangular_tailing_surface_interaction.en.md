@@ -60,3 +60,59 @@ The following measures are intended only to **attempt recovery of a secondary in
 
 - **Adsorption Indicativity**: Stable and directionally consistent triangular tailing is usually highly correlated with surface-dominated migration distortion.
 - **Coordinate Axis Distortion**: Due to uncoupled interactions, the apparent $R_f$ of the substance is systemically suppressed, deviating from its migration performance under ideal chromatographic conditions.
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-003-LOW-RF-TRIANGULAR-TAILING-SURFACE-INTERACTION
+annotation_scope: diagnostic_example_candidate
+source_language: en
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-003-ELUENT-SELECTION
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  This diagnostic example reuses established TLC gate-level logic around
+  interpretability downgrade, projection-axis validity, non-inferable low-Rf zones,
+  and surface-interaction decoupling. The dominant new content is example-specific
+  morphology: low-Rf triangular or flame-like tailing caused by unresolved
+  molecule/silica surface interaction. It should remain candidate-only until
+  multiple diagnostic examples demonstrate that this morphology supports a
+  reusable review category beyond the current gate-level anchors.
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_downgraded
+  - projection_axis_validity
+  - non_inferable_zone
+  - surface_interaction_decoupling
+  - migration_distortion_control
+
+candidate_example_terms_watchlist:
+  - low_rf_triangular_tailing
+  - flame_like_tailing
+  - surface_interaction_not_decoupled
+  - adsorption_dominated_migration
+  - apparent_rf_suppression
+  - morphology_based_downgrade
+
+directly_supported_review_signals:
+  - critical sample spots remain in the low Rf zone
+  - critical spots show stable triangular or flame-like tailing
+  - spot morphology indicates unresolved surface interaction
+  - quantitative spot count, purity, and trace-impurity conclusions are blocked
+  - qualitative presence or trend observation may remain only under restricted conditions
+  - interpretability is downgraded rather than fully passed
+
+machine_review_boundary: >
+  Use this candidate only as a supporting example for downgraded interpretability
+  caused by unresolved surface interaction. Do not convert acid/base modifier
+  examples into SOP recommendations. Do not promote low-Rf triangular tailing or
+  surface-interaction morphology terms into taxonomy until reuse across later
+  examples confirms cross-example review value.
+```
