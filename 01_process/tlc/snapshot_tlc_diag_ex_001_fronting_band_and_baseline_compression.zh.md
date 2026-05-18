@@ -49,3 +49,52 @@ dependencies:
 
 - **前沿关联性**：高 $R_f$ 带宽的形态平整度与溶剂前沿推进方向高度一致。
 - **投影畸变**：由于展开剂极性选择的折中，高端组分因洗脱力过强发生“撞车”，低端组分因洗脱力不足而“留滞”，导致整条投影轴的有效信息容量（Information Capacity）显著降低。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-001-FRONTING-BAND-AND-BASELINE-COMPRESSION
+annotation_scope: diagnostic_example_candidate
+source_language: zh
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  本诊断例子复用了 interpretability gate 与 interpretability revoked 逻辑，
+  但新增内容主要是 fronting band、低 Rf 拥挤、基线拖尾、投影轴压缩等具体形貌。
+  在多个 TLC 诊断例子证明这些形貌具有可复用 review 分类价值之前，
+  本例应保持 candidate-only，不进入 JSONL，不提升 taxonomy。
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_revoked
+  - data_object_boundary
+  - permitted_interpretation_pathway
+
+candidate_example_terms_watchlist:
+  - fronting_band
+  - baseline_compression
+  - axis_compression
+  - projection_axis_compression
+  - crowded_ends_empty_middle
+  - low_rf_tailing
+
+directly_supported_review_signals:
+  - 高 Rf 信号呈横向带宽而非收敛点形
+  - 低 Rf 关键样品信号伴随拖尾
+  - 有效投影区间内缺少可区分信息
+  - 当前板解释权被撤销
+  - 单一组分、转化率、点数和纯度推断被阻断
+
+machine_review_boundary: >
+  本 candidate 仅作为投影轴压缩导致解释权撤销的 supporting example。
+  不应把 corrective actions 写成 SOP 建议。
+  在后续例子证明 fronting-band 或 axis-compression 形貌具备跨例子复用价值前，
+  不应将这些形貌词提升进 taxonomy。
+```

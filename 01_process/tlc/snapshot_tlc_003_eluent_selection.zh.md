@@ -64,3 +64,68 @@ dependencies:
 
 ## 7. 边界声明
 本文件仅定义展开剂作为投影工具的逻辑，不提供具体配方，不解释反应机理。
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-003-ELUENT-SELECTION
+annotation_scope: chapter_level
+process_stage: tlc_projection_axis_selection
+source_language: zh
+machine_review_role: projection_axis_validity_gate
+
+transition_model: eluent_selection_to_information_projection_axis
+
+core_judgment: >
+  在 TLC 中，展开剂选择定义的是信息投影轴，而不是中性溶剂选择。
+  只有当展开剂体系能把化合物差异投影到可用 Rf 区间，且不发生信息压缩、
+  分相失稳、未解耦的表面相互作用或 Rf 规律丧失时，TLC 板才具备可解释性。
+
+risk_signals:
+  - 展开剂体系无法将关键组分投影到有效 Rf 区间
+  - 所有关键点位停留在基线附近
+  - 所有关键点位运行到溶剂前沿附近
+  - 点形异常时仍使用比例-Rf 相关性进行推断
+  - 拖尾或强表面吸附使极性推断失效
+  - 含水或高极性展开体系发生分相
+  - 有机/无机判别轴被用于有机物精细分离
+  - 展开剂酸碱修饰被当作样品实质化学处理
+  - 严重拖尾未经过表面相互作用解耦
+  - 投影轴失效仍被用于转化率或机理推断
+
+reasoning_anchors:
+  - interpretability_gate
+  - projection_axis_validity
+  - information_projection_axis
+  - projection_axis_compression
+  - rf_regular_projection
+  - surface_interaction_decoupling
+  - non_inferable_zone
+
+tlc_specific_review_triggers:
+  effective_rf_range: "优先信任 Rf 0.2-0.7 区间内的信息"
+  baseline_compression: "关键点位低于 Rf 0.2"
+  front_compression: "关键点位高于 Rf 0.8"
+  phase_instability: "高极性含水体系偏离稳定均相窗口并发生分相"
+  dcm_meoh_water_reference_window: "DCM / MeOH / H2O = 3 / 2 / 0.5 作为 TLC 特异性均相窗口参考"
+  acid_base_modification_boundary: "酸碱添加仅用于解耦表面相互作用，不构成样品结构证明"
+
+expert_judgment_patterns:
+  - 在使用 Rf 进行推断前，先把展开剂选择视为投影轴选择。
+  - 将基线压缩、前沿压缩和分相失稳视为投影轴失效。
+  - 点形异常或强表面相互作用占主导时，不应推断极性顺序。
+  - 酸碱修饰只能作为 TLC 表面相互作用解耦证据，不是确定性结构证明。
+  - 不应将有机/无机判别轴用于有机物精细分离或转化率推断。
+
+uncertainty_and_exceptions:
+  - 比例-Rf 相关性只有在点形稳定且投影行为规律时才成立。
+  - 高极性含水体系可用于有机/无机判别，但不适用于有机组分精细判读。
+  - TLC 特异性展开剂比例和 Rf 区间是 review trigger，不是通用层析规则。
+
+machine_use: >
+  本 annotation 用于在 TLC 判读前，审查展开剂体系是否形成有效信息投影轴。
+  如果展开剂导致信息压缩、分相失稳、表面相互作用未解耦或 Rf 规律丧失，
+  应限制或拒绝后续极性、组分数、转化率或机理推断。
+```

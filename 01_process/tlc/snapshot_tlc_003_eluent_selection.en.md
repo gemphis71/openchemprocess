@@ -64,3 +64,72 @@ The following cases are prohibited from entering subsequent DIAGNOSTIC logic:
 
 ## 7. Boundary Statement
 This Snapshot defines eluents as projection tools; it **does not** provide "optimal recipes" for specific compounds or explain reaction mechanisms.
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-003-ELUENT-SELECTION
+annotation_scope: chapter_level
+process_stage: tlc_projection_axis_selection
+source_language: en
+machine_review_role: projection_axis_validity_gate
+
+transition_model: eluent_selection_to_information_projection_axis
+
+core_judgment: >
+  In TLC, eluent selection defines the information projection axis rather than
+  serving as a neutral solvent choice. A TLC plate is interpretable only when the
+  eluent system projects compound differences into a usable Rf range without
+  compression, phase instability, unresolved surface interaction, or loss of Rf
+  regularity.
+
+risk_signals:
+  - eluent system fails to project components into effective Rf range
+  - all critical spots remain near the baseline
+  - all critical spots run near the solvent front
+  - Rf ratio correlation is used despite abnormal spot shape
+  - spot tailing or strong surface adsorption invalidates polarity inference
+  - aqueous or highly polar eluent mixture becomes phase-separated
+  - organic versus inorganic discrimination axis is used for fine organic separation
+  - eluent acid or base modification is treated as substantive sample chemistry
+  - severe tailing remains without surface-interaction decoupling
+  - projection-axis failure is used for conversion or mechanism inference
+
+reasoning_anchors:
+  - interpretability_gate
+  - projection_axis_validity
+  - information_projection_axis
+  - projection_axis_compression
+  - rf_regular_projection
+  - surface_interaction_decoupling
+  - non_inferable_zone
+
+tlc_specific_review_triggers:
+  effective_rf_range: "prioritize interpretable information between Rf 0.2 and 0.7"
+  baseline_compression: "critical spots remain below Rf 0.2"
+  front_compression: "critical spots run above Rf 0.8"
+  phase_instability: "aqueous high-polarity system deviates from stable homogeneous window and phase-separates"
+  dcm_meoh_water_reference_window: "DCM / MeOH / H2O = 3 / 2 / 0.5 as TLC-specific homogeneous-window reference"
+  acid_base_modification_boundary: "acid/base additives decouple surface interactions and do not constitute sample-structure proof"
+
+expert_judgment_patterns:
+  - Treat eluent selection as projection-axis selection before using Rf values for inference.
+  - Treat baseline compression, front compression, and phase instability as projection-axis failures.
+  - Do not infer polarity order when spot shape is abnormal or strong surface interaction dominates.
+  - Use acid/base modification only as TLC surface-interaction decoupling evidence, not as definitive chemical structure proof.
+  - Do not use an organic/inorganic discrimination axis for fine organic separation or conversion inference.
+
+uncertainty_and_exceptions:
+  - Rf and eluent-ratio correlation is valid only under stable spot morphology and regular projection behavior.
+  - High-polarity aqueous systems may be useful for organic/inorganic discrimination but not for fine organic-component interpretation.
+  - TLC-specific eluent ratios and Rf intervals are review triggers, not universal chromatography rules.
+
+machine_use: >
+  Use this annotation to review whether the eluent system creates a valid
+  information projection axis before TLC interpretation. If the eluent causes
+  compression, phase instability, unresolved surface interaction, or loss of Rf
+  regularity, restrict or reject downstream polarity, component-count, conversion,
+  or mechanism inference.
+```

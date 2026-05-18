@@ -51,3 +51,69 @@ The following cases constitute visualization failures and are prohibited from en
 
 ## 8. Boundary Statement
 This Snapshot defines the generation of visual observation objects only. All judgments regarding "why this occurs" fall under the authority of the **DIAGNOSTIC Layer**.
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-004-PLATE-VISUAL-OBSERVATION
+annotation_scope: chapter_level
+process_stage: tlc_visual_data_object_generation
+source_language: en
+machine_review_role: visual_observation_object_gate
+
+transition_model: developed_plate_to_visual_data_object
+
+core_judgment: >
+  A developed TLC plate does not automatically have interpretive value. It must
+  first be converted into a valid visual data object through solvent-front marking,
+  drying, UV observation, iodine staining, optional secondary staining, and timely
+  documentation. Only then can the plate enter diagnostic interpretability review.
+
+risk_signals:
+  - developed plate is interpreted before visual object validity is established
+  - solvent front is not marked or physical projection marker is missing
+  - image documentation occurs outside the information stability window
+  - iodine staining fades before documentation
+  - staining agent covers the background and masks migration morphology
+  - no clear structure is visible under UV or staining
+  - same migration structure shifts position across visualization modes
+  - secondary staining is treated as direct structural confirmation
+  - visual contrast is insufficient to distinguish spots, tailing, and background
+  - loss of physical markers causes projection-axis failure
+
+reasoning_anchors:
+  - data_object_boundary
+  - visual_data_object_generation
+  - visualization_validity
+  - information_revealing_order
+  - solvent_front_marker_integrity
+  - temporal_visual_validity
+  - pre_diagnostic_visual_failure
+
+tlc_specific_review_triggers:
+  visualization_sequence: "solvent-front marking and drying, then UV 254/365, iodine staining, and secondary chemical staining"
+  information_stability_window: "image documentation typically within 0-5 minutes after staining"
+  marker_integrity: "solvent front must be clearly marked for Rf projection"
+  spatial_consistency_check: "same migration structure should remain spatially consistent across visualization modes"
+  pre_diagnostic_failure: "no visible structure, total background coverage, or loss of projection marker blocks diagnostic interpretation"
+
+expert_judgment_patterns:
+  - Treat visualization as generation of a visual data object before chemical interpretation.
+  - Preserve irreversible information-revealing order to avoid loss or contamination of visual evidence.
+  - Treat missing solvent front or missing physical marker as projection-axis failure.
+  - Treat staining and acid/base additives as visual-context evidence, not direct structural confirmation.
+  - Keep causal explanation under the diagnostic layer rather than the visual observation layer.
+
+uncertainty_and_exceptions:
+  - Multi-mode visualization can strengthen visual evidence but does not by itself prove chemical identity.
+  - Fading or unstable staining signals require time-bounded documentation before interpretation.
+  - Visual observation validity does not replace DIAG-001 interpretability adjudication.
+
+machine_use: >
+  Use this annotation to determine whether a developed TLC plate has been converted
+  into a valid visual data object before diagnostic review. If visualization,
+  marker integrity, temporal documentation, or contrast validity fails, block or
+  downgrade downstream TLC interpretation rather than inferring reaction meaning.
+```

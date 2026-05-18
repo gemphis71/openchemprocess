@@ -60,3 +60,57 @@ related:
 
 - **吸附指示性**：稳定且方向一致的三角拖尾通常与表面主导的迁移畸变高度相关。
 - **坐标轴畸变**：由于相互作用未解耦，该物质在投影轴上的表观 $R_f$ 被系统性压低，偏离其在理想层析状态下的迁移表现。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-003-LOW-RF-TRIANGULAR-TAILING-SURFACE-INTERACTION
+annotation_scope: diagnostic_example_candidate
+source_language: zh
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-003-ELUENT-SELECTION
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  本诊断例子复用了已建立的 TLC gate-level 逻辑，包括解释权降级、
+  投影轴有效性、低 Rf 不可强推断区和表面相互作用解耦。
+  新增内容主要是具体形貌：低 Rf 三角形或火焰状拖尾，
+  且原因指向分子/硅胶表面相互作用未解耦。
+  在多个诊断例子证明该形貌具有超出当前 gate-level anchor 的可复用 review 分类价值前，
+  本例应保持 candidate-only。
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_downgraded
+  - projection_axis_validity
+  - non_inferable_zone
+  - surface_interaction_decoupling
+  - migration_distortion_control
+
+candidate_example_terms_watchlist:
+  - low_rf_triangular_tailing
+  - flame_like_tailing
+  - surface_interaction_not_decoupled
+  - adsorption_dominated_migration
+  - apparent_rf_suppression
+  - morphology_based_downgrade
+
+directly_supported_review_signals:
+  - 关键样品点滞留于低 Rf 区
+  - 关键点呈稳定三角形或火焰状拖尾
+  - 点形提示表面相互作用未解耦
+  - 组分数、纯度和微量杂质的定量判断被阻断
+  - 在受限条件下仅可保留定性存在性或趋势观察
+  - 解释权被降级而非完全通过
+
+machine_review_boundary: >
+  本 candidate 仅作为表面相互作用未解耦导致解释权降级的 supporting example。
+  不应把酸/碱修饰剂示例转化为 SOP 建议。
+  在后续例子证明低 Rf 三角拖尾或表面相互作用形貌具备跨例子 review 价值前，
+  不应将其提升进 taxonomy。
+```

@@ -53,3 +53,52 @@ dependencies:
 - **Lateral Drift**：样点非垂直爬升的左右偏移。
 
 > **核心定义**：点板是将化学体系编码成受控、可判读的空间信号的过程。
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-002-SPOTTING-OPERATION
+annotation_scope: operation_validity_candidate
+source_language: zh
+candidate_parent: TLC-PRE-002-SAMPLE-PREPARATION-GATE
+candidate_secondary_parent: TLC-004-PLATE-VISUAL-OBSERVATION
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: operation_terms_not_promoted
+
+candidate_decision: >
+  本 chapter 包含“点板是空间信号编码”的有价值 review 逻辑，
+  但当前文本操作性较强，包含毛细管内径、点样动作、点径、多次点样限制和干燥方式等细节。
+  在其 review 价值能够从 TLC 操作规范中分离，并被诊断例子复用之前，
+  本文件应保持 candidate-only，不进入 JSONL，不提升 taxonomy。
+
+reused_reasoning_anchors:
+  - sample_preparation_gate
+  - visual_data_object_generation
+  - migration_distortion_control
+
+candidate_example_terms_watchlist:
+  - spatial_signal_encoding
+  - spot_size_distortion
+  - spotting_overload
+  - repeated_spotting_distortion
+  - drying_completeness_check
+  - lateral_drift
+
+directly_supported_review_signals:
+  - 点样前提是假定样品稳定、具有代表性且为均相溶液
+  - 点径过大会导致信号失真
+  - 高浓度可能导致点径不可控扩张
+  - 多次点样可能扭曲空间信号编码
+  - 干燥不完全可能造成迁移失真
+  - overload、tailing 和 lateral drift 应作为诊断标志记录
+
+machine_review_boundary: >
+  本 candidate 仅作为操作有效性 supporting reference。
+  不应将毛细管选择、点样动作、多次点样上限、干燥方式或浓度建议转化为
+  Machine Reviewer SOP 指令或全局 taxonomy 规则。
+  只有当后续诊断例子反复复用点样相关有效性逻辑时，才考虑未来升级。
+```

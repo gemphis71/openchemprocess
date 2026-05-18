@@ -121,3 +121,79 @@ dependencies:
 
 本 Gate 仅裁定解释权是否成立，不提供任何反应机理、转化率或结构判断。  
 所有解释路径选择与化学推断，均属于 **DIAG-002** 的权限范围。
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-001-INTERPRETABILITY-GATE
+annotation_scope: chapter_level
+process_stage: tlc_diagnostic_interpretability
+source_language: zh
+machine_review_role: interpretability_authority_gate
+
+transition_model: developed_plate_visual_object_to_interpretation_authority
+
+core_judgment: >
+  在允许进行化学解释之前，必须先建立 TLC 板的解释权。
+  一块已展开并显色的 TLC 板首先是当前板面生成的视觉数据对象，
+  其物理有效性、层析有效性和锚定有效性必须先被裁定为 PASS、DOWNGRADED、REVOKED 或 VOID，
+  然后才可进入反应判读。
+
+risk_signals:
+  - 点信号与背景对比度过低，无法提取清晰轮廓
+  - 背景噪音遮蔽板面有效区域
+  - 原料对照点未形成可重复迁移
+  - 原料主要停留在原点附近，无法形成有效投影
+  - 关键点位落入低 Rf 或高 Rf 信息压缩区
+  - 有效投影区间内无法建立可区分结构
+  - 条带化、纵向涂抹或整体推移提示层析失效
+  - 反应监测中缺失 co-spot 参照
+  - 样品信号无法被锚定或校准
+  - 低 Rf 拖尾限制基于点形的解释
+  - co-spot 锚定偏差限制解释权
+
+reasoning_anchors:
+  - interpretability_gate
+  - data_object_boundary
+  - interpretability_revoked
+  - interpretability_downgraded
+  - logical_void_status
+
+tlc_specific_review_triggers:
+  visualization_revoked: "点/背景对比度极低或板面背景噪音过高"
+  background_noise_area: "背景噪音覆盖超过 30% 有效板面"
+  origin_projection_failure: "原料对照点停留在 Rf 约等于 0 的原点附近"
+  projection_axis_compression: "关键点位低于 Rf 0.2 或高于 Rf 0.8，且 Rf 0.2-0.7 区间内无可区分结构"
+  morphology_failure: "条带化、纵向涂抹或整体推移提示物理/层析失效"
+  co_spot_missing: "反应监测中缺失 co-spot 参照且样品信号无法锚定"
+  low_rf_tailing: "Rf 0.2 以下出现方向一致的三角形或火焰状拖尾"
+  tail_extension_threshold: "拖尾沿迁移方向延展超过 0.2 个 Rf 单位"
+  co_spot_delta_rf_intervals:
+    pass: "|Delta Rf| < 0.05"
+    caution: "0.05 <= |Delta Rf| < 0.1"
+    downgraded: "0.1 <= |Delta Rf| < 0.2"
+    revoked: "|Delta Rf| >= 0.2"
+
+interpretability_status_semantics:
+  PASS: "视觉和协议证据支持正常进入解释路径"
+  DOWNGRADED: "信号存在畸变，仅保留受限定性解释权"
+  REVOKED: "物理或层析失效导致解释权被撤销"
+  VOID: "逻辑参照或锚定失败导致当前数据对象对反应解释作废"
+
+expert_judgment_patterns:
+  - 先把已展开 TLC 板视为视觉数据对象，再视为化学证据。
+  - 在判断转化率、杂质、机理或反应状态之前，先裁定解释权是否成立。
+  - 更换显色剂、重新显色或重新展开应视为新的数据输入，需要重新评估。
+  - 不应把物理/层析失效形貌当作化学反应证据。
+  - 应区分受限定性观察权与完整化学解释权。
+
+uncertainty_and_exceptions:
+  - CAUTION 是 DOWNGRADED 的子状态，不应作为独立最终状态。
+  - TLC 特异性 Rf 与背景噪音阈值是解释权触发条件，不是全局分析规则。
+  - 本 Gate 不选择解释路径，也不推断反应机理；这些属于后续诊断逻辑。
+
+machine_use: >
+  本 annotation 用于判断一块已展开 TLC 板是否具备足够的视觉、层析和锚定有效性，
+  可以进入化学解释。如果解释权被撤销、降级或逻辑作废，应限制或拒绝后续反应结论，
+  而不是直接把斑点模式解释为反应证据。

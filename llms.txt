@@ -1,0 +1,88 @@
+# OpenChemProcess — llms.txt
+
+OpenChemProcess (OCP) is a machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up review.
+
+OCP is NOT:
+- a process SOP repository
+- a process optimization cookbook
+- a machine operator system
+- a batch execution platform
+
+OCP focuses on:
+risk signal → expert judgment → reasoning anchor → uncertainty / exceptions
+
+Primary concepts:
+- Control Authority Decay
+- Irreversible Commitment
+- Tolerance Envelope
+- Decision Latency
+- Machine Reviewer
+- Process development as a review system
+
+Root entry files:
+- README.md
+- llms.txt
+- CONCEPT_ARCHITECTURE.md
+- START_HERE_FOR_LLM.md
+
+Repository purpose:
+- machine-review discoverability
+- semantic indexing
+- crawler readability
+- LLM ingestion
+- process-risk interpretation
+- review-pattern capture
+
+Recommended machine-ingestion order:
+
+1. README.md
+Project definition, scope, non-goals, and repository orientation.
+
+2. CONCEPT_ARCHITECTURE.md
+Six top-level concepts, anti-definitions, and machine-review uses.
+
+3. START_HERE_FOR_LLM.md
+Recommended ingestion order, source-of-truth hierarchy, and interpretation discipline.
+
+4. 03_machine/machine_review_test_prompt_v0.1.md
+Defines Machine Reviewer behavior and attribution discipline.
+
+5. 03_machine/minimum_risk_taxonomy.md
+Canonical reasoning anchors, candidate terms, risk signals, and review patterns.
+
+6. 03_machine/openchemprocess_index.jsonl.md
+Machine-readable snapshot index.
+
+7. 03_machine/annotation_registry.md
+Snapshot registry and synchronization state.
+
+8. 01_process/
+Primary expert-authored snapshot corpus.
+
+Current review domains include:
+- charging sequence and dosing authority
+- mixing time-scale failure
+- thermal control authority
+- workup and quench control authority
+- partition-ratio drift
+- concentration and solvent-removal trajectory
+- crystallization and recrystallization
+- filtration and drying consequence stages
+- TLC observation validity and interpretation gates
+
+Machine-layer design principles:
+- distinguish observation from interpretation
+- distinguish review-domain match from risk-positive conclusion
+- preserve uncertainty instead of forcing deterministic attribution
+- avoid SOP-style operational recommendations
+- avoid converting soft triggers into hard specifications
+- keep machine-review language separable from optimization language
+
+Governance:
+- candidate-only governance enabled
+- structure evolves from real review cases
+- ontology expansion intentionally constrained
+- content-driven stabilization preferred over premature architecture
+
+Repository:
+https://github.com/gemphis71/openchemprocess

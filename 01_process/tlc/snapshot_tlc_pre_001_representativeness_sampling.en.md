@@ -64,3 +64,64 @@ When phase separation is impossible but qualitative monitoring is required, incr
 - Significant bias exists in the sampling process or phase monitoring is impossible. TLC results will lead to systematic misinterpretation; alternative analytical tools are required.
 
 > **Core Motto**: The risk of TLC lies not in the "spotting," but in whether "this single drop represents the reaction."
+
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-PRE-001-REPRESENTATIVENESS-SAMPLING
+annotation_scope: chapter_level
+process_stage: tlc_pre_sampling_representativeness
+source_language: en
+machine_review_role: evidence_admissibility_gate
+
+transition_model: reaction_system_to_spotted_micro_sample_projection
+
+core_judgment: >
+  The spotted micro-sample must represent the physical phase and composition of
+  the reaction system. In heterogeneous systems, TLC may report only liquid-phase
+  concentration or a biased sampled fraction rather than total conversion or total
+  system composition.
+
+risk_signals:
+  - heterogeneous reaction system sampled as a single mixed spot
+  - solid-liquid or liquid-liquid phases are not sampled separately
+  - mixed sampling under high-speed stirring is treated as representative
+  - starting material reacts while simultaneously dissolving
+  - product precipitates during the reaction
+  - product or intermediate partitions into another phase
+  - target component adsorbs onto catalyst or inorganic support
+  - liquid-phase TLC signal is treated as total conversion evidence
+  - sampling bias may create directional error in composition ratio
+
+reasoning_anchors:
+  - representativeness_check
+  - liquid_phase_only_projection
+  - sample_state_projection
+
+tlc_specific_review_triggers:
+  heterogeneous_system: "solid-liquid or liquid-liquid system"
+  mixed_sampling_risk: "high-speed stirred mixed sampling used as a composition proxy"
+  solubility_equilibrium_constraint: "starting material dissolves while reacting"
+  product_precipitation: "product reaches saturation and precipitates during reaction"
+  surface_adsorption: "component adsorbs on catalyst or inorganic support"
+  qualitative_only_record: "TLC result should not be used for quantitative conversion judgment under heterogeneity constraints"
+
+expert_judgment_patterns:
+  - Treat TLC sampling as an evidence-representativeness problem before interpreting reaction progress.
+  - Treat heterogeneous-system TLC as phase-specific evidence unless physical and proportional representativeness is established.
+  - Do not treat liquid-phase concentration changes as total conversion when dissolution, precipitation, adsorption, or partitioning is present.
+  - Separate qualitative monitoring value from quantitative conversion judgment.
+
+uncertainty_and_exceptions:
+  - Mixed or single-phase sampling may be acceptable if the unsampled phase is demonstrated to be chemically irrelevant.
+  - Sampling bias does not automatically invalidate all qualitative monitoring, but it can invalidate total conversion or composition-ratio inference.
+  - Scale-up sampling volume guidance is TLC-specific and should not be generalized as a universal sampling rule.
+
+machine_use: >
+  Use this annotation to check whether a TLC sample is representative before using
+  the plate as evidence for conversion, disappearance of starting material, product
+  formation, or impurity ratio. If the sample does not represent the full physical
+  and compositional state of the reaction system, restrict TLC interpretation to
+  phase-specific or qualitative evidence.

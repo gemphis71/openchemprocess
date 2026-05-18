@@ -1,15 +1,96 @@
-# 屏蔽 Obsidian 在此文件夹生成的任何本地配置
-.obsidian/
+# =========================
+# Local editor / OS files
+# =========================
 
-# 屏蔽临时文件
+.obsidian/
+.vscode/
+.idea/
+
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# 核心：保护你的草稿区
-# 你可以在 Obsidian 里放心创建这两个文件夹
-Drafts/
-Private/
-.obsidian/
-# Google Drive temporary upload files
+*.swp
+*.swo
+*~
+~$*
+*.tmp
+*.bak
 .tmp.driveupload/
 **/.tmp.driveupload/
+
+
+# =========================
+# OCP private / draft working files
+# =========================
+
+Private/
+private/
+
+01_process/Drafts/
+**/Drafts/
+**/drafts/
+
+**/temp.md
+**/tmp.md
+**/scratch.md
+
+# Public-post or communication drafts should not enter the OCP corpus
+**/linkedin*.md
+**/linedin*.md
+**/*linkedin*.md
+**/*linedin*.md
+
+
+# =========================
+# OCP intermediate root-entry files
+# Keep only final public names:
+#   README.md
+#   llms.txt
+#   CONCEPT_ARCHITECTURE.md
+#   START_HERE_FOR_LLM.md
+# =========================
+
+README_v*.md
+README_*pass*.md
+README_semantic_anchor_pass.md
+
+llms_*.txt
+llms_*.md
+
+ocp_md_file_list.txt
+
+*_semantic_anchor_pass*
+SEMANTIC_ANCHOR_PASS_NOTES.md
+
+
+# =========================
+# OCP draft machine/test files
+# Current visible draft file:
+#   03_machine/machine_review_test_cases_v0.3_tlc_draft.md
+# =========================
+
+03_machine/*draft*.md
+03_machine/*_draft.md
+03_machine/*DRAFT*.md
+
+
+# =========================
+# Python / notebook artifacts
+# =========================
+
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+
+# =========================
+# Explicitly allow final public root files
+# =========================
+
+!README.md
+!llms.txt
+!CONCEPT_ARCHITECTURE.md
+!START_HERE_FOR_LLM.md
+!LICENSE
+!CITATION.cff

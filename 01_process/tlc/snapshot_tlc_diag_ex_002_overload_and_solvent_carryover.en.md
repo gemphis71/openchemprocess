@@ -48,3 +48,56 @@ The following actions are intended only to **restore observability** and do not 
 ## 5. Physical Evidence
 
 - **Local Migratory Distortion**: Residual solvent in the spotting zone significantly alters the initial migratory environment, causing migration behaviors that should be controlled by silica gel adsorption to be dragged along, thereby stripping the plate of its chromatographic interpretability.
+---
+
+## Machine Annotation Candidate
+
+```yaml
+candidate_status: candidate_only_not_indexed
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-EX-002-OVERLOAD-AND-SOLVENT-CARRYOVER
+annotation_scope: diagnostic_example_candidate
+source_language: en
+candidate_parent: TLC-DIAG-001-INTERPRETABILITY-GATE
+candidate_secondary_parent: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+jsonl_status: not_added
+registry_status: not_added
+taxonomy_status: example_terms_not_promoted
+
+candidate_decision: >
+  This diagnostic example reuses the interpretability revoked logic for a plate
+  whose signals show systemic physical failure through full-path streaking,
+  boundary annihilation, spotting overload, and high-boiling solvent carryover.
+  The new morphology and cause terms are example-specific and should not be
+  promoted into taxonomy or JSONL in this batch.
+
+reused_reasoning_anchors:
+  - interpretability_gate
+  - interpretability_revoked
+  - data_object_boundary
+  - permitted_interpretation_pathway
+
+candidate_example_terms_watchlist:
+  - spotting_confounder
+  - spotting_overload
+  - solvent_carryover
+  - high_boiling_polar_solvent_carryover
+  - full_path_streaking
+  - boundary_annihilation
+  - local_migratory_distortion
+
+directly_supported_review_signals:
+  - multiple lanes show continuous longitudinal streaking
+  - converged spot structure is lost
+  - signal boundaries are blurred and overlapping
+  - baseline region shows abnormal wetness or deformation
+  - polarity, purity, component-count, and resolution inference are blocked
+  - current plate interpretability is revoked
+
+machine_review_boundary: >
+  Use this candidate only as a supporting example for revoked interpretability
+  caused by systemic physical failure morphology. Do not convert dilution, drying,
+  solvent replacement, or alternative-tool statements into machine-use SOP
+  recommendations. Do not promote overload or solvent-carryover terms into
+  taxonomy until reuse across later examples is confirmed.
+```

@@ -209,3 +209,68 @@ stateDiagram-v2
 - 目标是**提前识别放大敏感性**，非安全结论
 
 #Audit: 属于 P3/P4 型顺序风险；一旦触发即失去加料速率这一控制杠杆，应在方案 review 阶段被重点挑战而非事后补救。
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "CHG-001-CHARGING-SEQUENCE"
+process_stage: "charging_sequence_control"
+transition_model: "charging_sequence_to_reactive_inventory_and_trigger_control_loss"
+
+control_window: >
+  CHG-001 reviews whether the selected charging sequence creates structural scale-up risk before addition mode, mixing, or thermal control can function as effective safeguards. It assumes effective mixing at the time of addition; if effective entry or local retention fails, attribution should shift to CHG-002 or downstream chapters.
+
+core_judgment: >
+  Charging sequence becomes a primary risk structure when material order creates premature coexistence, physical decoupling, or accumulation-before-trigger states. In P3/P4 structures, reactive inventory exists before initiation and feed-rate control is lost after triggering, leaving downstream thermal or equipment capacity to manage consequences rather than preserve charging control authority.
+
+risk_signals:
+  - "pre-charged material can react with subsequently formed product or intermediate"
+  - "solid is charged before liquid level, wetting, dispersion, or dissolution conditions are established"
+  - "dead volume, valve cavity, or discharge port may trap solid inventory"
+  - "most or all reactants are accumulated before reaction triggering"
+  - "reaction is initiated later by heating, activation, or catalyst addition"
+  - "reactive inventory exists before triggering"
+  - "feed rate as a control lever is lost after triggering"
+  - "heat or gas generation relies entirely on removal capacity after triggering"
+  - "trigger step forms highly reactive intermediates or advances substrate decomposition"
+  - "generation rate may exceed heat-removal or venting capacity after triggering"
+  - "small-scale lack of temperature rise may be masked by high surface-area-to-volume ratio"
+  - "sliding-window temperature rise indicates scale-up sensitivity"
+
+expert_judgment:
+  - "If effective mixing at addition is not established, CHG-001 sequence analysis is not sufficient and the case should be attributed to CHG-002 effective-entry or local-retention risk."
+  - "If a process accumulates reactive inventory before a trigger event, loss of feed-rate control after triggering should be reviewed as CHG-001 sequence risk."
+  - "If the trigger creates highly reactive intermediates, rapid heat release, gas generation, or violent behavior, the case should be treated as a strong-trigger sequence warning rather than ordinary dosing optimization."
+  - "Empirical temperature-rise signals should be treated as scale-up review triggers, not as universal deterministic pass/fail rules."
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "misallocated_control_authority"
+  - "lab_scale_masking"
+  - "scalability_failure"
+  - "charging_sequence_risk"
+  - "effective_mixing_assumption"
+  - "accumulation_then_trigger"
+  - "reactive_inventory_before_trigger"
+  - "feed_rate_control_lost"
+  - "strong_trigger_sequence"
+  - "sliding_window_temperature_rise"
+
+quantitative_triggers:
+  delta_t15_max_risk_indication: ">=3 °C over any continuous 15-minute window"
+  delta_t15_max_high_risk_indication: ">=6 °C over any continuous 15-minute window"
+
+uncertainty: "medium"
+
+exceptions:
+  - "Some sequence risks may survive if secondary kinetics are extremely slow, initiation is smooth, heat release is weak, and gas evolution is absent."
+  - "Oxygen-sensitive catalyst-last sequences may be justified when oxygen sensitivity dominates accumulation risk, but the boundary should be re-reviewed if rate or heat release is unusually high."
+  - "Temperature-rise thresholds are empirical screening triggers and should not be converted into deterministic rejection rules."
+
+machine_use: >
+  Use this annotation to review whether charging sequence creates premature coexistence, physical decoupling, or accumulation-before-trigger control loss. Keep the output in review-domain and evidence-sufficiency language. Do not convert sequence constraints into operational instructions or SOP-like charging recipes.
+```

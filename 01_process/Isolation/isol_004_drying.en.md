@@ -102,3 +102,150 @@ Drying is not a monotonic decrease of solvent content, but a superposition of st
 
 **#Audit: A drying strategy relying solely on extended vacuum time is insufficient for structural retention issues.**  
 **#Audit: surface composition drift × rolling = balling; pore structure × bound solvent = plateau.**
+
+## 6. Machine Annotation
+
+```yaml
+schema_version: "risk_annotation_schema_v0.2"
+annotation_scope: "chapter_level"
+canonical_id: "ISOL-004-DRYING"
+process_stage: "isolation_drying"
+
+transition_model: "filtered_wet_solid_to_final_solvent_state_and_location_lock_in"
+
+control_window: >
+  Drying occurs after filtration and represents the final lock-in of solvent state and solvent location within the solid inventory. Product/impurity distribution, polymorph, morphology, pore structure, and initial solvent-binding state are inherited from upstream. Drying variables such as temperature, vacuum, and mechanical action mainly alter solvent migration pathways and release rates; they do not restore upstream composition or solid-state control authority.
+
+core_judgment: >
+  The central machine-review task is to detect whether a drying problem is being misattributed to drying parameters when it is more likely caused by inherited surface solvent state, pore-bound solvent retention, morphology, salt form, or solvent-binding behavior. Extended vacuum time alone should not be treated as a sufficient strategy for structural solvent-retention problems.
+
+review_gates:
+  attribution_gate:
+    - "balling or agglomeration occurs"
+    - "residual solvent curve reaches plateau"
+    - "surface re-dissolution suspected"
+    - "drying failure appears only under rolling or thick-bed scale conditions"
+  compensation_gate:
+    - "assess whether static pre-drying can reduce rolling-induced balling"
+    - "assess whether solvent displacement can convert pore-bound or strongly retained solvent into a more removable solvent state"
+    - "assess whether pre-wash with anti-solvent can reduce surface good-solvent enrichment"
+  reconstruction_gate:
+    - "if static pre-drying or solvent displacement fails, return upstream to redesign morphology, salt form, or solvent system"
+    - "if drying relies only on vacuum, temperature, and time despite bound-solvent plateau, upstream reconstruction is required"
+
+risk_signals:
+  - "surface_good_solvent_state high"
+  - "surface_composition_drift yes"
+  - "surface solvent composition differs from mother liquor composition"
+  - "anti-solvent preferential evaporation"
+  - "good solvent enriched at particle surface"
+  - "surface re-dissolution during early drying"
+  - "rolling stage present in equipment"
+  - "double-cone rolling collision after surface good-solvent enrichment"
+  - "macroscopic balling observed"
+  - "agglomeration during drying"
+  - "needle or rod morphology"
+  - "pore structure likely from particle packing"
+  - "solvent retained in internal or interparticle pores"
+  - "salt form present"
+  - "hydrogen-bond-capable solvent present"
+  - "ionic or hydrogen-bond interaction between solvent and product suspected"
+  - "process relies only on vacuum, temperature, and time"
+  - "residual solvent curve reaches plateau"
+  - "plateau_check yes"
+  - "static lab drying masks rolling-induced balling"
+  - "thin-layer lab drying masks pore retention"
+  - "thick-bed mass-transfer limitation suspected"
+  - "extended vacuum time used as sole corrective action"
+
+reasoning_anchors:
+  - "control_authority_decay"
+  - "solid_state_commitment"
+  - "misallocated_control_authority"
+  - "consequence_stage_separation"
+  - "structure_inheritance"
+  - "upstream_failure_exposure"
+  - "lab_scale_masking"
+  - "scalability_failure"
+  - "drying_state_lock_in"
+  - "solvent_state_location_lock_in"
+  - "surface_composition_drift"
+  - "surface_good_solvent_enrichment"
+  - "surface_redissolution"
+  - "rolling_agglomeration"
+  - "pore_bound_solvent_retention"
+  - "bound_solvent_state"
+  - "drying_plateau"
+  - "static_predrying"
+  - "solvent_displacement"
+  - "drying_compensation_boundary"
+
+taxonomy_role:
+  reused_formal_anchors:
+    - "control_authority_decay"
+    - "solid_state_commitment"
+    - "misallocated_control_authority"
+  reused_candidate_terms:
+    - "consequence_stage_separation"
+    - "structure_inheritance"
+    - "upstream_failure_exposure"
+    - "lab_scale_masking"
+    - "scalability_failure"
+  candidate_anchors:
+    - "drying_state_lock_in"
+    - "solvent_state_location_lock_in"
+    - "surface_composition_drift"
+    - "surface_good_solvent_enrichment"
+    - "surface_redissolution"
+    - "rolling_agglomeration"
+    - "pore_bound_solvent_retention"
+    - "bound_solvent_state"
+    - "drying_plateau"
+    - "static_predrying"
+    - "solvent_displacement"
+    - "drying_compensation_boundary"
+
+expert_judgment:
+  - "Drying should be reviewed as final solvent-state and solvent-location lock-in, not as a neutral solvent-removal operation."
+  - "Balling should first be reviewed as surface composition drift plus mechanical rolling amplification, not simply as excessive drying temperature or insufficient vacuum."
+  - "Residual solvent plateau should first be reviewed as possible pore-bound or chemically bound solvent retention, not simply as insufficient drying time."
+  - "Static laboratory drying may underpredict balling risk in rolling equipment, and thin-layer laboratory drying may underpredict pore-retention risk in thick beds."
+  - "Drying-stage interventions such as static pre-drying, pre-wash, or solvent displacement are compensatory controls; if they fail, upstream morphology, salt form, or solvent system must be reconsidered."
+  - "A drying strategy relying solely on extended vacuum time is insufficient for structural retention or bound-solvent problems."
+
+uncertainty_and_exceptions:
+  - "Balling should not be inferred from solvent composition alone unless rolling, adhesion, or surface re-dissolution risk is also present."
+  - "Bound-solvent retention should not be inferred from salt form alone unless solvent-binding capability, pore retention, or plateau behavior is observed or expected."
+  - "Solvent displacement may be valid when it changes the solvent state inside pores, but it should not be described as recovery of upstream solid-state control authority."
+  - "Extended drying time may be acceptable for free solvent removal, but not as the only response to plateau behavior caused by bound or pore-retained solvent."
+  - "Surface composition drift may differ from bulk mother liquor composition; machine review should avoid assuming bulk liquid composition represents the drying surface state."
+
+quantitative_or_flag_triggers:
+  surface_good_solvent_state: "high / medium / low"
+  surface_composition_drift: "yes / no"
+  morphology_tag: "needle / rod / other"
+  is_salt_form: "true / false"
+  solvent_hbond_capability: "true / false"
+  plateau_check: "yes / no"
+  static_drying_ratio: "high / medium / low"
+  rolling_equipment_present: "yes / no"
+  process_relies_only_on_vacuum_temperature_time: "yes / no"
+
+required_review_fields:
+  - "surface_good_solvent_state"
+  - "surface_composition_drift"
+  - "surface_solvent_composition_basis"
+  - "morphology_tag"
+  - "pore_structure_assessment"
+  - "is_salt_form"
+  - "solvent_hbond_capability"
+  - "solvent_binding_state"
+  - "plateau_check"
+  - "rolling_equipment_present"
+  - "static_drying_ratio"
+  - "solvent_displacement_option"
+  - "upstream_reconstruction_option_if_any"
+
+machine_use: >
+  Review whether a drying failure is caused by inherited solvent state and solvent location rather than drying parameters alone; distinguish surface-composition-drift-driven balling from pore-bound solvent plateau; check whether static pre-drying, anti-solvent pre-wash, or solvent displacement are valid compensatory controls; and identify when upstream morphology, salt form, or solvent-system reconstruction is required.
+```

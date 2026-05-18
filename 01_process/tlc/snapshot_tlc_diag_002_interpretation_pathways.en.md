@@ -115,3 +115,79 @@ The following interpretation pathways are strictly prohibited in all cases:
 ## 6. Boundary Statement
 
 This document defines the permitted output space for TLC once the right to interpret has been established. All interpretations are empirical and conditional conclusions. If precise quantification or structural confirmation is required, one must switch to precision tools such as HPLC, LC-MS, or NMR.
+
+---
+
+## Machine Annotation
+
+```yaml
+schema_version: risk_annotation_schema_v0.2
+canonical_id: TLC-DIAG-002-INTERPRETATION-PATHWAYS
+annotation_scope: chapter_level
+process_stage: tlc_diagnostic_interpretation_pathways
+source_language: en
+machine_review_role: permitted_interpretation_gate
+
+transition_model: interpretability_established_to_permitted_tlc_inference_space
+
+core_judgment: >
+  TLC interpretation is permitted only after interpretability has been established
+  by TLC-DIAG-001. Once interpretability is established, TLC may support limited
+  empirical interpretation pathways such as presence/absence, identity consistency,
+  relative migration, morphology comparison, and qualitative process trend. It must
+  not be used as a source of precise conversion, kinetic parameters, direct
+  intensity-content equivalence, or definitive structural assignment.
+
+risk_signals:
+  - TLC plate enters interpretation despite REVOKED or VOID status
+  - DOWNGRADED plate is used for unrestricted chemical interpretation
+  - single staining or observation method is used to conclude single component status
+  - co-elution risk is ignored when different visualization methods diverge
+  - staining intensity is treated as molar content or purity
+  - relative migration order is treated as intrinsic compound strength
+  - spot area is compared across different Rf regions as content evidence
+  - disappearance of starting material spot is treated as complete chemical conversion
+  - TLC is used to output precise conversion percentage or kinetic parameters
+  - TLC signal is used to infer specific functional group details or complete structure
+
+reasoning_anchors:
+  - interpretability_gate
+  - permitted_interpretation_pathway
+  - presence_absence_inference
+  - identity_consistency_check
+  - qualitative_trend_monitoring
+  - prohibited_quantitative_conversion
+  - intensity_content_non_equivalence
+  - co_elution_uncertainty
+
+tlc_specific_review_triggers:
+  mandatory_precondition: "only plates that passed TLC-DIAG-001 may enter TLC-DIAG-002"
+  revoked_or_void_block: "REVOKED or VOID status prohibits interpretation"
+  downgraded_limited_use: "DOWNGRADED status permits only explicitly limited-use pathways"
+  multi_visualization_check: "UV, iodine, and at least one general or specific chemical stain may support presence/absence or identity consistency"
+  co_elution_warning: "same Rf position with divergent visualization response indicates possible overlap"
+  local_area_content_condition: "area-content relation is only rough and local when Rf values are identical or very close"
+  trend_reliability_window: "TLC trend interpretation is relatively more reliable in early-to-mid reaction range and weaker late in reaction"
+
+expert_judgment_patterns:
+  - Treat interpretability status as a mandatory precondition before pathway selection.
+  - Use TLC primarily for presence/absence, identity consistency, and qualitative or semi-quantitative trend monitoring.
+  - Treat co-elution as an uncertainty state when visualization methods diverge at the same Rf position.
+  - Do not equate staining intensity, UV response, iodine depth, or chemical stain vividness with molar content or purity.
+  - Do not treat disappearance of a starting-material spot as proof of complete chemical conversion.
+  - Do not use TLC to output precise conversion percentages, kinetic constants, or definitive structural assignments.
+
+uncertainty_and_exceptions:
+  - Presence/absence conclusions remain conditional on anchoring validity and co-elution uncertainty.
+  - Identity consistency is strengthened by multiple matching visualization behaviors but is not definitive structural proof.
+  - Process trend interpretation is empirical and becomes weaker when the reaction approaches late-stage conversion.
+  - TLC-specific empirical boundaries should not be generalized as universal analytical rules.
+
+machine_use: >
+  Use this annotation after TLC-DIAG-001 has established interpretability. Select
+  only permitted TLC interpretation pathways and block prohibited inferences such
+  as precise conversion, kinetic quantification, direct intensity-content
+  equivalence, or definitive structural assignment. If the plate is REVOKED or
+  VOID, do not enter this interpretation layer; if DOWNGRADED, restrict
+  interpretation to limited-use pathways only.
+```
