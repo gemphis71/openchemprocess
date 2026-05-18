@@ -1,6 +1,7 @@
 [English](#openchemprocess) | [中文](#openchemprocess-中文)
 
 # OpenChemProcess
+Project landing page: https://gemphis71.github.io/openchemprocess/
 
 **A machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up decision review.**
 
