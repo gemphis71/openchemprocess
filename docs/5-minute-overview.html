@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="OpenChemProcess is a machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up reasoning."
+  />
+  <title>5-minute overview — OpenChemProcess</title>
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+  <header>
+    <h1>OpenChemProcess</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="irreversible-commitment.html">Irreversible Commitment</a>
+      <a href="control-authority-decay.html">Control Authority Decay</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>OpenChemProcess — 5-minute overview</h2>
+
+    <p><strong>OpenChemProcess is a machine-readable process-review dataset, not a process recipe collection.</strong></p>
+
+    <p>
+      OpenChemProcess (OCP) is a machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up reasoning. Its purpose is to capture how experienced process scientists recognize early risk signals, assign expert judgment, attach reasoning anchors, and preserve uncertainty before a process crosses into less reversible states.
+    </p>
+
+    <p>
+      OCP is not a process SOP repository, not a process optimization cookbook, not a troubleshooting guide, not a machine operator system, and not an autonomous process execution system. It is designed as a review corpus: a structured record of how process risk is interpreted, not a source of executable operating instructions.
+    </p>
+
+    <h2>The problem</h2>
+
+    <p>
+      Many process failures are not caused by a lack of optimization attempts. They arise because risk signals were recognized too late, after control authority had already decayed or an irreversible commitment had already occurred. At that point, later operations may still modify appearance, yield, purity, or handling behavior, but they may no longer recover the earlier lost control.
+    </p>
+
+    <p>
+      This distinction matters in scale-up. A laboratory experiment may appear adjustable because the system is small, heat and mass transfer are forgiving, sampling is fast, and intermediate states can be visually inspected. At larger scale, the same decision may become inventory-dominated, thermally constrained, mixing-limited, or locked into a downstream consequence stage. OCP is built to capture these review-relevant transitions.
+    </p>
+
+    <h2>What OCP captures</h2>
+
+    <p>
+      The core learning structure of OCP is:
+    </p>
+
+    <div class="review-pattern">
+      risk signal → expert judgment → reasoning anchor → uncertainty / exceptions
+    </div>
+
+    <p>
+      A risk signal is an observation, condition, design choice, or process state that may indicate a review-relevant failure mode. Expert judgment is the interpretation made by an experienced process scientist. A reasoning anchor is the conceptual basis for that interpretation, such as Control Authority Decay, Irreversible Commitment, Tolerance Envelope, Decision Latency, or a related source-backed review concept. Uncertainty and exceptions prevent the dataset from becoming a deterministic rule system.
+    </p>
+
+    <p>
+      The goal is not to teach a machine that “if A happens, do B.” The goal is to preserve the reasoning discipline behind process review: what signal appeared, what it may imply, what evidence is insufficient, where overconfidence may enter, and which conclusions should remain bounded.
+    </p>
+
+    <h2>A small example</h2>
+
+    <p>
+      Consider a clean-looking TLC plate used to support a reaction-completion conclusion. In a conventional workflow, the absence of a visible starting-material spot may be treated as a positive signal. In a process-review frame, the first question is not whether the plate looks clean, but whether the evidence is valid for the conclusion being made.
+    </p>
+
+    <p>
+      If sampling is not representative, if the quench modifies the analyte, if the compound is poorly visible under the chosen detection mode, if the expected residual level is below the method’s practical visibility, or if the reaction composition changes faster than the analytical feedback cycle, then a clean plate may not support the claimed conclusion. The review issue is not “how to improve TLC.” The review issue is evidence sufficiency, decision latency, and whether the analytical signal can legitimately support the process decision.
+    </p>
+
+    <p>
+      This is the type of reasoning OCP attempts to encode: not a TLC troubleshooting recipe, but a structured interpretation of when a familiar laboratory signal becomes weak, misleading, or over-extended in process decision-making.
+    </p>
+
+    <h2>Why machine-readable</h2>
+
+    <p>
+      Process chemistry contains many high-value expert judgments that are rarely written in a form that machines can retrieve, compare, or apply consistently. OCP treats these judgments as structured review data. The machine-readable layer is intended to support future Machine Reviewer behavior: retrieval of relevant failure patterns, identification of review-domain matches, separation of direct evidence from inferred signals, and preservation of uncertainty.
+    </p>
+
+    <p>
+      This is different from using AI as an optimizer. Optimization asks what condition should be tried next. Review asks whether the current evidence, design, sequence, or interpretation is reliable enough to support the next decision. OCP focuses on the review layer because many scale-up failures are not caused by missing options, but by unsupported confidence in a process state that has already lost flexibility.
+    </p>
+
+    <h2>Machine Reviewer, not Machine Operator</h2>
+
+    <p>
+      OCP is designed to support Machine Reviewer behavior, not Machine Operator behavior. A Machine Reviewer may identify unsupported conclusions, overconfident interpretation, missing evidence, risk-positive signals, boundary conditions, and uncertainty. It may help distinguish a review-domain match from a risk-positive conclusion. It may point to source-backed reasoning anchors and indicate where evidence is insufficient.
+    </p>
+
+    <p>
+      OCP should not be used to generate dosing recommendations, solvent-ratio recipes, quench procedures, temperature programs, agitation settings, hardware choices, batch execution steps, regulatory conclusions, safety clearance, or validated analytical decisions. Those outputs belong to accountable expert review, validated procedures, safety assessment, and regulated development systems.
+    </p>
+
+    <h2>Where to go next</h2>
+
+    <p>
+      If you are a process chemist or scale-up scientist, start with the concept pages and the GitHub repository. If you are building retrieval, RAG, knowledge-graph, or AI-review systems, start with the machine-readable entry files after reading this overview.
+    </p>
+
+    <ul>
+      <li>
+        <a href="https://github.com/gemphis71/openchemprocess/blob/main/CONCEPT_ARCHITECTURE.md">
+          Concept architecture
+        </a>
+        — conceptual interpretation frame for OCP.
+      </li>
+      <li>
+        <a href="https://github.com/gemphis71/openchemprocess">
+          GitHub repository
+        </a>
+        — source snapshots, machine layer, taxonomy, registry, and index files.
+      </li>
+      <li>
+        <a href="https://github.com/gemphis71/openchemprocess/blob/main/START_HERE_FOR_LLM.md">
+          Machine / crawler entry
+        </a>
+        — recommended ingestion order for LLMs, crawlers, retrieval agents, and embedding pipelines.
+      </li>
+    </ul>
+  </main>
+
+  <footer>
+    <p><a href="index.html">← Home</a></p>
+  </footer>
+</body>
+</html>

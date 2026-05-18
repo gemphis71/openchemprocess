@@ -6,6 +6,49 @@
   <title>OpenChemProcess</title>
   <link rel="stylesheet" href="css/site.css">
   <meta name="google-site-verification" content="LRm7ahaIBNl0ydqDP6Y0ry-RpKR5M2jWaaHf_G1otCU" />
+  <style>
+    .hero {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .hero-definition {
+      font-size: 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+    .hero-actions {
+      margin-bottom: 0.75rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border: 1px solid #2a4a7a;
+      border-radius: 2px;
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background: #2a4a7a;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #1e3658;
+      color: #fff;
+    }
+    .hero-secondary {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+    .hero-secondary-sep {
+      color: #888;
+    }
+    .hero-machine-note {
+      display: block;
+      font-size: 0.85rem;
+      color: #555;
+      margin-top: 0.35rem;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -18,6 +61,19 @@
   </header>
 
   <main>
+    <section class="hero">
+      <p class="hero-definition">OpenChemProcess is a machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up reasoning.</p>
+      <p class="hero-actions">
+        <a class="btn btn-primary" href="5-minute-overview.html">Read the 5-minute overview</a>
+      </p>
+      <p class="hero-secondary">
+        <a href="https://github.com/gemphis71/openchemprocess">View GitHub repository</a>
+        <span class="hero-secondary-sep" aria-hidden="true"> · </span>
+        <a href="https://github.com/gemphis71/openchemprocess/blob/main/START_HERE_FOR_LLM.md">Machine / crawler entry</a>
+        <span class="hero-machine-note">For LLMs, crawlers, retrieval agents, and embedding pipelines — not the main human entry page.</span>
+      </p>
+    </section>
+
     <p><strong>A machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up decision review.</strong></p>
 
     <p>OpenChemProcess (OCP) is a machine-readable process-review and risk-interpretation dataset for process chemistry and scale-up reasoning. Its purpose is not to teach operations, optimize conditions, or generate executable instructions. Its purpose is to capture how experienced process chemists recognize early risk signals, assign expert judgment, attach reasoning anchors, and preserve uncertainty before a process crosses into less reversible states.</p>
@@ -41,7 +97,7 @@
   <li><a href="https://github.com/gemphis71/openchemprocess">GitHub repository</a></li>
   <li><a href="https://github.com/gemphis71/openchemprocess/blob/main/llms.txt">llms.txt — low-token entry point for LLMs and crawlers</a></li>
   <li><a href="https://github.com/gemphis71/openchemprocess/blob/main/CONCEPT_ARCHITECTURE.md">CONCEPT_ARCHITECTURE.md — conceptual interpretation frame</a></li>
-  <li><a href="https://github.com/gemphis71/openchemprocess/blob/main/START_HERE_FOR_LLM.md">START_HERE_FOR_LLM.md — recommended ingestion order</a></li>
+  <li><a href="https://github.com/gemphis71/openchemprocess/blob/main/START_HERE_FOR_LLM.md">START_HERE_FOR_LLM.md — machine / crawler ingestion order (not the main human entry page)</a></li>
 </ul>
 
     <h2>Negative scope</h2>
