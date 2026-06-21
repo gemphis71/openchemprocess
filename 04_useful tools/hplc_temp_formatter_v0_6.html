@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HPLC 临时数据整理器 v0.6</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7f8;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #667085;
+      --border: #d0d5dd;
+      --accent: #1769aa;
+      --danger: #b42318;
+      --danger-bg: #fff1f0;
+      --warn-bg: #fff8e1;
+      --ok-bg: #eef7ee;
+      --header: #f0f2f5;
+      --header2: #eef2f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .wrap { max-width: 1380px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 24px; margin: 0 0 8px; }
+    .subtitle { color: var(--muted); margin-bottom: 20px; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; align-items: start; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+    .card h2 { font-size: 17px; margin: 0 0 12px; }
+    .card h3 { font-size: 14px; margin: 16px 0 8px; }
+    .small { font-size: 12px; color: var(--muted); }
+    button, .file-label {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 4px 4px 4px 0;
+    }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.danger { color: var(--danger); border-color: #f3b4ae; background: #fff; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    input[type="file"] { display: none; }
+    textarea {
+      width: 100%;
+      height: 190px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
+    .stat { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+    .stat .label { font-size: 12px; color: var(--muted); }
+    .stat .value { font-size: 20px; margin-top: 2px; }
+    .msg { border-radius: 8px; padding: 10px; margin: 10px 0; font-size: 13px; white-space: pre-wrap; }
+    .msg.ok { background: var(--ok-bg); border: 1px solid #b7dfb7; }
+    .msg.warn { background: var(--warn-bg); border: 1px solid #f3da8a; }
+    .msg.err { background: var(--danger-bg); border: 1px solid #f3b4ae; color: var(--danger); }
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .tabs button.active { background: #e9f2fb; border-color: var(--accent); color: var(--accent); }
+    .table-wrap { overflow: auto; max-height: 64vh; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
+    table { border-collapse: collapse; min-width: 100%; font-size: 13px; white-space: nowrap; }
+    .pivot-table { table-layout: fixed; width: max-content; min-width: 100%; white-space: normal; }
+    .pivot-table td { white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+    .pivot-table td.meta-cell { white-space: nowrap; }
+    .pivot-table td.peak-cell { width: 112px; min-width: 112px; max-width: 112px; text-align: center; }
+    .pivot-table td.peak-name-cell { font-size: 11px; line-height: 1.2; }
+    th, td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 6px 8px; vertical-align: top; }
+    th { position: sticky; top: 0; background: var(--header); z-index: 2; font-weight: 600; }
+    tr.header-row td { background: var(--header2); font-weight: 600; }
+    tr.section td { background: #e8eef7; font-weight: 600; }
+    td.meta { color: var(--muted); background: #fafafa; }
+    td.empty { color: #98a2b3; }
+    .table-actions { margin: 8px 0 4px; }
+    .raw-editor td.editable-cell { background: #fffdf5; cursor: text; min-width: 92px; }
+    .raw-editor td.editable-cell:focus { outline: 2px solid rgba(23,105,170,.35); outline-offset: -2px; background: #ffffff; }
+    .raw-editor td.readonly-cell { background: #f4f6f8; color: #475467; }
+    .raw-editor tr:nth-child(n+4) td { min-height: 30px; }
+    details { border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: #fafafa; margin-top: 12px; }
+    summary { cursor: pointer; font-size: 13px; }
+    code { background: #eef2f6; padding: 1px 4px; border-radius: 4px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HPLC 临时数据整理器 v0.6</h1>
+    <div class="subtitle">三行固定表头格式：第一行是字段名，第二行是峰对应化合物名，第三行是峰保留时间；末列为“其它”；数据只在浏览器本地处理；原始表格可直接在网页中补充数据行并重新整理。</div>
+
+    <div class="grid">
+      <aside class="card">
+        <h2>1. 导入原始数据</h2>
+        <div class="row">
+          <label class="file-label" for="fileInput">上传 CSV / XLSX</label>
+          <input id="fileInput" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" />
+          <button id="btnBlankTemplate">下载空白 CSV</button>
+          <button id="btnDemo">加载示例</button>
+        </div>
+        <p class="small">导入文件必须采用固定三行表头。可增加 <code>峰N面积比</code> 列；固定字段名不要修改。也可以不上传文件，直接在右侧空白原始表格中填写。</p>
+
+        <h3>或直接粘贴 CSV/TSV</h3>
+        <textarea id="pasteArea" placeholder="粘贴三行表头格式的 CSV，或从 Excel 复制后直接粘贴。"></textarea>
+        <div class="row">
+          <button class="primary" id="btnParsePaste">解析粘贴数据</button>
+          <button class="danger" id="btnClear">清空</button>
+        </div>
+
+        <details open>
+          <summary>固定格式</summary>
+          <p class="small">第一行固定为：<br><code>批号,备注1,备注2,分析方法名,波长,检测时间,峰1面积比,峰2面积比,...,其它</code></p>
+          <p class="small">第二行：峰列填写对应化合物名；前六列和“其它”列可空。</p>
+          <p class="small">第三行：峰列填写保留时间；前六列和“其它”列可空。</p>
+          <p class="small">第四行开始：每一行是一批样品/一次检测的数据。峰面积比可填数值、ND、NA 或留空。</p>
+        </details>
+
+        <h2 style="margin-top:18px;">2. 导出</h2>
+        <div class="row">
+          <button class="primary" id="btnExportXlsx" disabled>导出 Excel</button>
+          <button id="btnExportRawCsv" disabled>导出原始 CSV</button>
+          <button id="btnExportDetailCsv" disabled>导出峰明细 CSV</button>
+          <button id="btnExportByBatchCsv" disabled>导出按批号 CSV</button>
+          <button id="btnExportByMethodCsv" disabled>导出按方法 CSV</button>
+        </div>
+        <p class="small">Excel 导出包含 4 个 sheet：raw_input、peak_detail、by_batch、by_method。</p>
+      </aside>
+
+      <main class="card">
+        <h2>数据预览与整理结果</h2>
+        <div class="stats">
+          <div class="stat"><div class="label">数据行</div><div class="value" id="statRuns">0</div></div>
+          <div class="stat"><div class="label">峰列数</div><div class="value" id="statPeaks">0</div></div>
+          <div class="stat"><div class="label">批号数</div><div class="value" id="statBatches">0</div></div>
+          <div class="stat"><div class="label">方法数</div><div class="value" id="statMethods">0</div></div>
+        </div>
+
+        <div id="message" class="msg warn">尚未导入数据。可上传文件，也可直接在“原始表格”中输入数据。</div>
+
+        <div class="row table-actions">
+          <button id="btnAddRow">增加数据行</button>
+          <button class="primary" id="btnApplyTable">应用表格修改 / 重新整理</button>
+        </div>
+        <p class="small">原始表格第一行固定表头不可编辑；第二行峰列可填写化合物名；第三行峰列可填写出峰时间；第四行开始为数据行。</p>
+
+        <div class="tabs">
+          <button class="active" data-view="raw">原始表格</button>
+          <button data-view="detail">峰明细</button>
+          <button data-view="byBatch">按批号整理</button>
+          <button data-view="byMethod">按方法整理</button>
+        </div>
+        <div class="table-wrap" id="tableWrap"></div>
+      </main>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const fixedHeaders = ['批号','备注1','备注2','分析方法名','波长','检测时间'];
+  const otherHeader = '其它';
+  const defaultPeakCount = 12;
+  let rawAoa = blankEditorAoa(1);
+  let peakColumns = [];
+  let dataRows = [];
+  let detailRows = [];
+  let byBatchAoa = [];
+  let byMethodAoa = [];
+  let currentView = 'raw';
+
+  const $ = id => document.getElementById(id);
+  const tableWrap = $('tableWrap');
+  const msg = $('message');
+
+  function blankTemplateAoa(peakCount = defaultPeakCount) {
+    const headers = [...fixedHeaders];
+    const names = ['化合物名', '', '', '', '', ''];
+    const rts = ['保留时间', '', '', '', '', ''];
+    for (let i = 1; i <= peakCount; i++) {
+      headers.push(`峰${i}面积比`);
+      names.push('');
+      rts.push('');
+    }
+    headers.push(otherHeader);
+    names.push('');
+    rts.push('');
+    return [headers, names, rts];
+  }
+
+  function blankEditorAoa(dataRowCount = 1) {
+    const aoa = blankTemplateAoa();
+    const colCount = aoa[0].length;
+    for (let i = 0; i < dataRowCount; i++) aoa.push(Array(colCount).fill(''));
+    return aoa;
+  }
+
+  function normalizeWidth(aoa) {
+    const rows = (aoa && aoa.length) ? aoa.map(r => (r || []).map(cleanCell)) : blankEditorAoa(1);
+    const maxCol = Math.max(...rows.map(r => r.length), 0);
+    return rows.map(r => {
+      const out = r.slice();
+      while (out.length < maxCol) out.push('');
+      return out;
+    });
+  }
+
+  const demoAoa = [
+      [
+          "批号",
+          "备注1",
+          "备注2",
+          "分析方法名",
+          "波长",
+          "检测时间",
+          "峰1面积比",
+          "峰2面积比",
+          "峰3面积比",
+          "峰4面积比",
+          "峰5面积比",
+          "峰6面积比",
+          "峰7面积比",
+          "峰8面积比",
+          "峰9面积比",
+          "峰10面积比",
+          "其它"
+      ],
+      [
+          "化合物名",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "产物名1",
+          "杂质名1B",
+          " unspecified impurity 1",
+          "杂质名1A",
+          " unspecified impurity 2",
+          "原料名1",
+          "原料名2",
+          "杂质3",
+          "杂质4名",
+          "杂质5名",
+          ""
+      ],
+      [
+          "保留时间",
+          "",
+          "N.A",
+          "",
+          "",
+          "",
+          "21.085",
+          "19.259",
+          "21.938",
+          "23.249",
+          "25.311",
+          "27.081",
+          "30.322",
+          "N.A",
+          "N.A",
+          "N.A",
+          ""
+      ],
+      [
+          "批次26-01-01",
+          "工厂生产",
+          "xxx",
+          "方法1",
+          "220",
+          "2026.02.07",
+          "98.4",
+          "0.11",
+          "0.18",
+          "0.2",
+          "0.32",
+          "0.04",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-01",
+          "工厂生产",
+          "xxx",
+          "方法2",
+          "220",
+          "2026.02.08",
+          "99.1",
+          "0.07",
+          "0.08",
+          "0.21",
+          "",
+          "",
+          "",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-01",
+          "工厂生产",
+          "xxx",
+          "方法3",
+          "220",
+          "2026.02.09",
+          "98.9",
+          "0.05",
+          "0.14",
+          "0.18",
+          "0.07",
+          "0.12",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-01",
+          "工厂生产",
+          "xxx",
+          "方法4",
+          "220",
+          "2026.02.10",
+          "99.1",
+          "0.07",
+          "0.08",
+          "0.21",
+          "NA",
+          "NA",
+          "NA",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-01",
+          "工厂生产",
+          "xxx",
+          "方法5",
+          "220",
+          "2026.02.11",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+      ],
+      [
+          "批次26-01-02",
+          "工厂生产",
+          "yyy",
+          "方法1",
+          "220",
+          "2026.02.12",
+          "97.2",
+          "0.2",
+          "0.31",
+          "0.22",
+          "0.54",
+          "0.04",
+          "0.03",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-02",
+          "工厂生产",
+          "yyy",
+          "方法2",
+          "220",
+          "2026.02.13",
+          "98",
+          "0.12",
+          "0.14",
+          "0.27",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+      ],
+      [
+          "批次26-01-02",
+          "工厂生产",
+          "yyy",
+          "方法3",
+          "220",
+          "2026.02.14",
+          "98.2",
+          "0.06",
+          "0.4",
+          "0.26",
+          "0.16",
+          "0.22",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-02",
+          "工厂生产",
+          "yyy",
+          "方法4",
+          "220",
+          "2026.02.15",
+          "98",
+          "0.12",
+          "0.14",
+          "0.27",
+          "NA",
+          "NA",
+          "NA",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-02",
+          "工厂生产",
+          "yyy",
+          "方法5",
+          "220",
+          "2026.02.16",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+      ],
+      [
+          "批次26-01-03",
+          "工厂生产",
+          "zzz",
+          "方法1",
+          "220",
+          "2026.02.17",
+          "98.1",
+          "0.03",
+          "0.22",
+          "0.06",
+          "0.4",
+          "0.1",
+          "0.01",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-03",
+          "工厂生产",
+          "zzz",
+          "方法2",
+          "220",
+          "2026.02.18",
+          "99",
+          "0.02",
+          "0.1",
+          "0.07",
+          "0.13",
+          "0.04",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-03",
+          "研发小试",
+          "zzz",
+          "方法3",
+          "220",
+          "2026.02.19",
+          "98.9",
+          "0.02",
+          "0.08",
+          "0.09",
+          "0.08",
+          "0.2",
+          "0.03",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-03",
+          "研发小试",
+          "zzz",
+          "方法4",
+          "220",
+          "2026.02.20",
+          "99",
+          "0.02",
+          "0.13",
+          "0.07",
+          "",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-03",
+          "研发小试",
+          "zzz",
+          "方法5",
+          "220",
+          "2026.02.21",
+          "99.5",
+          "0.04",
+          "0.1",
+          "0.05",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+      ],
+      [
+          "批次26-01-04",
+          "研发小试",
+          "aaa",
+          "方法1",
+          "220",
+          "2026.02.22",
+          "98.8",
+          "0.03",
+          "0.11",
+          "0.04",
+          "0.19",
+          "0.04",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-04",
+          "研发小试",
+          "aaa",
+          "方法2",
+          "220",
+          "2026.02.23",
+          "99",
+          "0.08",
+          "0.1",
+          "0.1",
+          "0.13",
+          "0.06",
+          "ND",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-04",
+          "研发小试",
+          "aaa",
+          "方法3",
+          "220",
+          "2026.02.24",
+          "99.1",
+          "ND",
+          "0.08",
+          "0.074",
+          "0.07",
+          "0.17",
+          "0.03",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-04",
+          "研发小试",
+          "aaa",
+          "方法4",
+          "220",
+          "2026.02.25",
+          "99",
+          "0.02",
+          "0.13",
+          "0.07",
+          "",
+          "",
+          "",
+          "ND",
+          "ND",
+          "ND",
+          ""
+      ],
+      [
+          "批次26-01-04",
+          "研发小试",
+          "aaa",
+          "方法5",
+          "220",
+          "2026.02.26",
+          "99.6",
+          "0.03",
+          "0.08",
+          "0.04",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+      ]
+  ];
+
+  function parseDelimitedToAoa(text) {
+    text = String(text || '').replace(/^\uFEFF/, '').trim();
+    if (!text) return [];
+    const delimiter = guessDelimiter(text);
+    const rows = [];
+    let row = [], cell = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const next = text[i + 1];
+      if (ch === '"') {
+        if (inQuotes && next === '"') { cell += '"'; i++; }
+        else { inQuotes = !inQuotes; }
+      } else if (ch === delimiter && !inQuotes) {
+        row.push(cell); cell = '';
+      } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+        if (ch === '\r' && next === '\n') i++;
+        row.push(cell); cell = '';
+        rows.push(row.map(cleanCell)); row = [];
+      } else {
+        cell += ch;
+      }
+    }
+    row.push(cell);
+    rows.push(row.map(cleanCell));
+    return trimAoa(rows);
+  }
+
+  function guessDelimiter(text) {
+    const firstLine = text.split(/\r?\n/)[0] || '';
+    const tabs = (firstLine.match(/\t/g) || []).length;
+    const commas = (firstLine.match(/,/g) || []).length;
+    return tabs > commas ? '\t' : ',';
+  }
+
+  function cleanCell(v) { return String(v == null ? '' : v).trim(); }
+
+  function trimAoa(aoa) {
+    let rows = (aoa || []).map(r => (r || []).map(cleanCell));
+    while (rows.length && rows[rows.length - 1].every(v => v === '')) rows.pop();
+    let maxCol = 0;
+    rows.forEach(r => r.forEach((v, idx) => { if (v !== '') maxCol = Math.max(maxCol, idx + 1); }));
+    return rows.map(r => {
+      const out = r.slice(0, maxCol);
+      while (out.length < maxCol) out.push('');
+      return out;
+    });
+  }
+
+  function validateAndLoad(aoa) {
+    rawAoa = trimAoa(aoa);
+    if (rawAoa.length < 3) {
+      resetDerived();
+      setMessage('导入失败：至少需要三行表头。第一行字段名，第二行峰对应化合物名，第三行峰保留时间。', 'err');
+      return false;
+    }
+
+    const headerRow = rawAoa[0].map(cleanCell);
+    const fixedErrors = [];
+    fixedHeaders.forEach((h, idx) => {
+      if ((headerRow[idx] || '') !== h) fixedErrors.push(`第 ${idx + 1} 列必须是“${h}”，当前为“${headerRow[idx] || '空'}”`);
+    });
+    const peakErrors = [];
+    const peaks = [];
+    const otherIndex = headerRow.length - 1;
+    if ((headerRow[otherIndex] || '') !== otherHeader) {
+      peakErrors.push(`最后一列必须是“${otherHeader}”，当前为“${headerRow[otherIndex] || '空'}”`);
+    }
+    for (let c = fixedHeaders.length; c < otherIndex; c++) {
+      const h = headerRow[c];
+      if (!h) continue;
+      const m = h.match(/^峰(\d+)面积比$/);
+      if (!m) peakErrors.push(`第 ${c + 1} 列表头必须是“峰N面积比”，当前为“${h}”`);
+      else peaks.push({ index: c, peakNo: Number(m[1]), header: h, compound: cleanCell(rawAoa[1][c]), rt: cleanCell(rawAoa[2][c]) });
+    }
+    if (fixedErrors.length || peakErrors.length || !peaks.length) {
+      resetDerived();
+      setMessage(['表头格式不符合要求。', ...fixedErrors, ...peakErrors, !peaks.length ? '至少需要一个“峰N面积比”列，且末列为“其它”。' : ''].filter(Boolean).join('\n'), 'err');
+      return false;
+    }
+
+    peakColumns = peaks.sort((a, b) => a.peakNo - b.peakNo);
+    dataRows = rawAoa.slice(3).filter(r => r.some(v => cleanCell(v) !== '')).map((r, idx) => ({
+      rowNo: idx + 4,
+      batchNo: cleanCell(r[0]),
+      note1: cleanCell(r[1]),
+      note2: cleanCell(r[2]),
+      methodName: cleanCell(r[3]),
+      wavelength: cleanCell(r[4]),
+      testTime: cleanCell(r[5]),
+      other: cleanCell(r[otherIndex]),
+      values: peakColumns.map(p => cleanCell(r[p.index]))
+    }));
+
+    detailRows = makeDetailRows();
+    byBatchAoa = makeByBatchAoa();
+    byMethodAoa = makeByMethodAoa();
+    updateStats();
+    setButtons(true);
+    renderCurrentView();
+
+    const warnings = buildWarnings();
+    setMessage(warnings.length ? warnings.join('\n') : '数据已导入，可预览和导出。', warnings.length ? 'warn' : 'ok');
+    return true;
+  }
+
+  function resetDerived() {
+    peakColumns = [];
+    dataRows = [];
+    detailRows = [];
+    byBatchAoa = [];
+    byMethodAoa = [];
+    updateStats();
+    setButtons(false);
+    renderCurrentView();
+  }
+
+  function makeDetailRows() {
+    const rows = [];
+    for (const dr of dataRows) {
+      peakColumns.forEach((p, idx) => {
+        const area = dr.values[idx];
+        if (area === '') return;
+        rows.push({
+          '批号': dr.batchNo,
+          '备注1': dr.note1,
+          '备注2': dr.note2,
+          '分析方法名': dr.methodName,
+          '波长': dr.wavelength,
+          '检测时间': dr.testTime,
+          '其它': dr.other,
+          '峰序号': `峰${p.peakNo}`,
+          '化合物名': p.compound,
+          '出峰时间': p.rt,
+          '面积比': area
+        });
+      });
+    }
+    return rows;
+  }
+
+  function makeByBatchAoa() {
+    const out = [];
+    const groups = new Map();
+    for (const dr of dataRows) {
+      const key = dr.batchNo || '(空批号)';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(dr);
+    }
+    for (const [batch, rows] of Array.from(groups.entries()).sort((a,b)=>a[0].localeCompare(b[0], 'zh-CN', {numeric:true}))) {
+      out.push([`批号：${batch}`]);
+      const header1 = ['备注1','备注2','分析方法名','波长','检测时间','其它', ...peakColumns.map(p => p.header)];
+      const header2 = ['', '', '', '', '', '', ...peakColumns.map(p => p.compound)];
+      const header3 = ['', '', '', '', '', '', ...peakColumns.map(p => p.rt)];
+      out.push(header1, header2, header3);
+      rows.sort((a,b)=>String(a.methodName).localeCompare(String(b.methodName), 'zh-CN', {numeric:true}) ||
+        String(a.wavelength).localeCompare(String(b.wavelength), 'zh-CN', {numeric:true}) ||
+        String(a.testTime).localeCompare(String(b.testTime), 'zh-CN', {numeric:true}))
+        .forEach(dr => out.push([dr.note1, dr.note2, dr.methodName, dr.wavelength, dr.testTime, dr.other, ...dr.values]));
+      out.push([]);
+    }
+    if (out.length && out[out.length - 1].length === 0) out.pop();
+    return out;
+  }
+
+  function makeByMethodAoa() {
+    const out = [];
+    const groups = new Map();
+    for (const dr of dataRows) {
+      const key = `${dr.methodName || '(空方法)'} | ${dr.wavelength || '(空波长)'}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(dr);
+    }
+    for (const [key, rows] of Array.from(groups.entries()).sort((a,b)=>a[0].localeCompare(b[0], 'zh-CN', {numeric:true}))) {
+      out.push([`分析方法：${key}`]);
+      const header1 = ['批号','备注1','备注2','检测时间','其它', ...peakColumns.map(p => p.header)];
+      const header2 = ['', '', '', '', '', ...peakColumns.map(p => p.compound)];
+      const header3 = ['', '', '', '', '', ...peakColumns.map(p => p.rt)];
+      out.push(header1, header2, header3);
+      rows.sort((a,b)=>String(a.batchNo).localeCompare(String(b.batchNo), 'zh-CN', {numeric:true}) || String(a.testTime).localeCompare(String(b.testTime), 'zh-CN', {numeric:true}))
+        .forEach(dr => out.push([dr.batchNo, dr.note1, dr.note2, dr.testTime, dr.other, ...dr.values]));
+      out.push([]);
+    }
+    if (out.length && out[out.length - 1].length === 0) out.pop();
+    return out;
+  }
+
+  function detailSort(a, b) {
+    return String(a['分析方法名']).localeCompare(String(b['分析方法名']), 'zh-CN', {numeric:true}) ||
+      String(a['检测时间']).localeCompare(String(b['检测时间']), 'zh-CN', {numeric:true}) ||
+      String(a['峰序号']).localeCompare(String(b['峰序号']), 'zh-CN', {numeric:true});
+  }
+
+  function buildWarnings() {
+    const warnings = [];
+    const blankBatch = dataRows.filter(r => !r.batchNo).length;
+    const blankMethod = dataRows.filter(r => !r.methodName).length;
+    if (blankBatch) warnings.push(`有 ${blankBatch} 行未填写批号；已保留，但按批号整理时会归入“空批号”。`);
+    if (blankMethod) warnings.push(`有 ${blankMethod} 行未填写分析方法名；已保留，但按方法整理时会归入“空方法”。`);
+    const noAreaRows = dataRows.filter(r => r.values.every(v => v === '')).length;
+    if (noAreaRows) warnings.push(`有 ${noAreaRows} 行没有填写任何峰面积比；原始表保留，峰明细中不会展开。`);
+    const unnamedPeaks = peakColumns.filter(p => !p.compound).length;
+    if (unnamedPeaks) warnings.push(`有 ${unnamedPeaks} 个峰列未填写对应化合物名；不影响导出。`);
+    return warnings;
+  }
+
+  function updateStats() {
+    $('statRuns').textContent = dataRows.length;
+    $('statPeaks').textContent = peakColumns.length;
+    $('statBatches').textContent = new Set(dataRows.map(r => r.batchNo).filter(Boolean)).size;
+    $('statMethods').textContent = new Set(dataRows.map(r => `${r.methodName}|${r.wavelength}`).filter(Boolean)).size;
+  }
+
+  function setButtons(enabled) {
+    ['btnExportXlsx','btnExportRawCsv','btnExportDetailCsv','btnExportByBatchCsv','btnExportByMethodCsv'].forEach(id => $(id).disabled = !enabled);
+  }
+
+  function setMessage(text, type) {
+    msg.className = 'msg ' + (type || 'warn');
+    msg.textContent = text;
+  }
+
+  function renderCurrentView() {
+    if (currentView === 'raw') renderRawEditor(rawAoa && rawAoa.length ? rawAoa : blankEditorAoa(1));
+    if (currentView === 'detail') renderObjectRows(detailRows);
+    if (currentView === 'byBatch') renderAoa(byBatchAoa, { pivot: true, pivotMetaCols: 6 });
+    if (currentView === 'byMethod') renderAoa(byMethodAoa, { pivot: true, pivotMetaCols: 5 });
+  }
+
+
+  function renderRawEditor(aoa) {
+    const rows = normalizeWidth(aoa && aoa.length ? aoa : blankEditorAoa(1));
+    const maxCols = Math.max(...rows.map(r => r.length), 0);
+    const html = ['<table class="raw-editor"><tbody>'];
+    rows.forEach((r, i) => {
+      const isHeader = i < 3;
+      html.push(`<tr class="${isHeader ? 'header-row' : ''}">`);
+      for (let c = 0; c < maxCols; c++) {
+        const val = r[c] == null ? '' : r[c];
+        const lastCol = maxCols - 1;
+        const canEditPeakMeta = (i === 1 || i === 2) && c >= fixedHeaders.length && c < lastCol;
+        const canEditData = i >= 3;
+        const editable = canEditPeakMeta || canEditData;
+        const cls = [editable ? 'editable-cell' : 'readonly-cell'];
+        if (val === '') cls.push('empty');
+        html.push(`<td class="${cls.join(' ')}" data-row="${i}" data-col="${c}" ${editable ? 'contenteditable="true" spellcheck="false"' : ''}>${escapeHtml(val)}</td>`);
+      }
+      html.push('</tr>');
+    });
+    html.push('</tbody></table>');
+    tableWrap.innerHTML = html.join('');
+  }
+
+  function readRawEditorAoa() {
+    const table = tableWrap.querySelector('table.raw-editor');
+    if (!table) return rawAoa;
+    const rows = Array.from(table.querySelectorAll('tr'));
+    return rows.map(tr => Array.from(tr.querySelectorAll('td')).map(td => cleanCell(td.innerText.replace(/ /g, ' '))));
+  }
+
+  function addDataRow() {
+    if (currentView === 'raw') rawAoa = normalizeWidth(readRawEditorAoa());
+    if (!rawAoa || rawAoa.length < 3) rawAoa = blankEditorAoa(0);
+    rawAoa = normalizeWidth(rawAoa);
+    const colCount = Math.max(rawAoa[0].length, fixedHeaders.length + 1);
+    rawAoa.push(Array(colCount).fill(''));
+    switchView('raw');
+    setMessage('已增加一个空白数据行。填写后点击“应用表格修改 / 重新整理”，导出时会包含新增数据。', 'warn');
+  }
+
+  function applyRawTableEdits() {
+    const aoa = currentView === 'raw' ? readRawEditorAoa() : rawAoa;
+    const ok = validateAndLoad(aoa);
+    if (ok) setMessage('表格修改已应用，整理结果已更新。', 'ok');
+  }
+
+  function switchView(view) {
+    currentView = view;
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    renderCurrentView();
+  }
+
+  function syncRawEditorBeforeExport() {
+    if (currentView === 'raw') {
+      const ok = validateAndLoad(readRawEditorAoa());
+      return !!ok;
+    }
+    return true;
+  }
+
+  function renderAoa(aoa, options = {}) {
+    const rows = trimAoa(aoa || []);
+    if (!rows.length) {
+      tableWrap.innerHTML = '<div class="small" style="padding:16px;">无数据。</div>';
+      return;
+    }
+    const maxCols = Math.max(...rows.map(r => r.length));
+    const tableClass = options.pivot ? ' class="pivot-table"' : '';
+    const html = [`<table${tableClass}><tbody>`];
+    rows.forEach((r, i) => {
+      const isHeader = i < (options.headerRows || 0);
+      const isSection = r.length === 1 && r[0] && String(r[0]).includes('：');
+      const sectionBack1 = i > 0 && rows[i - 1] && rows[i - 1].length === 1 && rows[i - 1][0] && String(rows[i - 1][0]).includes('：');
+      const sectionBack2 = i > 1 && rows[i - 2] && rows[i - 2].length === 1 && rows[i - 2][0] && String(rows[i - 2][0]).includes('：');
+      const sectionBack3 = i > 2 && rows[i - 3] && rows[i - 3].length === 1 && rows[i - 3][0] && String(rows[i - 3][0]).includes('：');
+      const isSubHeader = !isHeader && (sectionBack1 || (options.pivot && (sectionBack2 || sectionBack3)));
+      html.push(`<tr class="${isHeader || isSubHeader ? 'header-row' : ''}${isSection ? ' section' : ''}">`);
+      for (let c = 0; c < maxCols; c++) {
+        const val = r[c] == null ? '' : r[c];
+        const colspan = isSection && c === 0 ? ` colspan="${maxCols}"` : '';
+        if (isSection && c > 0) continue;
+        const cls = [];
+        if (val === '') cls.push('empty');
+        if (options.pivot && !isSection) {
+          if (c >= (options.pivotMetaCols || 0)) cls.push('peak-cell');
+          else cls.push('meta-cell');
+          if (c >= (options.pivotMetaCols || 0) && sectionBack2) cls.push('peak-name-cell');
+        }
+        html.push(`<td${colspan} class="${cls.join(' ')}">${escapeHtml(val)}</td>`);
+      }
+      html.push('</tr>');
+    });
+    html.push('</tbody></table>');
+    tableWrap.innerHTML = html.join('');
+  }
+
+  function renderObjectRows(rows) {
+    if (!rows || !rows.length) {
+      tableWrap.innerHTML = '<div class="small" style="padding:16px;">无数据。</div>';
+      return;
+    }
+    const headers = ['批号','备注1','备注2','分析方法名','波长','检测时间','其它','峰序号','化合物名','出峰时间','面积比'];
+    const html = ['<table><thead><tr>', ...headers.map(h => `<th>${escapeHtml(h)}</th>`), '</tr></thead><tbody>'];
+    rows.forEach(r => {
+      html.push('<tr>');
+      headers.forEach(h => html.push(`<td class="${r[h] ? '' : 'empty'}">${escapeHtml(r[h] || '')}</td>`));
+      html.push('</tr>');
+    });
+    html.push('</tbody></table>');
+    tableWrap.innerHTML = html.join('');
+  }
+
+  function escapeHtml(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function objectRowsToAoa(rows) {
+    if (!rows || !rows.length) return [];
+    const headers = ['批号','备注1','备注2','分析方法名','波长','检测时间','其它','峰序号','化合物名','出峰时间','面积比'];
+    return [headers, ...rows.map(r => headers.map(h => r[h] || ''))];
+  }
+
+  function toCsvFromAoa(aoa) {
+    return trimAoa(aoa).map(row => row.map(csvCell).join(',')).join('\n');
+  }
+
+  function csvCell(v) {
+    const s = String(v == null ? '' : v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function downloadText(filename, text, mime) {
+    const blob = new Blob(['\uFEFF' + text], { type: mime || 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+
+  function makeRawCols() {
+    const cols = [{wch:22},{wch:10},{wch:12},{wch:18},{wch:8},{wch:14}];
+    peakColumns.forEach(() => cols.push({wch:14}));
+    cols.push({wch:22});
+    return cols;
+  }
+
+  function makePivotCols(metaCount) {
+    const metaWidths = metaCount === 6
+      ? [{wch:10},{wch:12},{wch:18},{wch:8},{wch:14},{wch:22}]
+      : [{wch:22},{wch:10},{wch:12},{wch:14},{wch:22}];
+    peakColumns.forEach(() => metaWidths.push({wch:14}));
+    return metaWidths;
+  }
+
+  function exportXlsx() {
+    if (!syncRawEditorBeforeExport()) return;
+    if (typeof XLSX === 'undefined') {
+      alert('XLSX 功能未加载。可先导出 CSV，或部署到可访问 CDN 的环境。');
+      return;
+    }
+    const wb = XLSX.utils.book_new();
+    const rawWs = XLSX.utils.aoa_to_sheet(rawAoa);
+    const detailWs = XLSX.utils.aoa_to_sheet(objectRowsToAoa(detailRows));
+    const byBatchWs = XLSX.utils.aoa_to_sheet(byBatchAoa);
+    const byMethodWs = XLSX.utils.aoa_to_sheet(byMethodAoa);
+    rawWs['!cols'] = makeRawCols();
+    detailWs['!cols'] = [{wch:22},{wch:10},{wch:12},{wch:18},{wch:8},{wch:14},{wch:18},{wch:8},{wch:28},{wch:12},{wch:10}];
+    byBatchWs['!cols'] = makePivotCols(6);
+    byMethodWs['!cols'] = makePivotCols(5);
+    XLSX.utils.book_append_sheet(wb, rawWs, 'raw_input');
+    XLSX.utils.book_append_sheet(wb, detailWs, 'peak_detail');
+    XLSX.utils.book_append_sheet(wb, byBatchWs, 'by_batch');
+    XLSX.utils.book_append_sheet(wb, byMethodWs, 'by_method');
+    XLSX.writeFile(wb, 'hplc整理结果.xlsx');
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    const name = file.name.toLowerCase();
+    const reader = new FileReader();
+    if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
+      reader.onload = e => {
+        if (typeof XLSX === 'undefined') {
+          setMessage('XLSX 功能未加载。请改用 CSV，或确认网页可以访问 SheetJS CDN。', 'err');
+          return;
+        }
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const aoa = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        validateAndLoad(aoa);
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.onload = e => validateAndLoad(parseDelimitedToAoa(e.target.result));
+      reader.readAsText(file, 'utf-8');
+    }
+  }
+
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const nextView = btn.dataset.view;
+      if (currentView === 'raw' && nextView !== 'raw') {
+        const ok = validateAndLoad(readRawEditorAoa());
+        if (!ok) return;
+      }
+      switchView(nextView);
+    });
+  });
+
+  tableWrap.addEventListener('paste', e => {
+    if (!e.target || !e.target.isContentEditable) return;
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+
+  $('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
+  $('btnParsePaste').addEventListener('click', () => validateAndLoad(parseDelimitedToAoa($('pasteArea').value)));
+  $('btnDemo').addEventListener('click', () => { const csv = toCsvFromAoa(demoAoa); $('pasteArea').value = csv; validateAndLoad(demoAoa); });
+  $('btnBlankTemplate').addEventListener('click', () => downloadText('hplc_blank_template.csv', toCsvFromAoa(blankTemplateAoa()), 'text/csv;charset=utf-8;'));
+  $('btnClear').addEventListener('click', () => {
+    rawAoa = blankEditorAoa(1); peakColumns = []; dataRows = []; detailRows = []; byBatchAoa = []; byMethodAoa = [];
+    $('pasteArea').value = ''; $('fileInput').value = '';
+    updateStats(); setButtons(false); setMessage('已清空。可上传文件，也可直接在空白原始表格中输入数据。', 'warn'); switchView('raw');
+  });
+  $('btnAddRow').addEventListener('click', addDataRow);
+  $('btnApplyTable').addEventListener('click', applyRawTableEdits);
+  $('btnExportXlsx').addEventListener('click', exportXlsx);
+  $('btnExportRawCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_raw_input.csv', toCsvFromAoa(rawAoa), 'text/csv;charset=utf-8;'); });
+  $('btnExportDetailCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_peak_detail.csv', toCsvFromAoa(objectRowsToAoa(detailRows)), 'text/csv;charset=utf-8;'); });
+  $('btnExportByBatchCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_by_batch.csv', toCsvFromAoa(byBatchAoa), 'text/csv;charset=utf-8;'); });
+  $('btnExportByMethodCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_by_method.csv', toCsvFromAoa(byMethodAoa), 'text/csv;charset=utf-8;'); });
+
+  updateStats(); setButtons(false); renderCurrentView();
+})();
+</script>
+</body>
+</html>
