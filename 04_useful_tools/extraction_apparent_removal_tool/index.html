@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<!--
+  OpenChemProcess Extraction Apparent Removal Tool
+  Project provenance: OpenChemProcess
+  Version: v0.5
+  License/attribution notice: retain OpenChemProcess attribution when reusing or modifying this file.
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenChemProcess Extraction Apparent Removal Calculator v0.5</title>
+  <meta name="application-name" content="OpenChemProcess Extraction Apparent Removal Tool" />
+  <meta name="author" content="OpenChemProcess" />
+  <meta name="generator" content="OpenChemProcess extraction_apparent_removal_tool_v0.5" />
+  <meta name="description" content="OpenChemProcess single-file web tool for extraction apparent removal rate calculation." />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --header: #eef2f7;
+      --accent: #2563eb;
+      --accent2: #0f766e;
+      --warn: #b45309;
+      --bad: #b91c1c;
+      --good: #047857;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.45;
+    }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    h2 { margin: 24px 0 10px; font-size: 18px; }
+    h3 { margin: 18px 0 8px; font-size: 16px; }
+    .sub { color: var(--muted); margin-bottom: 18px; max-width: 1180px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button, .file-label {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.secondary { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+    button.danger { color: var(--bad); }
+    button:hover, .file-label:hover { filter: brightness(0.98); }
+    input[type="file"] { display: none; }
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      overflow-x: auto;
+      font-size: 13px;
+      color: #374151;
+    }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      max-height: 66vh;
+    }
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+      font-size: 13px;
+    }
+    #dataTable { min-width: 1320px; }
+    .result-table { min-width: 760px; }
+    .summary-table { min-width: 980px; }
+    th, td {
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 6px;
+      vertical-align: middle;
+      background: #fff;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: var(--header);
+      text-align: left;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    th:last-child, td:last-child { border-right: none; }
+    input.cell {
+      width: 100%;
+      min-width: 80px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 6px;
+      font-size: 13px;
+      background: transparent;
+    }
+    input.cell:focus {
+      outline: 2px solid rgba(37,99,235,0.18);
+      border-color: rgba(37,99,235,0.45);
+      background: #fff;
+    }
+    .w-run { min-width: 88px; }
+    .w-comp { min-width: 260px; }
+    .w-cond { min-width: 260px; }
+    .w-step { min-width: 76px; }
+    .w-type { min-width: 168px; }
+    .w-num { min-width: 118px; }
+    .w-note { min-width: 160px; }
+    .w-calc { min-width: 112px; text-align: right; font-variant-numeric: tabular-nums; }
+    .w-status { min-width: 260px; }
+    .calc-empty { color: var(--muted); }
+    .calc-est { color: var(--good); font-weight: 650; }
+    .calc-bad { color: var(--bad); font-weight: 650; }
+    .calc-good { color: var(--good); font-weight: 650; }
+    .status { color: #374151; }
+    .small { font-size: 12px; color: var(--muted); }
+    .row-actions { white-space: nowrap; text-align: center; }
+    .row-actions button { padding: 4px 7px; font-size: 12px; }
+    .result-block { margin-top: 16px; }
+    .result-meta { color: var(--muted); font-size: 12px; margin: 2px 0 8px; }
+    .summary-block { margin-top: 16px; }
+    .summary-title { font-size: 16px; margin: 18px 0 8px; }
+    .badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .calc-status-box {
+      margin-top: 12px;
+      border: 1px solid #bfdbfe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .calc-status-box strong { font-weight: 700; }
+
+    .eval-box {
+      margin-top: 8px;
+      border: 1px solid #d1fae5;
+      background: #f0fdf4;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+    .eval-title { font-weight: 700; margin-bottom: 4px; color: #064e3b; }
+    .eval-list { margin: 6px 0 0 18px; padding: 0; }
+    .eval-list li { margin: 3px 0; }
+    .eval-good { color: var(--good); }
+    .eval-warn { color: var(--warn); }
+    .eval-bad { color: var(--bad); }
+    .eval-neutral { color: #374151; }
+    .ocp-footer {
+      margin: 18px 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+    .ocp-footer code { color: #374151; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>萃取表观去除率计算器 v0.5</h1>
+  <div class="sub">
+    用于 OpenChemProcess（OCP）萃取操作数据整理。计算对象是“以产品峰面积归一化后的杂质表观去除率”，不引入 HPLC 响应因子、真实质量平衡或水相数据。
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <label class="file-label" for="fileInput">导入 CSV / Excel</label>
+      <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" />
+      <button id="demoBtn">载入示例数据</button>
+      <button id="addRowBtn">增加数据行</button>
+      <button id="addGroupBtn">增加实验组</button>
+      <button id="calcBtn" class="primary">计算表观去除率</button>
+      <button id="summaryBtn" class="secondary">生成分次比较表</button>
+      <button id="exportBtn">导出结果 Excel</button>
+      <button id="clearBtn" class="danger">清空</button>
+    </div>
+    <p class="small">导入旧格式时，会自动映射“样品/洗涤次数/产品面积绝对值/杂质面积绝对值”等表头，并按每个“0次/洗涤粗品”自动生成实验组ID。</p>
+    <div class="formula">单次表观去除率_n = 1 - [(杂质峰面积_n / 产品峰面积_n) / (杂质峰面积_{n-1} / 产品峰面积_{n-1})]；累计表观去除率_n = 1 - [(杂质峰面积_n / 产品峰面积_n) / (杂质峰面积_0 / 产品峰面积_0)]</div>
+    <div id="calcStatus" class="calc-status-box hidden"></div>
+  </div>
+
+  <div class="panel">
+    <h2>原始输入数据</h2>
+    <div class="table-wrap">
+      <table id="dataTable"><thead></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <div id="resultPanel" class="panel hidden">
+    <h2>表观去除率结果表</h2>
+    <p class="small">每个实验组单独成表。该表不重复显示产品/杂质峰面积，只显示本次表观去除率与累计表观去除率。绿色数字为计算结果；带“≈”表示由缺失中间次数的跨步几何平均估算。每个实验组表格下方会按杂质分别给出趋势评价。</p>
+    <div id="resultContainer"></div>
+  </div>
+
+  <div id="summaryPanel" class="panel hidden">
+    <h2>分次比较表</h2>
+    <p class="small">默认按“杂质1本次表观去除率”从高到低排序。带“≈”表示该值来自缺失中间次数的几何平均估算。</p>
+    <div id="summaryContainer"></div>
+  </div>
+
+  <div class="ocp-footer">
+    OpenChemProcess · Extraction Apparent Removal Tool · v0.5 · source marker: <code>openchemprocess</code>
+  </div>
+
+  <script>
+    // OpenChemProcess provenance marker. Keep this block when reusing or modifying the tool.
+    const OPEN_CHEM_PROCESS_PROVENANCE = {
+      project: 'OpenChemProcess',
+      marker: 'openchemprocess',
+      tool: 'Extraction Apparent Removal Tool',
+      version: 'v0.5',
+      attribution: 'OpenChemProcess extraction apparent removal calculator'
+    };
+
+    const DEMO_CSV = "样品,萃取条件,洗涤次数,产品面积绝对值,杂质1面积绝对值,杂质2面积绝对值,备注\n9.0g产品  0.5g杂质1+0.1g杂质2,6V水+8v 甲苯,洗涤粗品,8165,12205,300,\n9.0g产品  0.5g杂质1+0.1g杂质2,6V水+8v 甲苯,1次洗涤有机相,7559,3161,200,\n9.0g产品  0.5g杂质1+0.1g杂质2,6V水+8v 甲苯,2次洗涤有机相,7478,735,100,\n9.0g产品  0.5g杂质1+0.1g杂质2,6V水+8v 甲苯,3次洗涤有机相,,,,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 10%氯化钠水溶液+8v甲苯,洗涤粗品,8165,12205,300,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 10%氯化钠水溶液+8v甲苯,1次洗涤有机相,8981,1321,150,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 10%氯化钠水溶液+8v甲苯,2次洗涤有机相,,,,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 10%氯化钠水溶液+8v甲苯,3次洗涤有机相,,,,\n9.0g产品  0.5g杂质1+0.1g杂质2,3V 0.1N盐酸水溶液+8v甲苯,洗涤粗品,8764,13032,300,\n9.0g产品  0.5g杂质1+0.1g杂质2,3V 0.1N盐酸水溶液+8v甲苯,1次洗涤有机相,8744,4413,150,\n9.0g产品  0.5g杂质1+0.1g杂质2,3V 0.1N盐酸水溶液+8v甲苯,2次洗涤有机相,8794,1077,100,\n9.0g产品  0.5g杂质1+0.1g杂质2,3V 0.1N盐酸水溶液+8v甲苯,3次洗涤有机相,8876,254,50,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,洗涤粗品,4733,6828,300,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,1次洗涤有机相,4885,2644,150,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,2次洗涤有机相,5146,985,100,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,3次洗涤有机相,,,50,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,4次洗涤有机相,5647,116,25,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,5次洗涤有机相,,,12,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,6次洗涤有机相,6344,10,6,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,7次洗涤有机相,,,,\n9.0g产品  0.5g杂质1+0.1g杂质2,4V 0.1N盐酸水溶液+8v甲苯,8次洗涤有机相,6952,1.4,2,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,洗涤粗品,4747,3602,300,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,1次洗涤有机相,5693,678,150,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,2次洗涤有机相,5166,82.7,100,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,3次洗涤有机相,7000,19.1,50,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,4次洗涤有机相,7611,8.1,25,\n9.0g产品  0.5g杂质1+0.1g杂质2,10V 0.1N盐酸水溶液+8v EA,5次洗涤有机相,8744,7.4,12,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,洗涤粗品,4721,3747,,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,1次洗涤有机相,4005,329,,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,2次洗涤有机相,7017,56.2,,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,3次洗涤有机相,8367,11.7,,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,4次洗涤有机相,9085,7.8,,\n9.0g产品  0.5g杂质1+0.1g杂质2,15V 0.1N盐酸水溶液+8v EA,5次洗涤有机相,10436,7.4,,\n";
+
+    const BASE_FIELDS = [
+      { key: 'runId', label: '实验组ID', cls: 'w-run' },
+      { key: 'composition', label: '样品组成', cls: 'w-comp' },
+      { key: 'condition', label: '萃取条件', cls: 'w-cond' },
+      { key: 'step', label: '萃取次数', cls: 'w-step' },
+      { key: 'sampleType', label: '样品类型', cls: 'w-type' },
+      { key: 'product', label: '产品峰面积', cls: 'w-num' },
+      { key: 'imp1', label: '杂质1峰面积', cls: 'w-num' },
+      { key: 'imp2', label: '杂质2峰面积', cls: 'w-num' },
+      { key: 'note', label: '备注', cls: 'w-note' }
+    ];
+
+    let rows = [];
+    let calculated = false;
+
+    function emptyRow(runId = 'G001', step = '') {
+      return {
+        runId, composition: '', condition: '', step: step === '' ? '' : String(step),
+        sampleType: step === '' ? '' : inferSampleType(step),
+        product: '', imp1: '', imp2: '', note: '',
+        _calc: {}, _status: []
+      };
+    }
+
+    function initBlank() {
+      rows = [0, 1, 2, 3].map(s => emptyRow('G001', s));
+      calculated = false;
+      renderTable();
+      hideCalcStatus();
+      clearResults();
+      clearSummary();
+    }
+
+    function inferSampleType(step) {
+      const n = parseStep(step);
+      if (!Number.isFinite(n)) return '';
+      if (n === 0) return '萃取前有机相';
+      return `${n}次萃取后有机相`;
+    }
+
+    function parseStep(value) {
+      if (value === null || value === undefined) return NaN;
+      const s = String(value).trim();
+      if (!s) return NaN;
+      if (/粗品|萃取前|洗涤前|原始|initial|before/i.test(s)) return 0;
+      const m = s.match(/-?\d+(?:\.\d+)?/);
+      if (!m) return NaN;
+      return Number(m[0]);
+    }
+
+    function parseNum(value) {
+      if (value === null || value === undefined) return NaN;
+      const s = String(value).replace(/,/g, '').trim();
+      if (!s || /^nan$/i.test(s) || /^na$/i.test(s) || s === '-') return NaN;
+      const n = Number(s);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function fmtPercent(cell) {
+      if (!cell || !Number.isFinite(cell.value)) return '<span class="calc-empty">—</span>';
+      const pct = Math.round(cell.value * 100);
+      let cls = 'calc-good';
+      if (cell.estimated) cls = 'calc-est';
+      if (cell.value < 0 || cell.value > 1) cls = 'calc-bad';
+      const prefix = cell.estimated ? '≈' : '';
+      return `<span class="${cls}" title="${escapeHtml(cell.title || '')}">${prefix}${pct}%</span>`;
+    }
+
+    function rawPercent(cell) {
+      if (!cell || !Number.isFinite(cell.value)) return '';
+      return (cell.estimated ? '≈' : '') + String(Math.round(cell.value * 100)) + '%';
+    }
+
+    function syncRowsFromDOM() {
+      document.querySelectorAll('#dataTable input.cell').forEach(input => {
+        const idx = Number(input.dataset.i);
+        const field = input.dataset.field;
+        if (rows[idx] && field) {
+          rows[idx][field] = input.value;
+          if (field === 'step') rows[idx].sampleType = inferSampleType(input.value);
+        }
+      });
+    }
+
+    function hideCalcStatus() {
+      const el = document.getElementById('calcStatus');
+      if (el) { el.classList.add('hidden'); el.innerHTML = ''; }
+    }
+
+    function showCalcStatus() {
+      const el = document.getElementById('calcStatus');
+      let calcRows = 0;
+      let calcCells = 0;
+      rows.forEach(r => {
+        const n = ['imp1Single','imp1Cum','imp2Single','imp2Cum'].filter(k => r._calc && r._calc[k] && Number.isFinite(r._calc[k].value)).length;
+        if (n > 0) calcRows += 1;
+        calcCells += n;
+      });
+      el.classList.remove('hidden');
+      if (calcCells === 0) {
+        el.innerHTML = '<strong>已执行计算，但没有得到可显示的表观去除率。</strong> 请检查每个实验组是否至少有第0次基准行，以及后续行是否同时有产品峰面积和杂质峰面积。';
+      } else {
+        el.innerHTML = `<strong>已计算：</strong>${calcRows} 行产生了结果，共 ${calcCells} 个表观去除率值。下方“表观去除率结果表”已按实验组拆分；带“≈”的结果为跨缺失萃取次数的几何平均估算。`;
+      }
+    }
+
+    function renderTable() {
+      const thead = document.querySelector('#dataTable thead');
+      const tbody = document.querySelector('#dataTable tbody');
+      thead.innerHTML = '<tr>' + BASE_FIELDS.map(f => `<th class="${f.cls}">${f.label}</th>`).join('') + '<th>操作</th></tr>';
+      tbody.innerHTML = rows.map((row, i) => {
+        const cells = BASE_FIELDS.map(f => `<td class="${f.cls}"><input class="cell" data-i="${i}" data-field="${f.key}" value="${escapeHtml(row[f.key])}" /></td>`).join('');
+        return `<tr>${cells}<td class="row-actions"><button data-action="copy" data-i="${i}">复制</button> <button data-action="delete" data-i="${i}">删除</button></td></tr>`;
+      }).join('');
+
+      tbody.querySelectorAll('input.cell').forEach(input => {
+        input.addEventListener('input', e => {
+          const idx = Number(e.target.dataset.i);
+          const field = e.target.dataset.field;
+          rows[idx][field] = e.target.value;
+          if (field === 'step') rows[idx].sampleType = inferSampleType(e.target.value);
+          calculated = false;
+          hideCalcStatus();
+          clearResults();
+          clearSummary();
+        });
+      });
+      tbody.querySelectorAll('button[data-action]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          const idx = Number(e.target.dataset.i);
+          const action = e.target.dataset.action;
+          if (action === 'delete') rows.splice(idx, 1);
+          if (action === 'copy') rows.splice(idx + 1, 0, JSON.parse(JSON.stringify(stripCalc(rows[idx]))));
+          calculated = false;
+          hideCalcStatus();
+          renderTable();
+          clearResults();
+          clearSummary();
+        });
+      });
+    }
+
+    function stripCalc(row) {
+      const out = { ...row };
+      delete out._calc;
+      delete out._status;
+      return { ...out, _calc: {}, _status: [] };
+    }
+
+    function nextRunId() {
+      let max = 0;
+      rows.forEach(r => {
+        const m = String(r.runId || '').match(/(\d+)/);
+        if (m) max = Math.max(max, Number(m[1]));
+      });
+      return 'G' + String(max + 1 || 1).padStart(3, '0');
+    }
+
+    function addRow() {
+      syncRowsFromDOM();
+      const last = rows[rows.length - 1] || emptyRow();
+      const n = parseStep(last.step);
+      const newStep = Number.isFinite(n) ? n + 1 : '';
+      const r = emptyRow(last.runId || 'G001', newStep);
+      r.composition = last.composition || '';
+      r.condition = last.condition || '';
+      rows.push(r);
+      calculated = false;
+      renderTable();
+      hideCalcStatus();
+      clearResults();
+      clearSummary();
+    }
+
+    function addGroup() {
+      syncRowsFromDOM();
+      const id = nextRunId();
+      rows.push(...[0, 1, 2, 3].map(s => emptyRow(id, s)));
+      calculated = false;
+      renderTable();
+      hideCalcStatus();
+      clearResults();
+      clearSummary();
+    }
+
+    function normalizeHeader(s) {
+      return String(s || '').toLowerCase().replace(/[\s_\-\/（）()：:]/g, '');
+    }
+
+    const ALIASES = {
+      runId: ['实验组id','实验组','runid','groupid'],
+      composition: ['样品组成','样品','samplecomposition','sample'],
+      condition: ['萃取条件','洗涤条件','extractioncondition','condition'],
+      step: ['萃取次数','洗涤次数','step','extractioncount','washcount'],
+      sampleType: ['样品类型','sampletype'],
+      product: ['产品峰面积','产品hplc峰面积','产品面积绝对值','产品面积','productarea'],
+      imp1: ['杂质1峰面积','杂质1hplc峰面积','杂质1面积绝对值','impurity1area','imp1area'],
+      imp2: ['杂质2峰面积','杂质2hplc峰面积','杂质2面积绝对值','impurity2area','imp2area'],
+      note: ['备注','note','notes','comment']
+    };
+
+    function findColumn(headers, key) {
+      const normalized = headers.map(normalizeHeader);
+      for (const alias of ALIASES[key]) {
+        const idx = normalized.indexOf(normalizeHeader(alias));
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    }
+
+    function mapAOAToRows(aoa) {
+      if (!aoa || aoa.length === 0) return [];
+      const headers = aoa[0].map(x => String(x || '').trim());
+      const idx = {};
+      Object.keys(ALIASES).forEach(k => { idx[k] = findColumn(headers, k); });
+      const hasKnownHeader = Object.values(idx).some(v => v >= 0);
+      const dataRows = hasKnownHeader ? aoa.slice(1) : aoa;
+      if (!hasKnownHeader) {
+        idx.composition = 0; idx.condition = 1; idx.step = 2; idx.product = 3; idx.imp1 = 4; idx.imp2 = 5; idx.note = 6;
+      }
+      let currentRun = 0;
+      let groupHasRows = false;
+      return dataRows
+        .filter(arr => arr && arr.some(x => String(x ?? '').trim() !== ''))
+        .map(arr => {
+          const get = key => idx[key] >= 0 ? (arr[idx[key]] ?? '') : '';
+          const rawStep = get('step');
+          const step = parseStep(rawStep);
+          let runId = String(get('runId') || '').trim();
+          if (!runId) {
+            if (currentRun === 0 || (step === 0 && groupHasRows)) currentRun += 1;
+            if (currentRun === 0) currentRun = 1;
+            runId = 'G' + String(currentRun).padStart(3, '0');
+          }
+          groupHasRows = true;
+          const sampleType = String(get('sampleType') || '').trim() || inferSampleType(Number.isFinite(step) ? step : rawStep);
+          return {
+            runId,
+            composition: String(get('composition') || '').trim(),
+            condition: String(get('condition') || '').trim(),
+            step: Number.isFinite(step) ? String(step) : String(rawStep || '').trim(),
+            sampleType,
+            product: String(get('product') || '').trim(),
+            imp1: String(get('imp1') || '').trim(),
+            imp2: String(get('imp2') || '').trim(),
+            note: String(get('note') || '').trim(),
+            _calc: {}, _status: []
+          };
+        });
+    }
+
+    function parseCSV(text) {
+      const out = [];
+      let row = [], cell = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
+        if (ch === '"') {
+          if (inQuotes && next === '"') { cell += '"'; i++; }
+          else { inQuotes = !inQuotes; }
+        } else if (ch === ',' && !inQuotes) {
+          row.push(cell); cell = '';
+        } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+          if (ch === '\r' && next === '\n') i++;
+          row.push(cell); cell = '';
+          out.push(row); row = [];
+        } else {
+          cell += ch;
+        }
+      }
+      if (cell.length || row.length) { row.push(cell); out.push(row); }
+      return out;
+    }
+
+    async function importFile(file) {
+      const name = file.name.toLowerCase();
+      let aoa;
+      if (name.endsWith('.csv')) {
+        const text = await file.text();
+        aoa = parseCSV(text.replace(/^﻿/, ''));
+      } else {
+        if (typeof XLSX === 'undefined') {
+          alert('Excel 导入需要 SheetJS CDN。当前环境未加载成功，请先转成 CSV。');
+          return;
+        }
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' });
+      }
+      rows = mapAOAToRows(aoa);
+      calculated = false;
+      renderTable();
+      hideCalcStatus();
+      clearResults();
+      clearSummary();
+    }
+
+    function loadDemo() {
+      const aoa = parseCSV(DEMO_CSV.replace(/^﻿/, ''));
+      rows = mapAOAToRows(aoa);
+      calculated = false;
+      renderTable();
+      hideCalcStatus();
+      clearResults();
+      clearSummary();
+    }
+
+    function isActualPoint(row, impKey) {
+      const step = parseStep(row.step);
+      const product = parseNum(row.product);
+      const imp = parseNum(row[impKey]);
+      if (!Number.isFinite(step) || !Number.isFinite(product) || product <= 0) return null;
+      if (!Number.isFinite(imp) || imp < 0) return null;
+      return { step, ratio: imp / product, product, imp };
+    }
+
+    function makeCell(value, estimated, title) {
+      return { value, estimated: !!estimated, title: title || '' };
+    }
+
+    function addStatus(row, msg) {
+      if (!msg) return;
+      if (!row._status) row._status = [];
+      if (!row._status.includes(msg)) row._status.push(msg);
+    }
+
+    function calculate() {
+      syncRowsFromDOM();
+      rows.forEach(r => { r._calc = {}; r._status = []; });
+      const groups = groupRows();
+      groups.forEach(items => {
+        items.sort((a, b) => {
+          const sa = Number.isFinite(a.step) ? a.step : 999999;
+          const sb = Number.isFinite(b.step) ? b.step : 999999;
+          return sa - sb || a.idx - b.idx;
+        });
+        computeForImpurity(items, 'imp1', 'imp1Single', 'imp1Cum', '杂质1');
+        computeForImpurity(items, 'imp2', 'imp2Single', 'imp2Cum', '杂质2');
+        evaluateGroupPattern(items, 'imp1Single', '杂质1');
+        evaluateGroupPattern(items, 'imp2Single', '杂质2');
+      });
+      calculated = true;
+      renderTable();
+      renderRemovalTables();
+      showCalcStatus();
+    }
+
+    function groupRows() {
+      const groups = new Map();
+      rows.forEach((r, idx) => {
+        const key = String(r.runId || '').trim() || '未命名组';
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push({ row: r, idx, step: parseStep(r.step) });
+      });
+      return groups;
+    }
+
+    function computeForImpurity(items, impKey, singleKey, cumKey, label) {
+      const actualsByStep = new Map();
+      items.forEach(item => {
+        const p = isActualPoint(item.row, impKey);
+        if (p && Number.isFinite(p.step)) {
+          if (!actualsByStep.has(p.step)) actualsByStep.set(p.step, []);
+          actualsByStep.get(p.step).push({ ...p, item });
+        }
+      });
+      const actuals = Array.from(actualsByStep.entries()).map(([step, arr]) => arr[0]).sort((a, b) => a.step - b.step);
+      if (actuals.length === 0) return;
+      const baseline = actuals.find(a => a.step === 0) || null;
+      if (baseline) {
+        items.filter(it => it.step === 0).forEach(it => {
+          if (isActualPoint(it.row, impKey)) it.row._calc[cumKey] = makeCell(0, false, `${label}基准行`);
+        });
+      }
+      for (let i = 1; i < actuals.length; i++) {
+        const prev = actuals[i - 1];
+        const next = actuals[i];
+        const span = next.step - prev.step;
+        if (!Number.isFinite(span) || span <= 0) continue;
+        if (prev.ratio < 0 || next.ratio < 0) continue;
+        if (prev.ratio === 0) {
+          addStatus(next.item.row, `${label}前一有效点为0，无法计算本次去除率`);
+          continue;
+        }
+        const ratioChange = next.ratio / prev.ratio;
+        if (ratioChange < 0) continue;
+        const perStepChange = Math.pow(ratioChange, 1 / span);
+        const singleValue = 1 - perStepChange;
+        const isGap = span > 1;
+        const title = isGap ? `${label}：由第${prev.step}次到第${next.step}次跨${span}次数据计算几何平均单次去除率` : `${label}：由第${prev.step}次到第${next.step}次计算`;
+        items.forEach(it => {
+          if (!Number.isFinite(it.step)) return;
+          if (it.step > prev.step && it.step <= next.step) {
+            const hasActual = !!isActualPoint(it.row, impKey);
+            it.row._calc[singleKey] = makeCell(singleValue, isGap, title);
+            if (isGap) addStatus(it.row, `${label}本次为跨步几何平均估算`);
+            if (singleValue < 0) addStatus(it.row, `${label}表观去除率为负`);
+            if (singleValue > 1) addStatus(it.row, `${label}表观去除率>100%，检查峰面积/积分`);
+            if (baseline && baseline.ratio > 0) {
+              const estimatedRatio = prev.ratio * Math.pow(ratioChange, (it.step - prev.step) / span);
+              const cumValue = 1 - estimatedRatio / baseline.ratio;
+              const cumEstimated = isGap || !hasActual;
+              it.row._calc[cumKey] = makeCell(cumValue, cumEstimated, `${label}累计：相对于第0次基准`);
+            }
+          }
+        });
+      }
+      items.forEach(it => {
+        if (!Number.isFinite(it.step)) addStatus(it.row, '萃取次数无法识别');
+        const product = parseNum(it.row.product);
+        const imp = parseNum(it.row[impKey]);
+        const hasAny = String(it.row.product || it.row[impKey] || '').trim() !== '';
+        if (hasAny && (!Number.isFinite(product) || product <= 0 || !Number.isFinite(imp) || imp < 0)) {
+          addStatus(it.row, `${label}或产品峰面积缺失/无效`);
+        }
+      });
+    }
+
+    function relDiff(a, b) {
+      const denom = (Math.abs(a) + Math.abs(b)) / 2;
+      if (!Number.isFinite(denom) || denom < 1e-12) return 0;
+      return Math.abs(a - b) / denom;
+    }
+
+    function getValidRemovalValues(items, singleKey) {
+      return items
+        .filter(it => Number.isFinite(it.step) && it.step > 0 && it.row._calc && it.row._calc[singleKey] && Number.isFinite(it.row._calc[singleKey].value))
+        .map(it => ({ step: it.step, value: it.row._calc[singleKey].value, estimated: !!it.row._calc[singleKey].estimated, row: it.row }))
+        .sort((a, b) => a.step - b.step);
+    }
+
+    function evaluateGroupPattern(items, singleKey, label) {
+      const valid = getValidRemovalValues(items, singleKey);
+      if (valid.length < 2) return;
+
+      const volatilePairs = [];
+      for (let i = 1; i < valid.length; i++) {
+        const rd = relDiff(valid[i - 1].value, valid[i].value);
+        if (rd > 0.25) volatilePairs.push({ from: valid[i - 1], to: valid[i], rd });
+      }
+      volatilePairs.forEach(pair => {
+        addStatus(pair.from.row, `${label}相邻去除率相对波动>25%`);
+        addStatus(pair.to.row, `${label}相邻去除率相对波动>25%`);
+      });
+
+      const firstTwo = valid.slice(0, 2);
+      if (firstTwo.length >= 2) {
+        const earlyStable = relDiff(firstTwo[0].value, firstTwo[1].value) <= 0.25;
+        const earlyAvg = (firstTwo[0].value + firstTwo[1].value) / 2;
+        const later = valid.slice(2);
+        const final = valid[valid.length - 1];
+        const laterLower = later.length > 0 && Number.isFinite(earlyAvg) && Math.abs(earlyAvg) > 1e-12 && later.some(v => (earlyAvg - v.value) / Math.abs(earlyAvg) > 0.25);
+        const mostlyDown = valid.slice(1).every((v, i) => v.value <= valid[i].value + 0.05);
+        if (earlyStable && laterLower && mostlyDown) {
+          valid.filter(v => v.step >= final.step || v.step >= 3).forEach(v => addStatus(v.row, `${label}后期表观去除率下降，低浓度去除可能变难`));
+        }
+      }
+    }
+
+    function classifyImpurityPattern(items, singleKey, label) {
+      const valid = getValidRemovalValues(items, singleKey);
+      if (valid.length < 2) {
+        return {
+          cls: 'eval-neutral',
+          text: `${label}：有效计算点不足，暂不能评价萃取次数与单次表观去除率之间的关系。`
+        };
+      }
+
+      const invalid = valid.filter(v => v.value < 0 || v.value > 1);
+      const values = valid.map(v => v.value);
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const avgAbs = values.reduce((sum, v) => sum + Math.abs(v), 0) / values.length;
+      const relativeRange = avgAbs > 1e-12 ? (max - min) / avgAbs : 0;
+      const volatilePairs = [];
+      for (let i = 1; i < valid.length; i++) {
+        const rd = relDiff(valid[i - 1].value, valid[i].value);
+        if (rd > 0.25) volatilePairs.push({ from: valid[i - 1], to: valid[i], rd });
+      }
+
+      const firstTwo = valid.slice(0, 2);
+      const earlyStable = firstTwo.length >= 2 && relDiff(firstTwo[0].value, firstTwo[1].value) <= 0.25;
+      const earlyAvg = firstTwo.length >= 2 ? (firstTwo[0].value + firstTwo[1].value) / 2 : NaN;
+      const later = valid.slice(2);
+      const laterLower = later.length > 0 && Number.isFinite(earlyAvg) && Math.abs(earlyAvg) > 1e-12 && later.some(v => (earlyAvg - v.value) / Math.abs(earlyAvg) > 0.25);
+      const mostlyDown = valid.slice(1).every((v, i) => v.value <= valid[i].value + 0.05);
+      const estimatedCount = valid.filter(v => v.estimated).length;
+      const suffix = estimatedCount > 0 ? ` 其中 ${estimatedCount} 个点为跨步几何平均估算，评价需结合原始峰面积复核。` : '';
+
+      if (invalid.length > 0) {
+        return {
+          cls: 'eval-bad',
+          text: `${label}：存在负去除率或超过100%的结果，优先检查峰积分、取样、乳化/分层和数据录入。${suffix}`
+        };
+      }
+
+      if (earlyStable && laterLower && mostlyDown) {
+        return {
+          cls: 'eval-warn',
+          text: `${label}：前几次萃取的单次表观去除率较稳定，但后续逐渐降低；提示该杂质在低浓度下可能变得更难去除，后续萃取收益递减。${suffix}`
+        };
+      }
+
+      if (volatilePairs.length > 0) {
+        const worst = volatilePairs.slice().sort((a, b) => b.rd - a.rd)[0];
+        return {
+          cls: 'eval-bad',
+          text: `${label}：前后两次萃取的单次表观去除率相对波动超过25%（第${worst.from.step}次→第${worst.to.step}次，约${Math.round(worst.rd * 100)}%）；提示可能存在操作方法异常，建议排查操作手法、取样方法、乳化、分液操作等环节。${suffix}`
+        };
+      }
+
+      if (relativeRange <= 0.25) {
+        return {
+          cls: 'eval-good',
+          text: `${label}：各次萃取的单次表观去除率大致稳定；说明当前实验操作有效，且该杂质没有因为含量降低而明显更难去除。${suffix}`
+        };
+      }
+
+      return {
+        cls: 'eval-neutral',
+        text: `${label}：已有趋势，但暂未稳定落入“稳定 / 后期降低 / 操作波动”三类；建议继续补充后续萃取次数或复核异常点。${suffix}`
+      };
+    }
+
+    function groupEvaluationHTML(items) {
+      const e1 = classifyImpurityPattern(items, 'imp1Single', '杂质1');
+      const e2 = classifyImpurityPattern(items, 'imp2Single', '杂质2');
+      return `<div class="eval-box"><div class="eval-title">实验组评价</div><ul class="eval-list">
+        <li class="${e1.cls}">${escapeHtml(e1.text)}</li>
+        <li class="${e2.cls}">${escapeHtml(e2.text)}</li>
+      </ul></div>`;
+    }
+
+    function evaluationAOA() {
+      const out = [['实验组ID','样品组成','萃取条件','杂质','评价类型','评价']];
+      Array.from(groupRows().entries()).forEach(([runId, items]) => {
+        const list = items.filter(it => Number.isFinite(it.step)).sort((a, b) => a.step - b.step || a.idx - b.idx);
+        if (!list.length) return;
+        const first = list[0].row;
+        const e1 = classifyImpurityPattern(list, 'imp1Single', '杂质1');
+        const e2 = classifyImpurityPattern(list, 'imp2Single', '杂质2');
+        out.push([runId, first.composition || '', first.condition || '', '杂质1', e1.cls.replace('eval-', ''), e1.text]);
+        out.push([runId, first.composition || '', first.condition || '', '杂质2', e2.cls.replace('eval-', ''), e2.text]);
+      });
+      return out;
+    }
+
+    function clearResults() {
+      document.getElementById('resultPanel').classList.add('hidden');
+      document.getElementById('resultContainer').innerHTML = '';
+    }
+
+    function clearSummary() {
+      document.getElementById('summaryPanel').classList.add('hidden');
+      document.getElementById('summaryContainer').innerHTML = '';
+    }
+
+    function renderRemovalTables() {
+      const panel = document.getElementById('resultPanel');
+      const container = document.getElementById('resultContainer');
+      container.innerHTML = '';
+      const groups = Array.from(groupRows().entries());
+      groups.forEach(([runId, items]) => {
+        const list = items.filter(it => Number.isFinite(it.step)).sort((a, b) => a.step - b.step || a.idx - b.idx);
+        if (!list.length) return;
+        const first = list[0].row;
+        const html = `<div class="result-block">
+          <h3>${escapeHtml(runId)} <span class="badge">n=${list.length}</span></h3>
+          <div class="result-meta">样品组成：${escapeHtml(first.composition || '')}<br>萃取条件：${escapeHtml(first.condition || '')}</div>
+          <div class="table-wrap"><table class="result-table">
+            <thead>
+              <tr><th rowspan="2">萃取次数</th><th rowspan="2">样品类型</th><th colspan="2">杂质1</th><th colspan="2">杂质2</th><th rowspan="2">数据提示</th><th rowspan="2">备注</th></tr>
+              <tr><th>本次去除率</th><th>累计去除率</th><th>本次去除率</th><th>累计去除率</th></tr>
+            </thead>
+            <tbody>
+              ${list.map(it => `<tr>
+                <td>${escapeHtml(it.row.step)}</td>
+                <td>${escapeHtml(it.row.sampleType)}</td>
+                <td class="w-calc">${fmtPercent(it.row._calc.imp1Single)}</td>
+                <td class="w-calc">${fmtPercent(it.row._calc.imp1Cum)}</td>
+                <td class="w-calc">${fmtPercent(it.row._calc.imp2Single)}</td>
+                <td class="w-calc">${fmtPercent(it.row._calc.imp2Cum)}</td>
+                <td>${escapeHtml((it.row._status || []).join('；'))}</td>
+                <td>${escapeHtml(it.row.note || '')}</td>
+              </tr>`).join('')}
+            </tbody>
+          </table></div>
+          ${groupEvaluationHTML(list)}
+        </div>`;
+        container.insertAdjacentHTML('beforeend', html);
+      });
+      panel.classList.toggle('hidden', container.innerHTML.trim() === '');
+    }
+
+    function buildSummaryRows() {
+      const byStep = new Map();
+      rows.forEach(r => {
+        const step = parseStep(r.step);
+        if (!Number.isFinite(step) || step <= 0) return;
+        const hasCalc = ['imp1Single','imp1Cum','imp2Single','imp2Cum'].some(k => r._calc && r._calc[k] && Number.isFinite(r._calc[k].value));
+        if (!hasCalc) return;
+        if (!byStep.has(step)) byStep.set(step, []);
+        byStep.get(step).push(r);
+      });
+      return Array.from(byStep.entries()).sort((a, b) => a[0] - b[0]).map(([step, list]) => [step, list.slice().sort((a, b) => {
+        const av = a._calc.imp1Single?.value;
+        const bv = b._calc.imp1Single?.value;
+        return (Number.isFinite(bv) ? bv : -999) - (Number.isFinite(av) ? av : -999);
+      })]);
+    }
+
+    function generateSummary() {
+      if (!calculated) calculate();
+      const container = document.getElementById('summaryContainer');
+      container.innerHTML = '';
+      const stepGroups = buildSummaryRows();
+      if (stepGroups.length === 0) {
+        container.innerHTML = '<p class="small">没有可用于比较的计算结果。</p>';
+      } else {
+        stepGroups.forEach(([step, list]) => {
+          const html = `<div class="summary-block"><div class="summary-title">第${step}次萃取后比较表 <span class="badge">n=${list.length}</span></div>
+            <div class="table-wrap"><table class="summary-table"><thead><tr>
+              <th>实验组ID</th><th>样品组成</th><th>萃取条件</th><th>样品类型</th>
+              <th>杂质1本次</th><th>杂质1累计</th><th>杂质2本次</th><th>杂质2累计</th><th>数据提示</th>
+            </tr></thead><tbody>
+            ${list.map(r => `<tr>
+              <td>${escapeHtml(r.runId)}</td><td>${escapeHtml(r.composition)}</td><td>${escapeHtml(r.condition)}</td><td>${escapeHtml(r.sampleType)}</td>
+              <td class="w-calc">${fmtPercent(r._calc.imp1Single)}</td><td class="w-calc">${fmtPercent(r._calc.imp1Cum)}</td>
+              <td class="w-calc">${fmtPercent(r._calc.imp2Single)}</td><td class="w-calc">${fmtPercent(r._calc.imp2Cum)}</td>
+              <td>${escapeHtml((r._status || []).join('；'))}</td>
+            </tr>`).join('')}</tbody></table></div></div>`;
+          container.insertAdjacentHTML('beforeend', html);
+        });
+      }
+      document.getElementById('summaryPanel').classList.remove('hidden');
+    }
+
+    function toCSVValue(v) {
+      const s = String(v ?? '');
+      if (/[",\r\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+      return s;
+    }
+
+    function inputAOA() {
+      return [BASE_FIELDS.map(f => f.label), ...rows.map(r => BASE_FIELDS.map(f => r[f.key] ?? ''))];
+    }
+
+    function detailAOA() {
+      return [[
+        '实验组ID','样品组成','萃取条件','萃取次数','样品类型',
+        '杂质1本次去除率','杂质1累计去除率','杂质2本次去除率','杂质2累计去除率','数据提示','备注'
+      ], ...rows.map(r => [
+        r.runId, r.composition, r.condition, r.step, r.sampleType,
+        rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum),
+        (r._status || []).join('；'), r.note
+      ])];
+    }
+
+    function summaryAOAForList(step, list, includeStep = true) {
+      const header = includeStep
+        ? ['萃取次数','实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示']
+        : ['实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示'];
+      const body = list.map(r => {
+        const base = [r.runId, r.composition, r.condition, r.sampleType, rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum), (r._status || []).join('；')];
+        return includeStep ? [step, ...base] : base;
+      });
+      return [header, ...body];
+    }
+
+    function metadataAOA() {
+      return [
+        ['key', 'value'],
+        ['project', OPEN_CHEM_PROCESS_PROVENANCE.project],
+        ['marker', OPEN_CHEM_PROCESS_PROVENANCE.marker],
+        ['tool', OPEN_CHEM_PROCESS_PROVENANCE.tool],
+        ['version', OPEN_CHEM_PROCESS_PROVENANCE.version],
+        ['attribution', OPEN_CHEM_PROCESS_PROVENANCE.attribution],
+        ['generated_at', new Date().toISOString()]
+      ];
+    }
+
+    function exportCombinedCSV() {
+      const sections = [];
+      const addSection = (title, aoa) => {
+        sections.push([title]);
+        aoa.forEach(row => sections.push(row.map(toCSVValue).join(',')));
+        sections.push('');
+      };
+      addSection('OpenChemProcess_Metadata', metadataAOA());
+      addSection('原始输入数据', inputAOA());
+      addSection('表观去除率明细', detailAOA());
+      addSection('实验组评价', evaluationAOA());
+      const stepGroups = buildSummaryRows();
+      const allSummary = [['萃取次数','实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示']];
+      stepGroups.forEach(([step, list]) => list.forEach(r => allSummary.push([step, r.runId, r.composition, r.condition, r.sampleType, rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum), (r._status || []).join('；')])));
+      addSection('分次比较表', allSummary);
+      const blob = new Blob(['\ufeff' + sections.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'openchemprocess_extraction_apparent_removal_results_combined.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function safeSheetName(name) {
+      return String(name).replace(/[\/?*\[\]:]/g, '-').slice(0, 31) || 'Sheet';
+    }
+
+    function exportResults() {
+      if (!calculated) calculate();
+      if (typeof XLSX === 'undefined') {
+        exportCombinedCSV();
+        return;
+      }
+      const wb = XLSX.utils.book_new();
+      wb.Props = {
+        Title: 'OpenChemProcess Extraction Apparent Removal Results',
+        Subject: 'OpenChemProcess extraction apparent removal rate calculation',
+        Author: 'OpenChemProcess',
+        Company: 'OpenChemProcess',
+        Comments: 'Generated by OpenChemProcess Extraction Apparent Removal Tool v0.5'
+      };
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metadataAOA()), 'OpenChemProcess_Metadata');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(inputAOA()), '原始输入数据');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(detailAOA()), '表观去除率明细');
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(evaluationAOA()), '实验组评价');
+      const stepGroups = buildSummaryRows();
+      const allSummary = [['萃取次数','实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示']];
+      stepGroups.forEach(([step, list]) => {
+        list.forEach(r => allSummary.push([step, r.runId, r.composition, r.condition, r.sampleType, rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum), (r._status || []).join('；')]));
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(allSummary), '分次比较表');
+      stepGroups.forEach(([step, list]) => {
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryAOAForList(step, list, false)), safeSheetName(`第${step}次比较`));
+      });
+      XLSX.writeFile(wb, 'openchemprocess_extraction_apparent_removal_results.xlsx');
+    }
+
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const file = e.target.files && e.target.files[0];
+      if (file) importFile(file);
+      e.target.value = '';
+    });
+    document.getElementById('demoBtn').addEventListener('click', loadDemo);
+    document.getElementById('addRowBtn').addEventListener('click', addRow);
+    document.getElementById('addGroupBtn').addEventListener('click', addGroup);
+    document.getElementById('calcBtn').addEventListener('click', calculate);
+    document.getElementById('summaryBtn').addEventListener('click', generateSummary);
+    document.getElementById('exportBtn').addEventListener('click', exportResults);
+    document.getElementById('clearBtn').addEventListener('click', initBlank);
+
+    initBlank();
+  </script>
+</body>
+</html>
