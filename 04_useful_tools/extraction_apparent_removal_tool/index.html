@@ -2,19 +2,18 @@
 <!--
   OpenChemProcess Extraction Apparent Removal Tool
   Project provenance: OpenChemProcess
-  Version: v0.5
+  Version: v0.8 offline standalone
   License/attribution notice: retain OpenChemProcess attribution when reusing or modifying this file.
 -->
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OpenChemProcess Extraction Apparent Removal Calculator v0.5</title>
+  <title>OpenChemProcess Extraction Apparent Removal Calculator v0.8 Offline</title>
   <meta name="application-name" content="OpenChemProcess Extraction Apparent Removal Tool" />
   <meta name="author" content="OpenChemProcess" />
-  <meta name="generator" content="OpenChemProcess extraction_apparent_removal_tool_v0.5" />
-  <meta name="description" content="OpenChemProcess single-file web tool for extraction apparent removal rate calculation." />
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <meta name="generator" content="OpenChemProcess extraction_apparent_removal_tool_v0.8_offline_standalone" />
+  <meta name="description" content="OpenChemProcess offline single-file web tool for extraction apparent removal rate calculation." />
   <style>
     :root {
       --bg: #f6f7f9;
@@ -190,24 +189,25 @@
   </style>
 </head>
 <body>
-  <h1>萃取表观去除率计算器 v0.5</h1>
+  <h1>萃取表观去除率计算器 v0.8</h1>
   <div class="sub">
     用于 OpenChemProcess（OCP）萃取操作数据整理。计算对象是“以产品峰面积归一化后的杂质表观去除率”，不引入 HPLC 响应因子、真实质量平衡或水相数据。
   </div>
 
   <div class="panel">
     <div class="toolbar">
-      <label class="file-label" for="fileInput">导入 CSV / Excel</label>
-      <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" />
+      <label class="file-label" for="fileInput">导入 CSV</label>
+      <input id="fileInput" type="file" accept=".csv,text/csv" />
       <button id="demoBtn">载入示例数据</button>
       <button id="addRowBtn">增加数据行</button>
       <button id="addGroupBtn">增加实验组</button>
       <button id="calcBtn" class="primary">计算表观去除率</button>
       <button id="summaryBtn" class="secondary">生成分次比较表</button>
-      <button id="exportBtn">导出结果 Excel</button>
+      <button id="exportBtn">导出格式化Excel(.xls)</button>
+      <button id="exportCsvBtn">导出整理结果CSV</button>
       <button id="clearBtn" class="danger">清空</button>
     </div>
-    <p class="small">导入旧格式时，会自动映射“样品/洗涤次数/产品面积绝对值/杂质面积绝对值”等表头，并按每个“0次/洗涤粗品”自动生成实验组ID。</p>
+    <p class="small">离线单机版：支持 CSV 导入、手工输入、网页内计算、排序、整理结果CSV导出和离线格式化 .xls 导出；不依赖网络或外部 CDN。导入旧格式 CSV 时，会自动映射“样品/洗涤次数/产品面积绝对值/杂质面积绝对值”等表头，并按每个“0次/洗涤粗品”自动生成实验组ID。</p>
     <div class="formula">单次表观去除率_n = 1 - [(杂质峰面积_n / 产品峰面积_n) / (杂质峰面积_{n-1} / 产品峰面积_{n-1})]；累计表观去除率_n = 1 - [(杂质峰面积_n / 产品峰面积_n) / (杂质峰面积_0 / 产品峰面积_0)]</div>
     <div id="calcStatus" class="calc-status-box hidden"></div>
   </div>
@@ -232,7 +232,7 @@
   </div>
 
   <div class="ocp-footer">
-    OpenChemProcess · Extraction Apparent Removal Tool · v0.5 · source marker: <code>openchemprocess</code>
+    OpenChemProcess · Extraction Apparent Removal Tool · v0.7 offline standalone · source marker: <code>openchemprocess</code>
   </div>
 
   <script>
@@ -241,7 +241,7 @@
       project: 'OpenChemProcess',
       marker: 'openchemprocess',
       tool: 'Extraction Apparent Removal Tool',
-      version: 'v0.5',
+      version: 'v0.7-offline-standalone',
       attribution: 'OpenChemProcess extraction apparent removal calculator'
     };
 
@@ -527,20 +527,12 @@
 
     async function importFile(file) {
       const name = file.name.toLowerCase();
-      let aoa;
-      if (name.endsWith('.csv')) {
-        const text = await file.text();
-        aoa = parseCSV(text.replace(/^﻿/, ''));
-      } else {
-        if (typeof XLSX === 'undefined') {
-          alert('Excel 导入需要 SheetJS CDN。当前环境未加载成功，请先转成 CSV。');
-          return;
-        }
-        const buf = await file.arrayBuffer();
-        const wb = XLSX.read(buf, { type: 'array' });
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        aoa = XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' });
+      if (!name.endsWith('.csv') && !name.endsWith('.txt')) {
+        alert('离线单机版当前只保证 CSV 导入。请先在 Excel 中另存为 CSV 后再导入。');
+        return;
       }
+      const text = await file.text();
+      const aoa = parseCSV(text.replace(/^﻿/, ''));
       rows = mapAOAToRows(aoa);
       calculated = false;
       renderTable();
@@ -934,9 +926,10 @@
     }
 
     function exportCombinedCSV() {
+      if (!calculated) calculate();
       const sections = [];
       const addSection = (title, aoa) => {
-        sections.push([title]);
+        sections.push(toCSVValue(title));
         aoa.forEach(row => sections.push(row.map(toCSVValue).join(',')));
         sections.push('');
       };
@@ -948,7 +941,8 @@
       const allSummary = [['萃取次数','实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示']];
       stepGroups.forEach(([step, list]) => list.forEach(r => allSummary.push([step, r.runId, r.composition, r.condition, r.sampleType, rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum), (r._status || []).join('；')])));
       addSection('分次比较表', allSummary);
-      const blob = new Blob(['\ufeff' + sections.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      stepGroups.forEach(([step, list]) => addSection(`第${step}次比较`, summaryAOAForList(step, list, false)));
+      const blob = new Blob(['\ufeff' + sections.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -959,38 +953,137 @@
       URL.revokeObjectURL(url);
     }
 
-    function safeSheetName(name) {
-      return String(name).replace(/[\/?*\[\]:]/g, '-').slice(0, 31) || 'Sheet';
+    // Offline standalone export uses HTML-based .xls generation below.
+    // No SheetJS / XLSX runtime is required.
+
+    function cellClassForOfflineExport(value, row, col, aoa) {
+      const s = String(value ?? '');
+      const header = aoa && aoa[0] ? String(aoa[0][col] || '') : '';
+      if (/异常|错误|缺失|无法|超过|波动/.test(s)) return 'xls-bad';
+      if (/低浓度|递减|降低|估算|≈/.test(s)) return 'xls-warn';
+      if ((/%$/.test(s) || /^≈-?\d+%$/.test(s)) && /去除率|本次|累计|杂质/.test(header + s)) {
+        if (/^-|^≈-/.test(s) || />/.test(s)) return 'xls-bad';
+        return 'xls-good';
+      }
+      return '';
+    }
+
+    function aoaToHtmlTable(aoa, options = {}) {
+      const headerRows = new Set(options.headerRows || [0]);
+      const titleRows = new Set(options.titleRows || []);
+      const maxCols = Math.max(1, ...aoa.map(r => r.length));
+      let html = '<table class="xls-table">';
+      aoa.forEach((row, r) => {
+        const first = String(row[0] || '');
+        const isBlank = row.every(v => String(v ?? '').trim() === '');
+        if (isBlank) { html += `<tr><td colspan="${maxCols}" class="xls-blank"></td></tr>`; return; }
+        let rowClass = '';
+        if (titleRows.has(r) || first.startsWith('OpenChemProcess') || first.startsWith('实验组 ')) rowClass = 'xls-section-row';
+        if (first === '样品组成' || first === '萃取条件') rowClass = 'xls-meta-row';
+        if (first === '实验组评价' || (first === '' && String(row[1] || ''))) rowClass = 'xls-eval-row';
+        html += `<tr class="${rowClass}">`;
+        for (let c = 0; c < maxCols; c++) {
+          const value = row[c] ?? '';
+          const isHeader = headerRows.has(r) || first === '萃取次数' || first === '实验组ID' || first === 'key';
+          const tag = isHeader ? 'th' : 'td';
+          const cls = [cellClassForOfflineExport(value, r, c, aoa)].filter(Boolean).join(' ');
+          const colspan = (rowClass === 'xls-section-row' && c === 0 && maxCols > 1) ? ` colspan="${maxCols}"` : '';
+          if (rowClass === 'xls-section-row' && c > 0) continue;
+          html += `<${tag}${colspan} class="${cls}">${escapeHtml(value)}</${tag}>`;
+        }
+        html += '</tr>';
+      });
+      html += '</table>';
+      return html;
+    }
+
+    function downloadOfflineXls(filename, html) {
+      const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+
+    function resultBlockAOA() {
+      const out = [['OpenChemProcess 表观去除率结果表']];
+      Array.from(groupRows().entries()).forEach(([runId, items]) => {
+        const list = items
+          .filter(it => Number.isFinite(it.step))
+          .sort((a, b) => a.step - b.step || a.idx - b.idx);
+        if (!list.length) return;
+        const first = list[0].row;
+        out.push([]);
+        out.push([`实验组 ${runId}（n=${list.length}）`]);
+        out.push(['样品组成', first.composition || '']);
+        out.push(['萃取条件', first.condition || '']);
+        out.push(['萃取次数','样品类型','杂质1本次去除率','杂质1累计去除率','杂质2本次去除率','杂质2累计去除率','数据提示','备注']);
+        list.forEach(it => {
+          const r = it.row;
+          out.push([
+            r.step,
+            r.sampleType,
+            rawPercent(r._calc.imp1Single),
+            rawPercent(r._calc.imp1Cum),
+            rawPercent(r._calc.imp2Single),
+            rawPercent(r._calc.imp2Cum),
+            (r._status || []).join('；'),
+            r.note || ''
+          ]);
+        });
+        const e1 = classifyImpurityPattern(list, 'imp1Single', '杂质1');
+        const e2 = classifyImpurityPattern(list, 'imp2Single', '杂质2');
+        out.push(['实验组评价', '杂质1', e1.cls.replace('eval-', ''), e1.text]);
+        out.push(['', '杂质2', e2.cls.replace('eval-', ''), e2.text]);
+      });
+      return out;
     }
 
     function exportResults() {
       if (!calculated) calculate();
-      if (typeof XLSX === 'undefined') {
-        exportCombinedCSV();
-        return;
-      }
-      const wb = XLSX.utils.book_new();
-      wb.Props = {
-        Title: 'OpenChemProcess Extraction Apparent Removal Results',
-        Subject: 'OpenChemProcess extraction apparent removal rate calculation',
-        Author: 'OpenChemProcess',
-        Company: 'OpenChemProcess',
-        Comments: 'Generated by OpenChemProcess Extraction Apparent Removal Tool v0.5'
-      };
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(metadataAOA()), 'OpenChemProcess_Metadata');
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(inputAOA()), '原始输入数据');
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(detailAOA()), '表观去除率明细');
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(evaluationAOA()), '实验组评价');
       const stepGroups = buildSummaryRows();
       const allSummary = [['萃取次数','实验组ID','样品组成','萃取条件','样品类型','杂质1本次','杂质1累计','杂质2本次','杂质2累计','数据提示']];
       stepGroups.forEach(([step, list]) => {
         list.forEach(r => allSummary.push([step, r.runId, r.composition, r.condition, r.sampleType, rawPercent(r._calc.imp1Single), rawPercent(r._calc.imp1Cum), rawPercent(r._calc.imp2Single), rawPercent(r._calc.imp2Cum), (r._status || []).join('；')]));
       });
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(allSummary), '分次比较表');
+      const sections = [];
+      sections.push('<h2>OpenChemProcess Metadata</h2>' + aoaToHtmlTable(metadataAOA(), { headerRows: [0] }));
+      sections.push('<h2>原始输入数据</h2>' + aoaToHtmlTable(inputAOA(), { headerRows: [0] }));
+      sections.push('<h2>表观去除率结果表</h2>' + aoaToHtmlTable(resultBlockAOA(), { headerRows: [0] }));
+      sections.push('<h2>实验组评价</h2>' + aoaToHtmlTable(evaluationAOA(), { headerRows: [0] }));
+      sections.push('<h2>分次比较表</h2>' + aoaToHtmlTable(allSummary, { headerRows: [0] }));
       stepGroups.forEach(([step, list]) => {
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summaryAOAForList(step, list, false)), safeSheetName(`第${step}次比较`));
+        sections.push(`<h2>第${escapeHtml(step)}次比较</h2>` + aoaToHtmlTable(summaryAOAForList(step, list, false), { headerRows: [0] }));
       });
-      XLSX.writeFile(wb, 'openchemprocess_extraction_apparent_removal_results.xlsx');
+      const html = `<!doctype html><html><head><meta charset="utf-8" />
+        <meta name="application-name" content="OpenChemProcess Extraction Apparent Removal Tool" />
+        <meta name="author" content="OpenChemProcess" />
+        <style>
+          body{font-family:"Microsoft YaHei","SimSun",Arial,sans-serif;font-size:11pt;color:#1f2937;}
+          h1{font-size:18pt;margin:0 0 8px 0;background:#111827;color:#fff;padding:10px 12px;}
+          h2{font-size:14pt;margin:18px 0 8px 0;color:#111827;}
+          .xls-note{font-size:10pt;color:#6b7280;margin:4px 0 12px 0;}
+          .xls-table{border-collapse:collapse;margin:6px 0 18px 0;width:auto;}
+          .xls-table th,.xls-table td{border:1px solid #d1d5db;padding:5px 7px;vertical-align:top;mso-number-format:"\@";}
+          .xls-table th{background:#eef2f7;font-weight:700;text-align:center;white-space:nowrap;}
+          .xls-section-row td,.xls-section-row th{background:#111827;color:#fff;font-weight:700;text-align:left;}
+          .xls-meta-row td{background:#f8fafc;color:#374151;}
+          .xls-eval-row td{background:#f0fdf4;color:#064e3b;}
+          .xls-good{color:#047857;font-weight:700;}
+          .xls-warn{color:#b45309;font-weight:700;background:#fffbeb;}
+          .xls-bad{color:#b91c1c;font-weight:700;background:#fef2f2;}
+          .xls-blank{height:8px;border:none!important;background:#fff;}
+        </style></head><body>
+        <h1>OpenChemProcess 萃取表观去除率离线导出报告</h1>
+        <div class="xls-note">Generated at ${escapeHtml(new Date().toLocaleString())}. This report is produced locally by OpenChemProcess Extraction Apparent Removal Tool v0.8 offline standalone. No server upload is used.</div>
+        ${sections.join('\n')}
+      </body></html>`;
+      downloadOfflineXls('openchemprocess_extraction_apparent_removal_offline_report.xls', html);
     }
 
     document.getElementById('fileInput').addEventListener('change', e => {
@@ -1004,6 +1097,7 @@
     document.getElementById('calcBtn').addEventListener('click', calculate);
     document.getElementById('summaryBtn').addEventListener('click', generateSummary);
     document.getElementById('exportBtn').addEventListener('click', exportResults);
+    document.getElementById('exportCsvBtn').addEventListener('click', exportCombinedCSV);
     document.getElementById('clearBtn').addEventListener('click', initBlank);
 
     initBlank();
