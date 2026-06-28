@@ -3,171 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HPLC 临时数据整理器 v0.6</title>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <title>HPLC 临时数据整理器 v0.9</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <style>
-    :root {
-      --bg: #f6f7f8;
-      --card: #ffffff;
-      --text: #1f2933;
-      --muted: #667085;
-      --border: #d0d5dd;
-      --accent: #1769aa;
-      --danger: #b42318;
-      --danger-bg: #fff1f0;
-      --warn-bg: #fff8e1;
-      --ok-bg: #eef7ee;
-      --header: #f0f2f5;
-      --header2: #eef2f6;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.45;
-    }
-    .wrap { max-width: 1380px; margin: 0 auto; padding: 24px; }
-    h1 { font-size: 24px; margin: 0 0 8px; }
-    .subtitle { color: var(--muted); margin-bottom: 20px; font-size: 14px; }
-    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 16px; align-items: start; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
-    .card h2 { font-size: 17px; margin: 0 0 12px; }
-    .card h3 { font-size: 14px; margin: 16px 0 8px; }
-    .small { font-size: 12px; color: var(--muted); }
-    button, .file-label {
-      border: 1px solid var(--border);
-      background: #fff;
-      color: var(--text);
-      padding: 8px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin: 4px 4px 4px 0;
-    }
-    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    button.danger { color: var(--danger); border-color: #f3b4ae; background: #fff; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    input[type="file"] { display: none; }
-    textarea {
-      width: 100%;
-      height: 190px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      resize: vertical;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 12px;
-    }
-    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 8px; margin-bottom: 12px; }
-    .stat { background: #f9fafb; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
-    .stat .label { font-size: 12px; color: var(--muted); }
-    .stat .value { font-size: 20px; margin-top: 2px; }
-    .msg { border-radius: 8px; padding: 10px; margin: 10px 0; font-size: 13px; white-space: pre-wrap; }
-    .msg.ok { background: var(--ok-bg); border: 1px solid #b7dfb7; }
-    .msg.warn { background: var(--warn-bg); border: 1px solid #f3da8a; }
-    .msg.err { background: var(--danger-bg); border: 1px solid #f3b4ae; color: var(--danger); }
-    .tabs { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
-    .tabs button.active { background: #e9f2fb; border-color: var(--accent); color: var(--accent); }
-    .table-wrap { overflow: auto; max-height: 64vh; border: 1px solid var(--border); border-radius: 8px; background: #fff; }
-    table { border-collapse: collapse; min-width: 100%; font-size: 13px; white-space: nowrap; }
-    .pivot-table { table-layout: fixed; width: max-content; min-width: 100%; white-space: normal; }
-    .pivot-table td { white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
-    .pivot-table td.meta-cell { white-space: nowrap; }
-    .pivot-table td.peak-cell { width: 112px; min-width: 112px; max-width: 112px; text-align: center; }
-    .pivot-table td.peak-name-cell { font-size: 11px; line-height: 1.2; }
-    th, td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 6px 8px; vertical-align: top; }
-    th { position: sticky; top: 0; background: var(--header); z-index: 2; font-weight: 600; }
-    tr.header-row td { background: var(--header2); font-weight: 600; }
-    tr.section td { background: #e8eef7; font-weight: 600; }
-    td.meta { color: var(--muted); background: #fafafa; }
-    td.empty { color: #98a2b3; }
-    .table-actions { margin: 8px 0 4px; }
-    .raw-editor td.editable-cell { background: #fffdf5; cursor: text; min-width: 92px; }
-    .raw-editor td.editable-cell:focus { outline: 2px solid rgba(23,105,170,.35); outline-offset: -2px; background: #ffffff; }
-    .raw-editor td.readonly-cell { background: #f4f6f8; color: #475467; }
-    .raw-editor tr:nth-child(n+4) td { min-height: 30px; }
-    details { border: 1px solid var(--border); border-radius: 8px; padding: 10px; background: #fafafa; margin-top: 12px; }
-    summary { cursor: pointer; font-size: 13px; }
-    code { background: #eef2f6; padding: 1px 4px; border-radius: 4px; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    @media (max-width: 960px) { .grid { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } }
-  </style>
+  :root{
+    --bg:#f6f7f9;
+    --card:#fff;
+    --line:#d9dde5;
+    --line2:#eef0f4;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --bad:#991b1b;
+    --accent:#1f4f8f;
+    --soft:#f3f6fb;
+    --header:#111827;
+    --th:#f8fafc;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Arial,sans-serif}
+  header{padding:18px 24px;background:var(--header);color:#fff;display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+  h1{font-size:19px;margin:0 0 6px 0;font-weight:650}.sub{color:#cbd5e1;font-size:13px;max-width:1420px}.ocp-mark{font-size:12px;color:#cbd5e1;white-space:nowrap;text-align:right;margin-top:2px}
+  main{padding:18px 22px 36px;max-width:1760px;margin:auto}.toolbar,.panel,.notice{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin:0 0 14px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:30}
+  button,.file-label{font:inherit;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--text);height:34px;padding:0 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin:0}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}button.danger{border-color:#f3c5c5;color:#991b1b;background:#fff7f7}button:disabled{opacity:.45;cursor:not-allowed}.file-label{white-space:nowrap}input[type="file"]{display:none}
+  .hint{color:var(--muted);font-size:12px}.small{font-size:12px;color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}code{background:#eef2f6;padding:1px 4px;border-radius:4px}
+  .statusbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 12px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:#475569}.stat .label{color:var(--muted);margin-right:4px}.stat .value{font-weight:650;color:#111827}.copyright{margin-left:auto;color:#64748b;font-size:12px}
+  .panel h2{margin:0;font-size:16px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid var(--line2);padding-bottom:10px;margin-bottom:10px;flex-wrap:wrap}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap}.tabs button.active{background:#e9f2fb;border-color:var(--accent);color:var(--accent)}
+  .msg{border-radius:8px;padding:9px 10px;margin:8px 0 10px;font-size:13px;white-space:pre-wrap}.msg.ok{background:#eef7ee;border:1px solid #b7dfb7}.msg.warn{background:#fff8e1;border:1px solid #f3da8a}.msg.err{background:#fff1f0;border:1px solid #f3b4ae;color:var(--bad)}
+  details.import-details{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fafafa;margin:8px 0 10px}details.import-details summary{cursor:pointer;color:#334155;font-size:13px}details.import-details .inside{display:grid;grid-template-columns:minmax(420px,1fr) minmax(320px,.8fr);gap:12px;margin-top:8px;align-items:start}
+  textarea{width:100%;height:118px;border:1px solid var(--line);border-radius:8px;padding:9px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:#fff}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .table-actions{margin:8px 0 4px}.table-wrap{overflow:auto;max-height:calc(100vh - 300px);min-height:460px;border:1px solid var(--line);border-radius:8px;background:white}
+  table{border-collapse:collapse;min-width:100%;font-size:13px;white-space:nowrap}th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:6px 8px;vertical-align:top}th{position:sticky;top:0;background:var(--th);z-index:2;font-weight:600}tr.header-row td{background:#eef2f6;font-weight:600}tr.section td{background:#e8eef7;font-weight:600}td.meta{color:var(--muted);background:#fafafa}td.empty{color:#98a2b3}
+  .pivot-table{table-layout:fixed;width:max-content;min-width:100%;white-space:normal}.pivot-table td{white-space:normal;word-break:break-word;overflow-wrap:anywhere}.pivot-table td.meta-cell{white-space:nowrap}.pivot-table td.peak-cell{width:112px;min-width:112px;max-width:112px;text-align:center}.pivot-table td.peak-name-cell{font-size:11px;line-height:1.2}
+  td.exceed-cell{color:#b91c1c!important;font-weight:700;background:#fff1f2!important}
+  .raw-editor td.editable-cell{background:#fffdf5;cursor:text;min-width:92px}.raw-editor td.editable-cell:focus{outline:2px solid rgba(31,79,143,.35);outline-offset:-2px;background:#fff}.raw-editor td.readonly-cell{background:#f4f6f8;color:#475467}.raw-editor tr:nth-child(n+4) td{min-height:30px}
+  .empty{padding:16px;color:var(--muted);background:#fbfdff;border:1px dashed var(--line);border-radius:8px}.footer{color:#64748b;font-size:12px;text-align:right;padding:4px 2px 0}.ocp-inline{font-weight:650;color:#334155}
+  @media (max-width: 960px){header{display:block}.ocp-mark{text-align:left;margin-top:8px}.copyright{margin-left:0;width:100%}details.import-details .inside{grid-template-columns:1fr}.table-wrap{max-height:calc(100vh - 360px)}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>HPLC 临时数据整理器 v0.6</h1>
-    <div class="subtitle">三行固定表头格式：第一行是字段名，第二行是峰对应化合物名，第三行是峰保留时间；末列为“其它”；数据只在浏览器本地处理；原始表格可直接在网页中补充数据行并重新整理。</div>
-
-    <div class="grid">
-      <aside class="card">
-        <h2>1. 导入原始数据</h2>
-        <div class="row">
-          <label class="file-label" for="fileInput">上传 CSV / XLSX</label>
-          <input id="fileInput" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" />
-          <button id="btnBlankTemplate">下载空白 CSV</button>
-          <button id="btnDemo">加载示例</button>
-        </div>
-        <p class="small">导入文件必须采用固定三行表头。可增加 <code>峰N面积比</code> 列；固定字段名不要修改。也可以不上传文件，直接在右侧空白原始表格中填写。</p>
-
-        <h3>或直接粘贴 CSV/TSV</h3>
-        <textarea id="pasteArea" placeholder="粘贴三行表头格式的 CSV，或从 Excel 复制后直接粘贴。"></textarea>
-        <div class="row">
-          <button class="primary" id="btnParsePaste">解析粘贴数据</button>
-          <button class="danger" id="btnClear">清空</button>
-        </div>
-
-        <details open>
-          <summary>固定格式</summary>
-          <p class="small">第一行固定为：<br><code>批号,备注1,备注2,分析方法名,波长,检测时间,峰1面积比,峰2面积比,...,其它</code></p>
-          <p class="small">第二行：峰列填写对应化合物名；前六列和“其它”列可空。</p>
-          <p class="small">第三行：峰列填写保留时间；前六列和“其它”列可空。</p>
-          <p class="small">第四行开始：每一行是一批样品/一次检测的数据。峰面积比可填数值、ND、NA 或留空。</p>
-        </details>
-
-        <h2 style="margin-top:18px;">2. 导出</h2>
-        <div class="row">
-          <button class="primary" id="btnExportXlsx" disabled>导出 Excel</button>
-          <button id="btnExportRawCsv" disabled>导出原始 CSV</button>
-          <button id="btnExportDetailCsv" disabled>导出峰明细 CSV</button>
-          <button id="btnExportByBatchCsv" disabled>导出按批号 CSV</button>
-          <button id="btnExportByMethodCsv" disabled>导出按方法 CSV</button>
-        </div>
-        <p class="small">Excel 导出包含 4 个 sheet：raw_input、peak_detail、by_batch、by_method。</p>
-      </aside>
-
-      <main class="card">
-        <h2>数据预览与整理结果</h2>
-        <div class="stats">
-          <div class="stat"><div class="label">数据行</div><div class="value" id="statRuns">0</div></div>
-          <div class="stat"><div class="label">峰列数</div><div class="value" id="statPeaks">0</div></div>
-          <div class="stat"><div class="label">批号数</div><div class="value" id="statBatches">0</div></div>
-          <div class="stat"><div class="label">方法数</div><div class="value" id="statMethods">0</div></div>
-        </div>
-
-        <div id="message" class="msg warn">尚未导入数据。可上传文件，也可直接在“原始表格”中输入数据。</div>
-
-        <div class="row table-actions">
-          <button id="btnAddRow">增加数据行</button>
-          <button class="primary" id="btnApplyTable">应用表格修改 / 重新整理</button>
-        </div>
-        <p class="small">原始表格第一行固定表头不可编辑；第二行峰列可填写化合物名；第三行峰列可填写出峰时间；第四行开始为数据行。</p>
-
-        <div class="tabs">
-          <button class="active" data-view="raw">原始表格</button>
-          <button data-view="detail">峰明细</button>
-          <button data-view="byBatch">按批号整理</button>
-          <button data-view="byMethod">按方法整理</button>
-        </div>
-        <div class="table-wrap" id="tableWrap"></div>
-      </main>
-    </div>
+<header>
+  <div>
+    <h1>HPLC 临时数据整理器 v0.9</h1>
+    <div class="sub">本机单文件HTML；用于临时整理 HPLC 面积比数据。固定三行表头；支持 CSV/XLSX 导入、网页直接补行、重新整理、格式化 Excel/CSV 导出；整理表中非主峰面积比 >0.1% 可按按钮选择标红或不标红，导出结果与当前选择一致。数据仅在浏览器本地处理。</div>
   </div>
+  <div class="ocp-mark">© OpenChemProcess / OCP</div>
+</header>
+<main>
+  <div class="toolbar">
+    <label class="file-label" for="fileInput">导入 CSV / Excel<input id="fileInput" type="file" accept=".csv,.tsv,.txt,.xlsx,.xls" /></label>
+    <button id="btnBlankTemplate">下载空白 CSV</button>
+    <button id="btnDemo">加载示例</button>
+    <button id="btnAddRow">增加数据行</button>
+    <button class="primary" id="btnApplyTable">应用表格修改 / 重新整理</button>
+    <button id="btnToggleHighlight" title="控制整理表和格式化Excel中是否标红非主峰面积比 >0.1% 的单元格">杂质&gt;0.1% 标红：开</button>
+    <button class="primary" id="btnExportXlsx" disabled>导出格式化 Excel</button>
+    <button id="btnExportRawCsv" disabled>导出原始 CSV</button>
+    <button id="btnExportDetailCsv" disabled>导出峰明细 CSV</button>
+    <button id="btnExportByBatchCsv" disabled>导出按批号 CSV</button>
+    <button id="btnExportByMethodCsv" disabled>导出按方法 CSV</button>
+    <button class="danger" id="btnClear">清空</button>
+    <span class="hint">流程：导入/直接填表 → 应用修改 → 按批号或方法查看 → 导出。</span>
+  </div>
+
+  <div class="statusbar">
+    <div class="stat"><span class="label">数据行</span><span class="value" id="statRuns">0</span></div>
+    <div class="stat"><span class="label">峰列数</span><span class="value" id="statPeaks">0</span></div>
+    <div class="stat"><span class="label">批号数</span><span class="value" id="statBatches">0</span></div>
+    <div class="stat"><span class="label">方法数</span><span class="value" id="statMethods">0</span></div>
+    <div class="copyright"><span class="ocp-inline">OCP</span> © OpenChemProcess. Local browser tool.</div>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>数据表格</h2>
+      <div class="tabs">
+        <button class="active" data-view="raw">原始表格</button>
+        <button data-view="detail">峰明细</button>
+        <button data-view="byBatch">按批号整理</button>
+        <button data-view="byMethod">按方法整理</button>
+      </div>
+    </div>
+
+    <div id="message" class="msg warn">尚未导入数据。可上传文件，也可直接在“原始表格”中输入数据。</div>
+
+    <details class="import-details">
+      <summary>粘贴导入 / 固定格式说明</summary>
+      <div class="inside">
+        <div>
+          <textarea id="pasteArea" placeholder="粘贴三行表头格式的 CSV，或从 Excel 复制后直接粘贴。"></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="primary" id="btnParsePaste">解析粘贴数据</button>
+          </div>
+        </div>
+        <div class="small">
+          <p>第一行固定为：<br><code>批号,备注1,备注2,分析方法名,波长,检测时间,峰1面积比,峰2面积比,...,其它</code></p>
+          <p>第二行：峰列填写对应化合物名；第三行：峰列填写保留时间；第四行开始：每一行是一批样品/一次检测的数据。峰面积比可填数值、ND、NA 或留空。</p>
+          <p>表格中新增或修改的数据会随 raw_input 一并导出。</p>
+        </div>
+      </div>
+    </details>
+
+    <div class="table-wrap" id="tableWrap"></div>
+  </section>
+
+  <div class="footer">© OpenChemProcess / OCP. Single-file static HTML. No server-side data storage.</div>
+</main>
 
 <script>
 (function(){
@@ -180,6 +123,7 @@
   let detailRows = [];
   let byBatchAoa = [];
   let byMethodAoa = [];
+  let highlightImpurityOverPointOne = true;
   let currentView = 'raw';
 
   const $ = id => document.getElementById(id);
@@ -694,6 +638,33 @@
 
   function cleanCell(v) { return String(v == null ? '' : v).trim(); }
 
+  function parseAreaRatioValue(v) {
+    const s = String(v == null ? '' : v).trim();
+    if (!s || /^(ND|NA|N\.?A\.?|N\/A)$/i.test(s)) return null;
+    const m = s.replace(/,/g, '').match(/-?\d+(?:\.\d+)?/);
+    if (!m) return null;
+    const n = Number(m[0]);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function isOverPointOneNonMain(value, peakOrdinal) {
+    if (!highlightImpurityOverPointOne) return false;
+    const n = parseAreaRatioValue(value);
+    return peakOrdinal > 1 && n != null && n > 0.1;
+  }
+
+  function isDetailRowOverLimit(row) {
+    const seq = String(row && row['峰序号'] || '');
+    const m = seq.match(/峰(\d+)/);
+    if (!m) return false;
+    return isOverPointOneNonMain(row['面积比'], Number(m[1]));
+  }
+
+  function isSectionAoaRow(row) {
+    const r = row || [];
+    return !!(String(r[0] || '').includes('：') && r.slice(1).every(v => cleanCell(v) === ''));
+  }
+
   function trimAoa(aoa) {
     let rows = (aoa || []).map(r => (r || []).map(cleanCell));
     while (rows.length && rows[rows.length - 1].every(v => v === '')) rows.pop();
@@ -879,6 +850,20 @@
     msg.textContent = text;
   }
 
+  function updateHighlightButton() {
+    const btn = $('btnToggleHighlight');
+    if (!btn) return;
+    btn.textContent = highlightImpurityOverPointOne ? '杂质>0.1% 标红：开' : '杂质>0.1% 标红：关';
+    btn.classList.toggle('primary', highlightImpurityOverPointOne);
+  }
+
+  function toggleHighlight() {
+    highlightImpurityOverPointOne = !highlightImpurityOverPointOne;
+    updateHighlightButton();
+    renderCurrentView();
+    setMessage(highlightImpurityOverPointOne ? '已开启：整理表和格式化 Excel 中，非主峰面积比 >0.1% 的数据会标红；化合物名和出峰时间行不标红。' : '已关闭：整理表和格式化 Excel 不再标红 >0.1% 杂质峰。', 'ok');
+  }
+
   function renderCurrentView() {
     if (currentView === 'raw') renderRawEditor(rawAoa && rawAoa.length ? rawAoa : blankEditorAoa(1));
     if (currentView === 'detail') renderObjectRows(detailRows);
@@ -958,11 +943,12 @@
     const html = [`<table${tableClass}><tbody>`];
     rows.forEach((r, i) => {
       const isHeader = i < (options.headerRows || 0);
-      const isSection = r.length === 1 && r[0] && String(r[0]).includes('：');
-      const sectionBack1 = i > 0 && rows[i - 1] && rows[i - 1].length === 1 && rows[i - 1][0] && String(rows[i - 1][0]).includes('：');
-      const sectionBack2 = i > 1 && rows[i - 2] && rows[i - 2].length === 1 && rows[i - 2][0] && String(rows[i - 2][0]).includes('：');
-      const sectionBack3 = i > 2 && rows[i - 3] && rows[i - 3].length === 1 && rows[i - 3][0] && String(rows[i - 3][0]).includes('：');
+      const isSection = isSectionAoaRow(r);
+      const sectionBack1 = i > 0 && isSectionAoaRow(rows[i - 1]);
+      const sectionBack2 = i > 1 && isSectionAoaRow(rows[i - 2]);
+      const sectionBack3 = i > 2 && isSectionAoaRow(rows[i - 3]);
       const isSubHeader = !isHeader && (sectionBack1 || (options.pivot && (sectionBack2 || sectionBack3)));
+      const isDataRow = !isHeader && !isSubHeader && !isSection;
       html.push(`<tr class="${isHeader || isSubHeader ? 'header-row' : ''}${isSection ? ' section' : ''}">`);
       for (let c = 0; c < maxCols; c++) {
         const val = r[c] == null ? '' : r[c];
@@ -974,6 +960,10 @@
           if (c >= (options.pivotMetaCols || 0)) cls.push('peak-cell');
           else cls.push('meta-cell');
           if (c >= (options.pivotMetaCols || 0) && sectionBack2) cls.push('peak-name-cell');
+          if (c >= (options.pivotMetaCols || 0) && isDataRow) {
+            const peakOrdinal = c - (options.pivotMetaCols || 0) + 1;
+            if (isOverPointOneNonMain(val, peakOrdinal)) cls.push('exceed-cell');
+          }
         }
         html.push(`<td${colspan} class="${cls.join(' ')}">${escapeHtml(val)}</td>`);
       }
@@ -992,7 +982,12 @@
     const html = ['<table><thead><tr>', ...headers.map(h => `<th>${escapeHtml(h)}</th>`), '</tr></thead><tbody>'];
     rows.forEach(r => {
       html.push('<tr>');
-      headers.forEach(h => html.push(`<td class="${r[h] ? '' : 'empty'}">${escapeHtml(r[h] || '')}</td>`));
+      headers.forEach(h => {
+        const cls = [];
+        if (!r[h]) cls.push('empty');
+        if (h === '面积比' && isDetailRowOverLimit(r)) cls.push('exceed-cell');
+        html.push(`<td class="${cls.join(' ')}">${escapeHtml(r[h] || '')}</td>`);
+      });
       html.push('</tr>');
     });
     html.push('</tbody></table>');
@@ -1033,6 +1028,93 @@
   }
 
 
+  function makeSectionMerges(aoa) {
+    const rows = trimAoa(aoa || []);
+    const maxCols = Math.max(...rows.map(r => r.length), 1);
+    const merges = [];
+    rows.forEach((r, idx) => {
+      if (isSectionAoaRow(r) && maxCols > 1) {
+        merges.push({ s: { r: idx, c: 0 }, e: { r: idx, c: maxCols - 1 } });
+      }
+    });
+    return merges;
+  }
+
+  function baseXlsxStyle() {
+    return {
+      font: { name: 'Microsoft YaHei', sz: 10, color: { rgb: '1F2937' } },
+      alignment: { vertical: 'top', wrapText: true },
+      border: {
+        top: { style: 'thin', color: { rgb: 'D9DDE5' } },
+        bottom: { style: 'thin', color: { rgb: 'D9DDE5' } },
+        left: { style: 'thin', color: { rgb: 'D9DDE5' } },
+        right: { style: 'thin', color: { rgb: 'D9DDE5' } }
+      }
+    };
+  }
+
+  function styleCell(ws, r, c, style) {
+    const ref = XLSX.utils.encode_cell({ r, c });
+    if (!ws[ref]) return;
+    ws[ref].s = style;
+  }
+
+  function styleWorksheet(ws, aoa, kind, options = {}) {
+    if (!ws || !ws['!ref'] || typeof XLSX === 'undefined') return;
+    const rows = trimAoa(aoa || []);
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    const metaCols = options.pivotMetaCols || 0;
+    for (let r = range.s.r; r <= range.e.r; r++) {
+      const row = rows[r] || [];
+      const isSection = isSectionAoaRow(row);
+      const sectionBack1 = r > 0 && isSectionAoaRow(rows[r - 1]);
+      const sectionBack2 = r > 1 && isSectionAoaRow(rows[r - 2]);
+      const sectionBack3 = r > 2 && isSectionAoaRow(rows[r - 3]);
+      const isSubHeader = kind === 'pivot' && (sectionBack1 || sectionBack2 || sectionBack3);
+      const isRawHeader = kind === 'raw' && r < 3;
+      const isDetailHeader = kind === 'detail' && r === 0;
+      const isDataRow = !isSection && !isSubHeader && !isRawHeader && !isDetailHeader;
+      for (let c = range.s.c; c <= range.e.c; c++) {
+        const cell = ws[XLSX.utils.encode_cell({ r, c })];
+        if (!cell) continue;
+        let st = baseXlsxStyle();
+        if (isSection) {
+          st.fill = { patternType: 'solid', fgColor: { rgb: 'E8EEF7' } };
+          st.font = { name: 'Microsoft YaHei', sz: 10, bold: true, color: { rgb: '1F2937' } };
+          st.alignment = { vertical: 'center', wrapText: true };
+        } else if (isSubHeader || isRawHeader || isDetailHeader) {
+          st.fill = { patternType: 'solid', fgColor: { rgb: 'F8FAFC' } };
+          st.font = { name: 'Microsoft YaHei', sz: r === 0 ? 10 : 9, bold: true, color: { rgb: '1F2937' } };
+          st.alignment = { horizontal: 'center', vertical: 'center', wrapText: true };
+        }
+        let exceed = false;
+        if (kind === 'detail' && r > 0 && c === 10) {
+          const peakSeq = rows[r] && rows[r][7];
+          const m = String(peakSeq || '').match(/峰(\d+)/);
+          exceed = !!(m && isOverPointOneNonMain(rows[r][10], Number(m[1])));
+        }
+        if (kind === 'pivot' && isDataRow && c >= metaCols) {
+          const peakOrdinal = c - metaCols + 1;
+          exceed = isOverPointOneNonMain(rows[r] && rows[r][c], peakOrdinal);
+        }
+        if (exceed) {
+          st.fill = { patternType: 'solid', fgColor: { rgb: 'FFF1F2' } };
+          st.font = { name: 'Microsoft YaHei', sz: 10, bold: true, color: { rgb: 'B91C1C' } };
+        }
+        styleCell(ws, r, c, st);
+      }
+    }
+    if (kind === 'pivot') ws['!merges'] = makeSectionMerges(aoa);
+    ws['!rows'] = rows.map((row, r) => {
+      if (kind === 'raw' && r < 3) return { hpt: r === 1 ? 34 : 24 };
+      if (kind === 'pivot') {
+        const sectionBack2 = r > 1 && isSectionAoaRow(rows[r - 2]);
+        if (sectionBack2) return { hpt: 42 };
+      }
+      return { hpt: 22 };
+    });
+  }
+
   function makeRawCols() {
     const cols = [{wch:22},{wch:10},{wch:12},{wch:18},{wch:8},{wch:14}];
     peakColumns.forEach(() => cols.push({wch:14}));
@@ -1063,11 +1145,15 @@
     detailWs['!cols'] = [{wch:22},{wch:10},{wch:12},{wch:18},{wch:8},{wch:14},{wch:18},{wch:8},{wch:28},{wch:12},{wch:10}];
     byBatchWs['!cols'] = makePivotCols(6);
     byMethodWs['!cols'] = makePivotCols(5);
+    styleWorksheet(rawWs, rawAoa, 'raw');
+    styleWorksheet(detailWs, objectRowsToAoa(detailRows), 'detail');
+    styleWorksheet(byBatchWs, byBatchAoa, 'pivot', { pivotMetaCols: 6 });
+    styleWorksheet(byMethodWs, byMethodAoa, 'pivot', { pivotMetaCols: 5 });
     XLSX.utils.book_append_sheet(wb, rawWs, 'raw_input');
     XLSX.utils.book_append_sheet(wb, detailWs, 'peak_detail');
     XLSX.utils.book_append_sheet(wb, byBatchWs, 'by_batch');
     XLSX.utils.book_append_sheet(wb, byMethodWs, 'by_method');
-    XLSX.writeFile(wb, 'hplc整理结果.xlsx');
+    XLSX.writeFile(wb, 'hplc整理结果_格式化.xlsx');
   }
 
   function handleFile(file) {
@@ -1122,13 +1208,14 @@
   });
   $('btnAddRow').addEventListener('click', addDataRow);
   $('btnApplyTable').addEventListener('click', applyRawTableEdits);
+  $('btnToggleHighlight').addEventListener('click', toggleHighlight);
   $('btnExportXlsx').addEventListener('click', exportXlsx);
   $('btnExportRawCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_raw_input.csv', toCsvFromAoa(rawAoa), 'text/csv;charset=utf-8;'); });
   $('btnExportDetailCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_peak_detail.csv', toCsvFromAoa(objectRowsToAoa(detailRows)), 'text/csv;charset=utf-8;'); });
   $('btnExportByBatchCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_by_batch.csv', toCsvFromAoa(byBatchAoa), 'text/csv;charset=utf-8;'); });
   $('btnExportByMethodCsv').addEventListener('click', () => { if (syncRawEditorBeforeExport()) downloadText('hplc_by_method.csv', toCsvFromAoa(byMethodAoa), 'text/csv;charset=utf-8;'); });
 
-  updateStats(); setButtons(false); renderCurrentView();
+  updateStats(); setButtons(false); updateHighlightButton(); renderCurrentView();
 })();
 </script>
 </body>
